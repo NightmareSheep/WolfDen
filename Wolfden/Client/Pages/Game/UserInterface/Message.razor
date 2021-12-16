@@ -1,0 +1,29 @@
+﻿
+
+<div class="message @AnimationCssClass"><h1>@Text</h1></div>
+
+
+@code {
+    private string Text { get; set; }
+    private bool Animate { get; set; }
+    private string AnimationCssClass { get { return Animate ? "message-animate" : ""; } }
+
+    public Task ShowMessage(string text)
+    {
+        this.Execute(text);
+        return Task.CompletedTask;
+    }
+
+    private async Task Execute(string text)
+    {
+        this.Text = text;
+
+        this.Animate = false;
+        this.StateHasChanged();
+
+        await Task.Delay(100);
+
+        this.Animate = true;
+        this.StateHasChanged();
+    }
+}

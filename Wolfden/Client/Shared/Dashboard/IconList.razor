@@ -1,0 +1,23 @@
+﻿@using Wolfden.Client.Models
+
+
+
+
+
+<div class="icon-list">
+    @foreach (var icon in Icons)
+    {
+        <a href="@icon.Url">
+            <span class="oi oi-@icon.Title" />
+        </a>
+    }
+</div>
+
+
+
+
+
+@code {
+    [Parameter]
+    public Link[] Icons { get; set; }
+}

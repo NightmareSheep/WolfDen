@@ -1,0 +1,88 @@
+﻿@using LupusBlazor.UI;
+@using System.Drawing
+@using Lupus;
+@implements IGatherChestsWinConditionUI
+@inject NavigationManager NavigationManager
+
+
+<div class="score-list">
+    <div>
+        @for(var i = 0; i < (Teams?.Count ?? 0); i++)
+        {
+            var team = this.Teams?[i] ?? new();
+            var score = Scores[i];
+
+            @foreach (var player in team)
+            {
+                <div>
+                    <i class="fas fa-square-full" style="color : @(player.Color.ToString())"></i> @score 
+                </div>
+            }
+        }
+        <div>
+            Turns remaining @TurnsRemaining
+        </div>
+    </div>
+</div>
+
+@*@if (Scores.Length > 0 && TurnsRemaining >= 0)
+{
+    <div class="gatherChests turnsRemaining">
+        <div class="title">Turns remaining:</div>
+        <div class="value"><h2>@TurnsRemaining</h2></div>
+    </div>
+
+    <div class="gatherChests scores">
+        @foreach (var score in Scores)
+        {
+            <div class="score">
+                <h2>@score</h2>
+            </div>
+        }
+    </div>
+}*@
+
+@if (VictoryName != null)
+{
+    <div class="gatherChests victoryAnnouncement">
+        <div class="title">The winner is:</div>
+        <div class="name"><h1>@VictoryName</h1></div>
+        <div class="return"><button class="btn btn bg-primary" @onclick="GoHome">End</button></div>
+    </div>
+}
+
+@*<div class="win-condition-description">
+    <div class="title"><h2>Win condition</h2></div>
+    <div class="content"><p>Push the chests into your area. You get one point at the end of every turn for each chest inside your area.</p><p>The player with the most points at the end of the game wins.</p></div>
+</div>*@
+
+@code {
+    private List<List<Player>>? Teams { get; set; }
+    private int[] Scores { get; set; } = new int[0];
+    private int TurnsRemaining { get; set; } = -1;
+    private string VictoryName { get; set; }
+
+    public void SetScores(List<List<Player>> teams, int[] scores)
+    {
+        this.Teams = teams;
+        this.Scores = scores;
+        this.StateHasChanged();
+    }
+
+    public void SetTurnsRemaining(int turnsRemaining)
+    {
+        this.TurnsRemaining = turnsRemaining;
+        this.StateHasChanged();
+    }
+
+    public void AnnounceVictor(string name)
+    {
+        VictoryName = name;
+        this.StateHasChanged();
+    }
+
+    private void GoHome()
+    {
+        NavigationManager.NavigateTo("");    
+    }
+}

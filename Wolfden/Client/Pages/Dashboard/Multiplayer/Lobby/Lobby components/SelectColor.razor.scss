@@ -1,0 +1,27 @@
+﻿/// <reference path = "../../../../../styles/bootstrap/scss/_variables.scss">
+
+#lobby #selectColor {
+    height: 100%;
+    padding: 20px;
+    background-color: $gray-700;
+
+    #selectColorInner {
+        padding: 20px;
+
+        #colorList {
+            display: grid;
+            grid-gap: 20px;
+            grid-template-columns: repeat(auto-fit, 100px);
+            grid-template-rows: 100px;
+
+            div {
+                width:96px;
+                height:96px;
+                cursor: pointer;
+                border-width: 2px;
+                border-color: black;
+                border-style: solid;
+            }
+        }
+    }
+}

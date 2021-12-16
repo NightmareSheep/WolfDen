@@ -1,0 +1,18 @@
+﻿@using Wolfden.Client.Models
+@using System.Drawing;
+@using Wolfden.Client.Other;
+
+<Primary>
+    <PrimaryContent>
+        <Brand />
+        <BlokHeader Title="Main Menu"></BlokHeader>
+        <LinkList Links="@Statics.MainMenuLinks" StartActive="StartExpanded" />
+        <MiniProfile />
+    </PrimaryContent>
+</Primary>
+
+
+@code{
+    [Parameter]
+    public bool StartExpanded { get; set; } = true;
+}

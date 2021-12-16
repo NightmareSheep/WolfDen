@@ -1,0 +1,66 @@
+﻿@using LupusBlazor.UI;
+@using Wolfden.Client.Pages.Game.UserInterface.UnitDescriptions;
+
+@implements IUnitUI
+
+
+<div id="unit-UI">
+
+    <div id="character-portrait">
+        @if (UnitName != null)
+        {
+            <img src="/images/Character portraits/@(UnitName).png" />
+        }
+    </div>
+    <div id="skill-1"><button class="btn btn-secondary" @onclick="async ()=> { await ClickSkill(0); }">
+        @if (SkillNames[0] != null)
+        {
+            <img src="/images/Skill icons/@(SkillNames[0]).png" />
+            <div class="key">Q</div> 
+        }
+    </button></div>
+    <button class="btn btn-secondary skill-2"></button>
+    <button class="btn btn-secondary skill-3"></button>
+</div>
+
+@code {
+    public string UnitName { get; set; }
+    public int SkillSlotsUsed;
+    public string[] SkillNames { get; set; } = new string[2];
+
+    public Func<Task>[] SkillOnClicks { get; set; } = new Func<Task>[2];
+
+    public async Task SetCharacterSkill(string name, Func<Task> onclick)
+    {
+        if (SkillSlotsUsed >= SkillNames.Length)
+            return;
+
+        SkillNames[SkillSlotsUsed] = name;
+        SkillOnClicks[SkillSlotsUsed] = onclick;
+        base.StateHasChanged();
+    }
+
+    public async Task SetCharacterUI(string name)
+    {
+        UnitName = name;
+        base.StateHasChanged();
+    }
+
+    public async Task ResetCharacterUI()
+    {
+        for (var i = 0; i < SkillNames.Length; i++)
+        {
+            SkillNames[i] = null;
+            SkillOnClicks[i] = null;
+            SkillSlotsUsed = 0;
+        }
+        base.StateHasChanged();
+    }
+
+    public async Task ClickSkill(int index)
+    {
+        Console.WriteLine("skill is clicked");
+        if (SkillOnClicks.Length > index && SkillOnClicks[index] != null)
+            await SkillOnClicks[index]();
+    }
+}

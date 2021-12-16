@@ -1,0 +1,15 @@
+﻿<div id="loading" class="@doneLoadingCssClass">
+    <p><i class="fas fa-spin fa-spinner"></i> The game is loading...</p>
+</div>
+
+@code {
+    bool DoneLoading { get; set; } = false;
+    string doneLoadingCssClass { get { return this.DoneLoading ? "loading-done" : ""; } }
+
+    public Task LoadingIsDone()
+    {
+        this.DoneLoading = true;
+        this.StateHasChanged();
+        return Task.CompletedTask;
+    }
+}

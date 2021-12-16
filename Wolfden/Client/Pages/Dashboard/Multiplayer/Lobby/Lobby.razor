@@ -1,0 +1,205 @@
+﻿@page "/lobby/{lobbyid}"
+@using Microsoft.AspNetCore.SignalR.Client
+@using Lobbies;
+@using Models;
+@using LupusLobbies;
+@using Microsoft.Extensions.Logging;
+@using Wolfden.Client.Pages.Dashboard.Multiplayer.Lobby.Lobby_components;
+@inject NavigationManager NavigationManager
+@inject Blazored.LocalStorage.ILocalStorageService localStorage
+@inject ILoggerProvider LoggerProvider
+@implements IAsyncDisposable
+
+
+<Primary BackUrl="/multiplayer">
+    <PrimaryContent>
+        <Brand />
+        <BlokHeader Title="Lobby" />
+        <div id="lobby-spectators">
+            <h2>Spectators</h2>
+            <ul class="list-group">
+                @foreach (var spectator in this.CurrentLobby?.Spectators ?? new())
+                {
+                    <li class="list-group-item">@spectator.Name</li>
+                }
+            </ul>
+            <br />
+            <button class="btn btn-primary" @onclick="JoinAsSpectator">Spectate</button>
+        </div>
+    </PrimaryContent>
+</Primary>
+
+<Secondary>
+    <Content>
+        <div id="lobby" lobbyId="@LobbyId">
+
+            <SelectColor @ref="SelectColor" />
+
+            <!-- Lobby information -->
+            <div id="gameProfile" class="shadow">
+                <div>
+                    Lobby name:
+                    <h2>@CurrentLobby?.Name</h2>
+                </div>
+
+                <div id="playerReady">
+                    @if (CurrentPlayer?.Ready ?? false)
+                    {
+                        <button id="ready-button" type="button" class="btn btn-lg btn-block btn-success">Ready</button>
+                    }
+                    else if (CurrentPlayer != null)
+                    {
+                        <button @onclick="Ready" id="ready-button" type="button" class="btn btn-lg btn-block btn-warning">Ready up</button>
+                    }
+                </div>
+            </div>
+
+            <!-- Map information -->
+            <div id="mapProfile" class="shadow">
+                <div id="mapInformation">
+                    <div>
+                        Map name:
+                        <h2>@CurrentLobby?.MapId</h2>
+                    </div>
+                    <div>
+                        @*Nr. of players:
+                        <h2>4</h2>*@
+                    </div>
+                </div>
+                <div id="mapPreview">
+                    @if (CurrentLobby != null)
+                    {
+                    <img src="@("/game/maps/" + CurrentLobby?.MapId + "/" + CurrentLobby?.MapId + ".preview.png")" />
+                    }
+                </div>
+            </div>
+
+            <!-- List of players -->
+            <div id="playerList">
+
+                @for (int i = 0; i < CurrentLobby?.Slots?.Count; i++)
+                {
+                    var slotNr = i;
+                    var slot = CurrentLobby.Slots[i] as LupusLobbySlot;
+
+                    <div id="@("slot" + i)" class="slot shadow">
+                        <div class="slotFaction">
+                            @if (slot?.LobbyPlayer != null)
+                            {
+                                <img src="/images/anonymous.jpg" width="48" height="48" />
+                            }
+                        </div>
+                        <div class="slotColor" style="background-color:@slot?.Color.Color.ToString()">
+                        </div>
+                        <div class="slotTeam">
+                            <div>
+                                <div>Team:</div>
+                                <h3>@slot.Team</h3>
+                            </div>
+                        </div>
+                        <div class="slotName">
+                            <div>
+                                <div>Name:</div>
+                                @if (slot?.LobbyPlayer != null)
+                                {
+                                    <h3>@slot.LobbyPlayer.Name</h3>
+                                }
+                                else
+                                {
+                                    <button class="btn btn-primary" @onclick="async () => { await JoinSlot(slotNr); }">Join</button>
+                                }
+                            </div>
+                        </div>
+                        <div class="slotStatus">
+                            <div>
+                                <div>Ready:</div>
+                                @if (slot?.LobbyPlayer?.Ready ?? false)
+                                {
+                                    <h3 class="ready" ><i class="fas fa-check"></i></h3>
+                                }
+                                else
+                                {
+                                    <h3 class="not-ready" ><i class="fas fa-times"></i></h3>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+
+        <form>
+            <input type="hidden" asp-for="GameId" value="@LobbyId">
+            <input id="submit" type="submit" value="Submit" style="display:none">
+        </form>
+
+    </Content>
+</Secondary>
+
+@code{
+    [Parameter]
+    public string LobbyId { get; set; }
+    string UserName { get; set; }
+    string UserId { get; set; }
+    LupusLobbyConnection LobbyConnection { get; set; }
+    Lobbies.Lobby CurrentLobby { get { return LobbyConnection?.Lobby; } }
+    LobbyPlayer CurrentPlayer { get { return CurrentLobby?.GetLobbyPlayer(LobbyConnection?.Connection?.ConnectionId); } }
+    LupusLobbySlot CurrentSlot { get { return LobbyConnection?.LupusLobby?.GetLupusLobbySlot(LobbyConnection?.Connection?.ConnectionId); } }
+    private SelectColor SelectColor;
+
+    private HubConnection hubConnection;
+
+    protected override async Task OnInitializedAsync()
+    {
+
+        UserName = await localStorage.GetItemAsync<string>("name");
+        UserId = await localStorage.GetItemAsync<string>("id");
+
+        LobbyConnection = new LupusLobbyConnection(NavigationManager, LoggerProvider, UserName, UserId);
+        hubConnection = LobbyConnection.Connection;
+
+        LobbyConnection.StateHasChanged +=
+            (object sender, EventArgs e) =>
+            {
+                // Set the colors
+                if (LobbyConnection.Lobby != null)
+                    SelectColor.SetColors(LobbyConnection.LupusLobby.GetLupusLobbySlot().Color.Colors.ToArray());
+
+                base.StateHasChanged();
+            };
+
+        await LobbyConnection.Initialize(LobbyId, UserId, UserName);
+        SelectColor.LobbyConnection = LobbyConnection;
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        if (hubConnection != null)
+            await hubConnection.DisposeAsync();
+    }
+
+    private async Task Ready()
+    {
+        await LobbyConnection?.Ready();
+    }
+
+    private async Task Join()
+    {
+        await LobbyConnection?.Join();
+    }
+
+    private async Task JoinSlot(int i)
+    {
+        await LobbyConnection?.Join(i);
+    }
+
+    private async Task JoinAsSpectator()
+    {
+        await LobbyConnection?.JoinAsSpectator();
+    }
+
+    private async Task ClickSelectColor()
+    {
+        await SelectColor?.Open();
+    }
+}

@@ -1,0 +1,52 @@
+﻿@page "/game/{gameId}"
+@using WolfDen.Client.Helpers
+@using Microsoft.Extensions.Logging;
+@using Wolfden.Client.Shared;
+@using Wolfden.Client.Other;
+@using Wolfden.Client.Pages.Game.UserInterface;
+@implements IDisposable
+@implements IHandleEvent
+@inject IJSRuntime JSRuntime;
+@inject NavigationManager NavigationManager
+@inject ILoggerProvider LoggerProvider
+@inject IHttpClientFactory HttpClientFactory
+@inject Blazored.LocalStorage.ILocalStorageService localStorage
+@layout EmptyLayout
+
+<div tabindex="-1" oncontextmenu="return false;" @onmouseup=MouseClick @onkeypress="HandleKeyPress" id="game">
+    <UI @ref="UI" />
+</div>
+
+@code {
+    [Parameter]
+    public string GameId { get; set; }
+    private LupusGameHelper LupusGameHelper;
+    public UI UI { get; set; }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        await Statics.AudioPlayer.StopMusic();
+        var id = await localStorage.GetItemAsync<string>("id");
+        var http = HttpClientFactory.CreateClient("Wolfden.ServerAPI.Anonymous");
+        LupusGameHelper = new LupusGameHelper(http, JSRuntime, NavigationManager, LoggerProvider, GameId, UI, id);
+        await LupusGameHelper.InitializeConnection();
+    }
+
+    private async Task MouseClick(MouseEventArgs e)
+    {
+        await UI.MouseClick(e);
+    }
+
+    private async Task HandleKeyPress(KeyboardEventArgs e)
+    {
+        await UI.HandleKeyPress(e);
+    }
+
+    public void Dispose()
+    {
+        LupusGameHelper.Dispose();
+    }
+
+    Task IHandleEvent.HandleEventAsync(
+        EventCallbackWorkItem callback, object arg) => callback.InvokeAsync(arg);
+}

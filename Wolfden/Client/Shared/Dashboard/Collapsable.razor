@@ -1,0 +1,24 @@
+﻿@inject IJSRuntime JS
+
+<div id="@Id" class="collapsable @(StartOpen ? "open" : "")">
+    @ChildContent
+</div>
+
+@code {
+    [Parameter]
+    public bool StartOpen { get; set; }
+    [Parameter]
+    public RenderFragment ChildContent { get; set; }
+    private Guid Id { get; set; } = Guid.NewGuid();
+
+
+    public async Task Collapse()
+    {
+        await JS.InvokeVoidAsync("helper.RemoveClassFromElement", Id.ToString(), "open");
+    }
+
+    public async Task Open()
+    {
+        await JS.InvokeVoidAsync("helper.SetClassOnElement", Id.ToString(), "open");
+    }
+}

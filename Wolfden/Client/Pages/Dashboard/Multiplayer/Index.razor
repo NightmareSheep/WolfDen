@@ -1,0 +1,22 @@
+﻿@page "/multiplayer"
+@using Wolfden.Client.Models
+
+
+<Primary BackUrl="/">
+    <PrimaryContent>
+        <Brand />
+        <BlokHeader Title="Multiplayer" />
+        <LinkList Links="@Links" />
+        <MiniProfile/>
+    </PrimaryContent>
+</Primary>
+
+@code{
+    public string Title = "Multiplayer";
+
+    public Link[] Links { get; } = new Link[]
+    {
+        new Link("Join"),
+        new Link("Host")
+    };
+}

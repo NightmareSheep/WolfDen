@@ -1,0 +1,18 @@
+﻿/// <reference path = "_references.scss">
+
+
+
+#primary {
+    height: 100%;
+    /*background: linear-gradient(to right, $gray-700 0px, $gray-800 100px, $gray-700 101px, $gray-700 100%);*/
+    background-color: $gray-700;
+    color: $white;
+    opacity: 0.95;
+    padding: 0px;
+
+    .back-btn {
+        position: absolute;
+        padding: 10px 0 0 15px;
+    }
+}
+

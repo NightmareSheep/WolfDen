@@ -1,0 +1,32 @@
+﻿/// <reference path = "../../../wwwroot/css/custom/_variables.scss">
+
+// UI
+$UI_padding_1: 10px;
+$UI-margin-1: 10px;
+
+$UI_Color_1: #495057;
+$UI_Color_2: #343a40;
+
+$UI-Text-Color-1: white;
+$UI-Box-Shadow: 0 0.5rem 1rem black;
+
+
+#UI {
+    h1 {
+        font-size: 40px;
+        line-height: 40px;
+        margin: 30px;
+    }
+
+
+    .UI_element {
+        position: absolute;
+        background-color: $UI_Color_1;
+        box-shadow: $UI-Box-Shadow;
+        color: $UI-Text-Color-1;
+    }
+
+    .inactive {
+        opacity: 0.5;
+    }
+}

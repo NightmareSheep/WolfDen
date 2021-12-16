@@ -1,0 +1,50 @@
+﻿/// <reference path = "_references.scss">
+
+
+.link-list-expand{
+    display:flex;
+    justify-content:center;
+
+    .expand-button{
+        margin: 20px;
+    }
+}
+
+.link-list {
+    padding: 0px 50px;
+    display: grid;
+    grid-template-columns: auto;
+    grid-gap: 10px;
+    margin-bottom: 50px;
+}
+
+
+.menu-button {
+    @extend .btn;
+    @extend .btn-lg;
+    @extend .rounded-0;
+    @extend .me-3;
+    @extend .text-start;
+    background-color: $gray-500;
+    transition: margin-right 0.5s;
+    color: $white;
+
+    &:hover, &.active {
+        background-color: $white;
+        color: $gray-600;
+    }
+
+    &:hover {
+        margin-right: 0px !important;
+    }
+}
+
+@media screen and (min-width: $media-breakpoint-small) {
+    .link-list-expand {
+        display: none;
+    }
+
+    .link-list {
+        display: grid !important;
+    }
+}

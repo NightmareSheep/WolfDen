@@ -1,0 +1,52 @@
+﻿/// <reference path = "UI.scss">
+
+$message-width: 800px;
+$message-height: 100px;
+$message-top: calc(50vh - (#{$message-height} / 2));
+$message-left: calc(50vw - (#{$message-width} / 2));
+$push-length: 10px;
+$message-top-push: calc(50vh - (#{$message-height} / 2) + $push-length);
+
+
+#UI {
+    .message {
+        width: $message-width;
+        height: $message-height;
+        top: $message-top;
+        left: $message-left;
+
+
+        @extend .UI_element;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        opacity: 0;
+    }
+
+    .message-animate {
+        animation-name: pushfade;
+        animation-duration: 3s;
+    }
+
+    @keyframes pushfade {
+        0% {
+            top: $message-top-push;
+            opacity: 0;
+        }
+
+        10% {
+            top: $message-top;
+            opacity: 1;
+        }
+
+        90% {
+            top: $message-top;
+            opacity: 1;
+        }
+
+        100% {
+            top: $message-top-push;
+            opacity: 0;
+        }
+    }
+}

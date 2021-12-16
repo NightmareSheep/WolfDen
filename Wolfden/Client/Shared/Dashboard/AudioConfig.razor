@@ -1,0 +1,34 @@
+﻿@using Wolfden.Client.Other;
+@using LupusBlazor.Audio;
+
+@inject Blazored.LocalStorage.ILocalStorageService localStorage
+
+<div id="audio">
+    <label for="master-volume" class="form-label">Master volume</label>
+    <input type="range" class="form-range" id="master-volume" min="0" max="100" value="@AudioPlayer.MasterVolume" @onchange="ChangeMasterVolume">
+
+    <label for="music-volume" class="form-label">Music volume</label>
+    <input type="range" class="form-range" id="music-volume" min="0" max="100" value="@AudioPlayer.MusicVolume" @onchange="ChangeMusicVolume">
+
+    <label for="effects-volume" class="form-label">Effects volume</label>
+    <input type="range" class="form-range" id="effects-volume" min="0" max="100" value="@AudioPlayer.EffectsVolume" @onchange="ChangeEffectsVolume">
+</div>
+
+@code {
+    private AudioPlayer AudioPlayer = Statics.AudioPlayer;
+
+    private async Task ChangeMasterVolume(ChangeEventArgs e)
+    {
+        await this.AudioPlayer.ChangeMasterVolume(int.Parse((string)e.Value));
+    }
+
+    private async Task ChangeMusicVolume(ChangeEventArgs e)
+    {
+        await this.AudioPlayer.ChangeMusicVolume(int.Parse((string)e.Value));
+    }
+
+    private async Task ChangeEffectsVolume(ChangeEventArgs e)
+    {
+        await this.AudioPlayer.ChangeEffectsVolume(int.Parse((string)e.Value));
+    }
+}

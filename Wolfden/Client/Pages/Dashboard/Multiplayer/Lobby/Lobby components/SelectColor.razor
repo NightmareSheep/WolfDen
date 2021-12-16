@@ -1,0 +1,48 @@
+﻿@using Models;
+@using System.Drawing;
+@using Microsoft.AspNetCore.SignalR.Client;
+
+<Collapsable @ref="collapsable">
+    <div id="selectColor">
+        <div id="selectColorInner" class="shadow">
+            <h2>Select color</h2>
+            <div id="colorList">
+                @foreach (var color in Colors)
+                {
+                    <div @onclick="@(e => OnColorPicked(color))" style="background-color:@color">
+
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</Collapsable>
+
+
+
+@code {
+    public LobbyConnection LobbyConnection { get; set; }
+    private KnownColor[] Colors { get; set; } = Array.Empty<KnownColor>();
+
+    private Collapsable collapsable;
+
+    public async Task Open()
+    {
+        await collapsable.Open();
+    }
+
+    public void SetColors(KnownColor[] colors)
+    {
+        if (Colors.SequenceEqual(colors))
+            return;
+
+        Colors = colors;
+        StateHasChanged();
+    }
+
+    private async Task OnColorPicked(KnownColor color)
+    {
+        await collapsable.Collapse();
+        await LobbyConnection?.Connection?.SendAsync("ChangeColor", color);
+    }
+}

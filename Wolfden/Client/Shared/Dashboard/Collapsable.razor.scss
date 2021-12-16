@@ -1,0 +1,14 @@
+﻿.collapsable {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    /*transition: max-height 0.2s ease-in;*/
+    max-height: 0px;
+    overflow: hidden;
+    z-index: 9;
+}
+
+.open {
+    max-height: 100%;
+    /*transition: max-height 0.2s ease-out;*/
+}

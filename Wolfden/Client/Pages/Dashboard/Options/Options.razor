@@ -1,0 +1,18 @@
+﻿@page "/options"
+@using Wolfden.Client.Models
+@using System.Drawing;
+
+<Primary BackUrl="/">
+    <PrimaryContent>
+        <Brand />
+        <BlokHeader Title="Options" />
+        <LinkList Links="@Links" />
+    </PrimaryContent>
+</Primary>
+
+@code{
+    public Link[] Links { get; } = new Link[]
+    {
+        new Link("Audio"),
+    };
+}

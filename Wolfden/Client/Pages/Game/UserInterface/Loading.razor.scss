@@ -1,0 +1,18 @@
+﻿/// <reference path = "UI.scss">
+
+#loading {
+    @extend .UI_element;
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: all;
+    transition: opacity 0.3s ease-in;
+    z-index:10;
+}
+
+#loading.loading-done {
+    pointer-events: none;
+    opacity: 0;
+}

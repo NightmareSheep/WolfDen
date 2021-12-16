@@ -1,0 +1,219 @@
+﻿#lobby-spectators{
+    margin: 20px;
+}
+
+#lobby {
+    h3 {
+        padding-bottom: 0px;
+    }
+
+    position: relative;
+    display: grid;
+    grid-gap: 20px;
+    padding: 10px;
+    grid-template-areas: 'gameProfile' 'mapProfile' 'playerList';
+    grid-template-columns: 1fr;
+    grid-template-rows: max-content max-content max-content;
+    // Game profile
+    #gameProfile {
+        padding: 20px;
+        grid-area: gameProfile;
+        display: grid;
+        grid-template-columns: auto auto;
+        justify-content: start;
+
+
+        > div {
+            padding: 20px;
+        }
+    }
+    // Map Profile
+    #mapProfile {
+        padding: 20px;
+        grid-area: mapProfile;
+
+        #mapInformation {
+            display: grid;
+            grid-template-columns: auto auto;
+            justify-content: start;
+
+            > div {
+                padding: 20px;
+            }
+        }
+
+        #mapPreview {
+            img {
+                max-width: 100%;
+                max-height: 100%;
+            }
+        }
+    }
+
+    #playerList {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        grid-area: playerList;
+        grid-gap: 20px;
+
+        .slot {
+            padding: 5px;
+            grid-gap: 5px;
+            display: grid;
+            grid-template-areas: 'name team status color faction';
+            grid-template-columns: 1fr 50px 50px 30px 96px;
+
+            .slotTeam {
+                grid-area: team;
+                display: flex;
+                align-items: center;
+            }
+
+            .slotName {
+                grid-area: name;
+                display: flex;
+                align-items: center;
+            }
+
+            .slotFaction {
+                grid-area: faction;
+                background-color: black;
+
+                img {
+                    width: 96px;
+                    height: 96px;
+                }
+            }
+
+            .slotColor {
+                grid-area: color;
+            }
+
+            .slotStatus {
+                grid-area: status;
+                display: flex;
+                align-items: center;
+
+                .ready{
+                    color: green;
+                }
+
+                .not-ready{
+                    color: red;
+                }
+            }
+        }
+    }
+}
+
+
+#lobby {
+    #playerProfile {
+        grid-area: playerProfile;
+        display: grid;
+        grid-gap: 20px;
+        padding: 20px;
+        grid-template-columns: repeat(4, 100px);
+        grid-template-rows: max-content 100px 100px;
+        grid-template-areas:
+            'name       name       name     name' 'faction    faction    color    team' 'faction    faction    ready    ready';
+
+        #playerName {
+            padding: 20px;
+            grid-area: name;
+        }
+        // Race
+        #playerFaction {
+            grid-area: faction;
+
+            img{
+                width:100%;
+                height:100%;
+            }
+
+            #faction {
+                height: 100%;
+                border-width: 2px;
+                border-color: black;
+                border-style: solid;
+                position: relative;
+                text-align: center;
+            }
+        }
+        // Color
+        #playerColor {
+            grid-area: color;
+
+            #color {
+                height: 100%;
+                position: relative;
+                border-width: 2px;
+                border-color: black;
+                border-style: solid;
+                cursor: pointer;
+            }
+        }
+        // Team
+        #playerTeam {
+            grid-area: team;
+
+            #team {
+                height: 100%;
+                border-width: 2px;
+                border-color: black;
+                border-style: solid;
+
+                #teamText {
+                    height: 20px;
+                    text-align: center;
+                    border-width: 0px;
+                    border-bottom-width: 2px;
+                    border-color: black;
+                    border-style: solid;
+
+                    b {
+                        position: relative;
+                        top: -3px;
+                    }
+                }
+
+                #teamNumber {
+                    height: 70px;
+                    text-align: center;
+                    font-size: 50px;
+                }
+            }
+        }
+
+        #playerReady {
+            grid-area: ready;
+
+            button{
+                width:100%;
+                height:100%;
+            }
+        }
+    }
+
+    .triangle {
+        position: absolute;
+        right: 0px;
+        bottom: 0px;
+        width: 0;
+        height: 0;
+        border-bottom: 10px solid black;
+        border-left: 10px solid transparent;
+    }
+}
+
+@media screen and (max-width: 1500px) {
+    #lobby {
+        grid-template-areas: 'gameProfile' 'playerProfile' 'mapProfile' 'playerList';
+        grid-template-columns: 1fr;
+        grid-template-rows: max-content max-content max-content;
+
+        #playerList {
+            grid-template-columns: 1fr;
+        }
+    }    
+}

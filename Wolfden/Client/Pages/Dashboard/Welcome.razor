@@ -1,0 +1,27 @@
+﻿@page "/welcome"
+@using Wolfden.Client.Other;
+@using LupusBlazor.Audio;
+@layout EmptyLayout
+@inject NavigationManager NavigationManager
+@inject Blazored.LocalStorage.ILocalStorageService localStorage
+
+<div id="welcome">
+    <div id="welcome-inner">
+        <h1>Welcome</h1>
+        <p>This is the Wolf Den where I work on my hobby project. It is a turn-based game which takes inspiration from Into The Breach. Right now only the multiplayer is functional. If you want to try it out then bring a friend and host a game. You can begin by setting you're nickname below.</p>
+        <Nickname StartAsEditing="true"></Nickname>
+        <p>Any feedback is welcome on my <a href="https://discord.gg/QJ3PPVsN">discord</a></p>
+        <button @onclick="Enter" class="btn btn-primary btn-lg">Enter</button>
+    </div>
+</div>
+
+@code {
+
+    public async Task Enter()
+    {
+        await localStorage.SetItemAsync("soundEnabled", true);
+        await Statics.AudioPlayer.EnableMusic();
+        await Statics.AudioPlayer.PlayMusic(Tracks.TitleTheme);
+        NavigationManager.NavigateTo("/");
+    }
+}

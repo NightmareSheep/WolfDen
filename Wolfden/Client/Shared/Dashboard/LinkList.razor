@@ -1,0 +1,40 @@
+﻿@using Wolfden.Client.Models
+
+
+
+<div class="link-list-expand">
+    <button class="btn btn-secondary expand-button"  data-bs-toggle="collapse" data-bs-target="#link-list"><i class="fas fa-bars"></i></button>
+</div>
+<div id="link-list" class="link-list collapse @(StartActive ? "show" : "")">
+    @foreach (var link in Links)
+    {
+        <NavLink class="menu-button" href="@link.Url" Match="NavLinkMatch.All">
+            @link.Title
+        </NavLink>
+    }
+</div>
+
+
+
+
+@code {
+    [Parameter]
+    public Link[] Links { get; set; }
+    [Parameter]
+    public bool StartActive { get; set; } = true;
+
+    public bool Active { get; set; } = true;
+
+    protected override Task OnInitializedAsync()
+    {
+        return base.OnInitializedAsync();
+        Active = StartActive;
+    }
+
+    public Task Toggle()
+    {
+        this.Active = !this.Active;
+        this.StateHasChanged();
+        return Task.CompletedTask;
+    }
+}

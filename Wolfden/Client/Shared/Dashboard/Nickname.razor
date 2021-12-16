@@ -1,0 +1,64 @@
+﻿@using System.ComponentModel.DataAnnotations;
+@using Wolfden.Client.Other;
+@using LupusBlazor.Audio;
+@inject Blazored.LocalStorage.ILocalStorageService localStorage
+
+@if (EditingName)
+{
+    <div class="nickname">
+        <EditForm Model="@Model" OnValidSubmit="@HandleValidSubmit">
+            <DataAnnotationsValidator />
+            <ValidationSummary />
+            <div class="input-group">
+                <InputText class="form-control name" @bind-Value="Model.Name" />
+                <div class="input-group-append">
+                    <button class="btn btn-secondary" type="submit">Submit</button>
+                </div>
+            </div>
+        </EditForm>
+
+
+    </div>
+}
+else
+{
+    <div class="nickname">
+        <h2>@Name</h2><i @onclick="StartEditingName" class="edit-button far fa-edit"></i>
+    </div>
+}
+
+@code {
+    [Parameter]
+    public bool StartAsEditing { get; set; }
+    private string Name { get; set; }
+    private bool EditingName { get; set; }
+    private FormModel Model { get; set; } = new();
+
+
+    private void StartEditingName()
+    {
+        this.EditingName = true;
+
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        EditingName = StartAsEditing;
+        Name = await localStorage.GetItemAsync<string>("name");
+        this.Model.Name = Name;
+    }
+
+    private async Task HandleValidSubmit()
+    {
+        await localStorage.SetItemAsync("name", Model.Name);
+        Name = Model.Name;
+        this.EditingName = false;
+    }
+
+    public class FormModel
+    {
+        [Required]
+        [StringLength(15, ErrorMessage = "Name must be between 2 and 15 characters", MinimumLength = 2)]
+        public string Name { get; set; }
+    }
+}

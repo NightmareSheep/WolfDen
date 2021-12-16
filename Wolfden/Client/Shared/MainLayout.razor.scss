@@ -1,0 +1,28 @@
+﻿/// <reference path = "dashboard/_references.scss">
+
+
+#body {
+    min-height: 100vh;
+    display: grid;
+    padding: 0px 50px;
+    grid-template-columns: 450px 1fr;
+    grid-template-areas: 'menu main secondary';
+
+    background-color: $gray-700;
+    background-image: url(../../images/Menu.png);
+    background-size: cover;
+
+}
+
+
+
+@media screen and (max-width: $media-breakpoint-small) {
+    #body {
+        margin: 0px;
+        grid-template-columns: auto;
+        grid-template-areas: 'secondary' 'menu' 'main';
+        align-content: start;
+        padding: 0px;
+        background-image: none;
+    }
+}

@@ -1,0 +1,15 @@
+﻿/// <reference path = "UI.scss">
+
+#ingame-options{
+    text-align: center;
+
+    #ingame-options-inner{
+        margin: auto;
+        width: 600px;
+        max-width: 100vw;
+
+        > button{
+            width: 100%;
+        }
+    }
+}

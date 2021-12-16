@@ -1,0 +1,137 @@
+﻿@page "/Host"
+
+@using System.ComponentModel.DataAnnotations;
+@using Wolfden.Shared.Models.Hosting;
+@using System.Net;
+@using System;
+@using System.Linq;
+@using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
+@inject HttpClient Http
+@inject NavigationManager Navigation
+@inject IHttpClientFactory HttpClientFactory
+
+<Primary BackUrl="/multiplayer">
+    <PrimaryContent>
+        <Brand />
+        <BlokHeader Title="Host Game" />
+
+        <div >
+            <EditForm class="ps-5 pe-5" Model="@Form" OnValidSubmit="@HandleValidSubmit">
+                <ObjectGraphDataAnnotationsValidator />
+                <ValidationSummary />
+
+                <div class="mb-3">
+                    <label for="name" class="form-label">Name</label>
+                    <InputText id="name" @bind-Value="Form.Name" class="form-control" />
+                </div>
+
+                <div class="mb-4">
+                    <label for="map" class="form-label">Map</label>
+                    <InputSelect @bind-Value="Form.MapName" id="map" class="form-select">
+                        @for (var i = 0; i < Maps.Count; i++)
+                        {
+                            <option value=@Maps[i].Name>@Maps[i].Name</option>
+                        }
+                    </InputSelect>
+                </div>
+
+                @*<div class="mb-5">
+                    @for (var i = 0; i < Form.Players.Length; i++)
+                    {
+                        var player = Form.Players[i];
+                        <div class="row g-3 align-items-center pb-1">
+                            <div class="col">
+                                <label for="inputPassword6" class="col-form-label">Player @(i + 1) Team:</label>
+                            </div>
+                            <div class="col-auto">
+                                <InputNumber @bind-Value="player.Team" class="form-control" />
+                            </div>
+                        </div>
+                    }
+                </div>*@
+
+                <button type="submit" class="btn btn-primary">Submit</button>
+            </EditForm>
+        </div>
+
+    </PrimaryContent>
+
+</Primary>
+
+<Secondary>
+    <Content>
+        <div id="selectMap">
+            <div class="title">
+                <h1>Select Map</h1>
+            </div>
+            @for (var i = 0; i < Maps.Count; i++)
+            {
+                var map = Maps[i];
+                var selected = Form.MapName == map.Name;
+                var highlight = selected ? "highlight" : "";
+                <div class="map @highlight" @onclick="()=> { Form.MapName = map.Name; }">
+                    <div class="name">
+                        <h2>@map.Name</h2>
+                    </div>
+                    <div class="preview">
+                        <img src="@("/game/maps/" + map.Name + "/" + map.Name + ".preview.png")" />
+                    </div>
+                </div>
+            }
+        </div>
+    </Content>
+</Secondary>
+
+
+
+@code
+{
+    private HostForm Form { get; set; } = new HostForm();
+    public List<Map> Maps { get; set; } = new List<Map>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        var http = HttpClientFactory.CreateClient("Wolfden.ServerAPI.Anonymous");
+        Maps = await http.GetFromJsonAsync<List<Map>>("Host/GetMaps");
+        Form.MapName = Maps[0].Name;
+        await base.OnInitializedAsync();
+    }
+
+
+    private async Task HandleValidSubmit(EditContext editContext)
+    {
+        //customValidator.ClearErrors();
+
+        try
+        {
+            var http = HttpClientFactory.CreateClient("Wolfden.ServerAPI.Anonymous");
+            var response = await http.PostAsJsonAsync<HostForm>("host", (HostForm)editContext.Model);
+
+            //var errors = await response.Content.ReadFromJsonAsync<Dictionary<string, List<string>>>();
+
+            if (response.StatusCode == HttpStatusCode.BadRequest)
+            {
+                //customValidator.DisplayErrors(errors);
+            }
+            else if (!response.IsSuccessStatusCode)
+            {
+                throw new HttpRequestException(
+                    $"Validation failed. Status Code: {response.StatusCode}");
+            }
+            else
+            {
+                var lobbyId = await response.Content.ReadFromJsonAsync<string>();
+                Navigation.NavigateTo("lobby/" + lobbyId);
+            }
+        }
+        catch (AccessTokenNotAvailableException ex)
+        {
+            ex.Redirect();
+        }
+        catch (Exception ex)
+        {
+            //Logger.LogError("Form processing error: {Message}", ex.Message);
+            // Tell user something went wrong
+        }
+    }
+}

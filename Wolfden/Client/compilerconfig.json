@@ -1,0 +1,10 @@
+﻿[
+  {
+    "outputFile": "wwwroot/css/app.css",
+    "inputFile": "wwwroot/css/app.scss"
+  },
+  {
+    "outputFile": "wwwroot/css/custom/dashboard/_title.css",
+    "inputFile": "wwwroot/css/custom/dashboard/_title.scss"
+  }
+]

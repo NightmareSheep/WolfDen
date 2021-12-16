@@ -1,0 +1,22 @@
+﻿<div id="primary">
+
+    @if (BackUrl != null)
+    {
+        <a class="back-btn" href="@BackUrl"><span class="oi oi-arrow-thick-left" /></a>
+    }
+
+    @PrimaryContent
+
+</div>
+
+
+
+
+
+@code {
+    [Parameter]
+    public string BackUrl { get; set; }
+
+    [Parameter]
+    public RenderFragment PrimaryContent { get; set; }
+}

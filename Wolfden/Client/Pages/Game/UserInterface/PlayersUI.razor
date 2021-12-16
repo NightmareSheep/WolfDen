@@ -1,0 +1,30 @@
+﻿@using Lupus;
+@using Wolfden.Client.Pages.Game.UserInterface.WinConditions;
+@using Wolfden.Client.Shared.Dashboard;
+
+<div id="players">
+    @foreach (var player in Players ?? new List<Player>())
+    {
+        var active = ActivePlayers?.Contains(player) ?? false ? "active" : "inactive";
+        var color = player.Color.ToString();
+
+    <div class="player @active">
+        <div class="name"><h2>@player.Name</h2></div>
+        <div style="background-color: @color"></div>
+        <div>
+            <img src="/images/anonymous.jpg" width="50" height="50" />
+        </div>
+    </div>
+    }
+</div>
+
+
+
+@code {
+    [Parameter]
+    public List<Player> Players { get; set; } = new List<Player>();
+    [Parameter]
+    public List<Player> ActivePlayers { get; set; } = new List<Player>();
+    [Parameter]
+    public Player CurrentPlayer { get; set; }
+}

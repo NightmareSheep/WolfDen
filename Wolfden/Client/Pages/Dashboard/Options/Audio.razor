@@ -1,0 +1,29 @@
+﻿@page "/audio"
+@using Wolfden.Client.Models
+@using System.Drawing;
+@using Wolfden.Client.Shared;
+
+<Primary BackUrl="/">
+    <PrimaryContent>
+        <Brand />
+        <BlokHeader Title="Audio" />
+        <LinkList Links="@Links" />
+    </PrimaryContent>
+</Primary>
+
+<Secondary>
+    <Content>
+        <div id="audio-page">
+            <AudioConfig>
+
+            </AudioConfig>
+        </div>
+    </Content>
+</Secondary>
+
+@code{
+    public Link[] Links { get; } = new Link[]
+    {
+        new Link("Audio"),
+        };
+}

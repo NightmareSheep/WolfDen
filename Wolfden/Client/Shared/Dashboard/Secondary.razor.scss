@@ -1,0 +1,23 @@
+﻿/// <reference path = "_references.scss">
+
+
+#secondary {
+    overflow-y: scroll;
+    background-color: $gray-700;
+    color: $white;
+    border-width: 0 0 0 2px;
+    border-style: solid;
+    border-color: $black;
+    opacity: 0.95;
+    //width: 1400px;
+    max-width: 100vw;
+    max-height: 100vh;
+}
+
+@media screen and (max-width: $media-breakpoint-small) {
+    #secondary {
+        border-width: 0px;
+        overflow-y:inherit;
+        max-height:inherit;
+    }
+}

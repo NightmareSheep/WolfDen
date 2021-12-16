@@ -1,0 +1,32 @@
+﻿/// <reference path = "Dashboard/_references.scss">
+
+/// <reference path = "../wwwroot/css/custom/_variables.scss">
+
+.overlay{
+    z-index:1000;
+    pointer-events: all;
+    position: fixed;
+    width: 100vw;
+    height: 100vh;
+    overflow:hidden;
+
+    display: grid;
+    grid-template-rows: 60px 1fr;
+
+    background-color: $color_dark;
+
+    .top-bar{
+        border-width: 0px;
+        border-bottom-width: 2px;
+        border-color: $color_light;
+        border-style: solid;
+
+        display: flex;
+        justify-content: right;
+
+        button{
+            width: 60px;
+            height: 60px;
+        }
+    }
+}

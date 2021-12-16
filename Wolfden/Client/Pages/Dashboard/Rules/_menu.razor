@@ -1,0 +1,34 @@
+﻿@using Wolfden.Client.Models
+
+
+
+
+
+<Primary BackUrl="/">
+    <PrimaryContent>
+        <BlokHeader Title="Rules" />
+        <LinkList Links="@Links" />
+    </PrimaryContent>
+</Primary>
+
+
+
+
+
+@code{
+    [Parameter]
+    public string ActiveLink { get; set; }
+
+
+    public Link[] Links { get; } = new Link[]
+    {
+        new Link("Advance Wars", "rules/general"),
+        new Link("Gameplay", "rules/gameplay"),
+        new Link("Plot", "rules/plot"),
+        new Link("Development", "rules/general"),
+        new Link("Reception", "rules/plot"),
+        new Link("Notes", "rules/gameplay"),
+        new Link("References", "rules/general"),
+        new Link("External links", "rules/gameplay")
+    };
+}

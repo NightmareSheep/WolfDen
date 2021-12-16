@@ -1,0 +1,70 @@
+﻿@using Wolfden.Client.Other;
+@using System.Threading;
+@inject IJSRuntime JSRuntime;
+@inject Blazored.LocalStorage.ILocalStorageService localStorage;
+
+<CascadingAuthenticationState>
+    <Router AppAssembly="@typeof(App).Assembly">
+        <Found Context="routeData">
+            <AuthorizeRouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)">
+                <NotAuthorized>
+                    @if (context.User.Identity?.IsAuthenticated != true)
+                    {
+                        <RedirectToLogin />
+                    }
+                    else
+                    {
+                        <p role="alert">You are not authorized to access this resource.</p>
+                    }
+                </NotAuthorized>
+            </AuthorizeRouteView>
+            <FocusOnNavigate RouteData="@routeData" Selector="h1" />
+        </Found>
+        <NotFound>
+            <PageTitle>Not found</PageTitle>
+            <LayoutView Layout="@typeof(MainLayout)">
+                <p role="alert">Sorry, there's nothing at this address.</p>
+            </LayoutView>
+        </NotFound>
+    </Router>
+</CascadingAuthenticationState>
+
+@code {
+
+    protected override async Task OnInitializedAsync()
+    {
+        var name = await localStorage.GetItemAsync<string>("name");
+        var id = await localStorage.GetItemAsync<string>("id");
+
+        if (string.IsNullOrEmpty(name) || string.IsNullOrEmpty(id))
+        {
+            var random = new Random();
+            name = Statics.Names[random.Next(Statics.Names.Length)];
+            id = "Guest_" + Guid.NewGuid().ToString();
+            await localStorage.SetItemAsync("name", name);
+            await localStorage.SetItemAsync("id", id);
+        }
+
+        var checkVolume = await localStorage.ContainKeyAsync("masterVolume");
+        if (!checkVolume)
+        {
+            await localStorage.SetItemAsync("masterVolume", 100);
+            await localStorage.SetItemAsync("musicVolume", 10);
+            await localStorage.SetItemAsync("effectsVolume", 100);
+        }
+
+        var masterVolume = await localStorage.GetItemAsync<int>("masterVolume");
+        var musicVolume = await localStorage.GetItemAsync<int>("musicVolume");
+        var effectsVolume = await localStorage.GetItemAsync<int>("effectsVolume");
+
+        await localStorage.SetItemAsync("soundEnabled", false);
+        Statics.AudioPlayer = new(JSRuntime, masterVolume, musicVolume, effectsVolume);
+        Statics.AudioPlayer.ChangeMasterVolumeEvent += async (int volume) => { await localStorage.SetItemAsync("masterVolume", volume); };
+        Statics.AudioPlayer.ChangeMusicVolumeEvent += async (int volume) => { await localStorage.SetItemAsync("musicVolume", volume); };
+        Statics.AudioPlayer.ChangeEffectsVolumeEvent += async (int volume) => { await localStorage.SetItemAsync("effectsVolume", volume); };
+
+        await Statics.AudioPlayer.Initialize();
+
+    }
+
+}

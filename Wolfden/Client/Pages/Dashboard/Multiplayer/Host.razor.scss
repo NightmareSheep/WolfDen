@@ -1,0 +1,19 @@
+﻿/// <reference path = "../../../wwwroot/css/bootstrap/scss/_variables.scss">
+/// <reference path = "../../../wwwroot/css/custom/_variables.scss">
+
+#selectMap {
+    .map {
+        margin-top: $distance_small;
+        padding: $distance_small;
+        background-color: $color_dark;
+        cursor: pointer;
+    }
+
+    .map:hover {
+        background-color: $color-highlight-1;
+    }
+
+    .highlight {
+        background-color: $color-highlight-2;
+    }
+}

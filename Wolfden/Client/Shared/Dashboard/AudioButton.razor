@@ -1,0 +1,48 @@
+﻿@using Wolfden.Client.Other;
+@using LupusBlazor.Audio;
+@inject Blazored.LocalStorage.ILocalStorageService localStorage
+
+<div class="button-audio">
+    @if (this.SoundEnabled)
+    {
+        <i @onclick="DisableSound" class="fas fa-volume-up"></i>
+    }
+    else
+    {
+        <i @onclick="EnableSound" class="fas fa-volume-mute"></i>
+    }
+</div>
+
+@code {
+    private bool SoundEnabled { get; set; }
+    [Parameter]
+    public Tracks Track { get; set; } = Tracks.Empty;
+    [Parameter]
+    public bool AutoPlay { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        this.SoundEnabled = await localStorage.GetItemAsync<bool>("soundEnabled");
+
+        if (this.SoundEnabled && this.AutoPlay)
+            await Statics.AudioPlayer.PlayMusic(Track);
+    }
+
+    private async Task EnableSound()
+    {
+        await localStorage.SetItemAsync("soundEnabled", true);
+        this.SoundEnabled = true;
+        await Statics.AudioPlayer.EnableMusic();
+        await Statics.AudioPlayer.PlayMusic(Track);
+        this.StateHasChanged();
+    }
+
+    private async Task DisableSound()
+    {
+        await localStorage.SetItemAsync("soundEnabled", false);
+        this.SoundEnabled = false;
+        await Statics.AudioPlayer.DisableMusic();
+        this.StateHasChanged();
+    }
+
+}

@@ -1,0 +1,51 @@
+﻿/// <reference path = "UI.scss">
+
+
+#UI {
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    pointer-events: none;
+    display: grid;
+    grid-template-areas: 'top-left top-middle top-right' 'left middle right' 'bottom-left bottom-middle bottom-right';
+    grid-template-columns: 1fr 1fr max-content;
+    grid-template-rows: max-content 1fr max-content;
+
+    #skill-panel {
+        display: grid;
+        grid-template-areas: 'skills' 'end-turn-button';
+        grid-area: bottom-right;
+        background-color: $color_dark;
+        padding: $UI_padding_1;
+    }
+
+    #menu-panel {
+        pointer-events: all;
+        font-size: 20px;
+        padding: $spacing-small;
+        height: 80px;
+        grid-area: top-right;
+        background-color: $color_dark;
+        display: grid;
+        grid-template-columns: repeat(4, 60px);
+        grid-template-rows: 60px;
+        gap: $spacing-small;
+        justify-content: center;
+    }
+
+    #endTurn {
+        grid-area: end-turn-button;
+        pointer-events: All;
+
+        button {
+            width: 100%;
+            height: 100%;
+        }
+    }
+}
+
+@media screen and (max-width: 600px) {
+    #UI {
+        grid-template-columns: 0px 0px 1fr;
+    }
+}

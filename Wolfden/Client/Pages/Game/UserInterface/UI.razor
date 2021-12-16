@@ -1,0 +1,139 @@
+﻿@using LupusBlazor.UI;
+@using Lupus;
+@using Wolfden.Client.Pages.Game.UserInterface.WinConditions;
+@using Wolfden.Client.Shared;
+@using Wolfden.Client.Pages.Game.UserInterface.UnitDescriptions;
+
+@implements IUI
+
+<div  id="UI">
+    
+    <Overlay @ref="Overlay"></Overlay>
+    <PlayersUI @ref="PlayersUI"></PlayersUI>
+    <GatherChestsWinConditionUI @ref="GatherChestsWinConditionUI"></GatherChestsWinConditionUI>
+    <Message @ref="Message"></Message>
+    <Loading @ref="Loading"></Loading>
+
+
+    <div id="menu-panel">
+        <button class="btn btn-secondary" @onclick="OpenWinCondition">
+            <i class="fas fa-trophy fa-2x"></i>
+        </button>
+        <button class="btn btn-secondary" @onclick="OpenPlayers">
+            <i class="fas fa-users fa-2x"></i>
+        </button>
+        <button class="btn btn-secondary"></button>
+        <button class="btn btn-secondary" @onclick="OpenOptions">
+            <i class="fas fa-cog fa-2x"></i>
+        </button>
+    </div>
+    <div id="skill-panel">
+        <UnitUI @ref="UnitUI"></UnitUI>
+        <div id="endTurn"><button class="btn btn-secondary" id="endTurnButton" @onclick="ClickEndTurn"><h3>End turn</h3></button></div>
+    </div>
+    
+
+</div>
+
+@code {
+    private List<Player> Players { get; set; } = new List<Player>();
+    private List<Player> ActivePlayers { get; set; } = new List<Player>();
+    private Player CurrentPlayer { get; set; }
+
+    private Overlay? Overlay { get; set; }
+    public IUnitUI UnitUI { get; set; }
+    public Loading Loading { get; set; }
+    public Message Message { get; set; }
+    public int SkillSlotsUsed;
+    public string[] SkillImages { get; set; } = new string[2];
+    public Func<Task>[] SkillOnClicks { get; set; } = new Func<Task>[2];
+    public event Func<Task> EndTurnButtonClickedEvent;
+    public string PortraitAssetPath { get; set; }
+    public PlayersUI PlayersUI { get; set; }
+    public IGatherChestsWinConditionUI GatherChestsWinConditionUI { get; set; }
+    public event Func<MouseEventArgs, Task> MouseClickEvent;
+    public event Func<Task> MouseRightClickEvent;
+    public event Func<KeyboardEventArgs, Task> KeyboardPressEvent;
+
+    public async Task MouseClick(MouseEventArgs e)
+    {
+        if (MouseClickEvent != null)
+        {
+            var invocationList = MouseClickEvent.GetInvocationList().Cast<Func<MouseEventArgs, Task>>();
+            foreach (var subscriber in invocationList)
+                await subscriber(e);
+        }
+
+        if (e.Button == 2 && MouseRightClickEvent != null)
+        {
+            var invocationList = MouseRightClickEvent.GetInvocationList().Cast<Func<Task>>();
+            foreach (var subscriber in invocationList)
+                await subscriber();
+        }
+    }
+
+    public async Task ClickEndTurn()
+    {
+        if (this.EndTurnButtonClickedEvent != null)
+            await EndTurnButtonClickedEvent.Invoke();
+    }
+
+    public Task SetPlayers(List<Player> players, List<Player> activePlayer, Player currentPlayer)
+    {
+        this.Players = players;
+        this.ActivePlayers = activePlayer;
+        this.CurrentPlayer = currentPlayer;
+
+        return Task.CompletedTask;
+    }
+
+    public async Task DoneLoading()
+    {
+        await this.Loading.LoadingIsDone();
+        this.StateHasChanged();
+    }
+
+    public async Task ShowMessage(string text)
+    {
+        await this.Message.ShowMessage(text);
+    }
+
+    public async Task HandleKeyPress(KeyboardEventArgs e)
+    {
+        if (KeyboardPressEvent != null)
+        {
+            var invocationList = KeyboardPressEvent.GetInvocationList().Cast<Func<KeyboardEventArgs, Task>>();
+            foreach (var subscriber in invocationList)
+                await subscriber(e);
+        }
+
+        if (e.Code == "KeyQ")
+        {
+            await UnitUI.ClickSkill(0);
+        }
+    }
+
+    private void OpenWinCondition()
+    {
+        Overlay?.Open(typeof(GatherChestsWinConditionDescription));
+    }
+
+    private void OpenPlayers()
+    {
+        var parameters = new Dictionary<string, object>()
+        {
+            { "Players", this.Players },
+            { "CurrentPlayer", this.CurrentPlayer },
+            { "ActivePlayers", this.ActivePlayers }
+        };
+
+        Overlay?.Open(typeof(PlayersUI), parameters);
+    }
+
+    private void OpenOptions()
+    {
+        Overlay?.Open(typeof(Options), new Dictionary<string, object>() { { "Overlay", Overlay } });
+    }
+
+
+}

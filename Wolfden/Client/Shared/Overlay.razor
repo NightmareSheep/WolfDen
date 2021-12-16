@@ -1,0 +1,38 @@
+﻿
+
+
+@if (IsOpen && DynamicType != null)
+{
+    <div class="overlay">
+        <div class="top-bar">
+            <button class="btn btn-secondary exit-button" @onclick="Close">
+                <i class="fas fa-times fa-2x"></i>
+            </button>
+        </div>
+        <div>
+            <DynamicComponent @ref="@DynamicComponent" Type="@DynamicType" Parameters="@DynamicParameters" ></DynamicComponent>
+        </div>
+    </div>
+}
+
+@code {
+    private Type? DynamicType { get; set; }
+    private IDictionary<string, object>? DynamicParameters { get; set; }
+
+    private bool IsOpen { get; set; } = false;
+    private DynamicComponent? DynamicComponent { get; set; }
+
+    public void Open(Type type, IDictionary<string, object>? parameters = null)
+    {
+        this.DynamicType = type;
+        this.DynamicParameters = parameters;
+        this.IsOpen = true;
+        this.StateHasChanged();
+    }
+
+    public void Close()
+    {
+        this.IsOpen = false;
+        this.StateHasChanged();
+    }
+}

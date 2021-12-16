@@ -1,0 +1,18 @@
+﻿/// <reference path = "_references.scss">
+
+
+.blokheader {
+    display: grid;
+    grid-template-columns: 0fr 1fr 8fr;
+    padding-bottom: 15px;
+
+    .title-prefix {
+        //background: repeating-linear-gradient( 125deg, $red, $red 6px, rgba($red,0) 6px, rgba($red,0) 12px );
+    }
+
+    .title {
+        text-align: left;
+        background: linear-gradient(to right, $red, $red-800);
+        padding: 15px;
+    }
+}

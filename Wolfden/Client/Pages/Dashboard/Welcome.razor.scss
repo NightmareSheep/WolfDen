@@ -1,0 +1,31 @@
+﻿
+/// <reference path = "../_references.scss">
+
+#welcome {
+    background-color: $color_light;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    /* bring your own prefixes */
+    transform: translate(-50%, -50%);
+    padding: 20px;
+    width: 600px;
+    height: 350px;
+    box-shadow: $box-shadow;
+    text-align: center;
+
+    .nickname {
+        grid-area: name;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .edit-button {
+        margin-left: 20px;
+        margin-right: 20px;
+        cursor: pointer;
+    }
+}
+
+

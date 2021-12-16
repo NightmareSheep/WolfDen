@@ -1,0 +1,27 @@
+﻿
+/// <reference path = "UI.scss">
+
+$current-player-height: 100px;
+
+
+#players {
+    padding: $spacing-normal;
+
+
+    .player {
+        background-color: $color_light;
+        display: grid;
+        width: 250px;
+        height: 50px;
+        grid-template-columns: 190px 10px 50px;
+        grid-template-rows: 50px;
+
+        .name{
+            margin:auto;
+        }
+    }
+
+    .active {
+        background-color: darkgreen;
+    }
+}
