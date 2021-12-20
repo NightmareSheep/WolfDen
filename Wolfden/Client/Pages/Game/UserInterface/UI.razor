@@ -3,6 +3,7 @@
 @using Wolfden.Client.Pages.Game.UserInterface.WinConditions;
 @using Wolfden.Client.Shared;
 @using Wolfden.Client.Pages.Game.UserInterface.UnitDescriptions;
+@inject IJSRuntime JS
 
 @implements IUI
 
@@ -22,7 +23,9 @@
         <button class="btn btn-secondary" @onclick="OpenPlayers">
             <i class="fas fa-users fa-2x"></i>
         </button>
-        <button class="btn btn-secondary"></button>
+        <button class="btn btn-secondary" @onclick="ToggleFullscreen">
+            <i class="fas fa-expand fa-2x"></i>
+        </button>
         <button class="btn btn-secondary" @onclick="OpenOptions">
             <i class="fas fa-cog fa-2x"></i>
         </button>
@@ -135,5 +138,9 @@
         Overlay?.Open(typeof(Options), new Dictionary<string, object>() { { "Overlay", Overlay } });
     }
 
+    private async Task ToggleFullscreen()
+    {
+        await JS.InvokeVoidAsync("toggleFullScreen");
+    }
 
 }

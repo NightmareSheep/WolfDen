@@ -655,4 +655,14 @@ function setup(callback, resources, mapName) {
     }
     callback();
 }
+function toggleFullScreen() {
+    if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen();
+    }
+    else {
+        if (document.exitFullscreen) {
+            document.exitFullscreen();
+        }
+    }
+}
 //# sourceMappingURL=bundle.js.map

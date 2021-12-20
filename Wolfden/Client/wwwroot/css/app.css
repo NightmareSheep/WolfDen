@@ -11242,7 +11242,7 @@ html, body {
 }
 #unit-UI #character-portrait {
   grid-area: character-portrait;
-  padding: 10px;
+  padding: 0px;
   background-color: #495057;
 }
 #unit-UI #character-portrait img {
