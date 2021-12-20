@@ -8,7 +8,8 @@
 @using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
 @inject HttpClient Http
 @inject NavigationManager Navigation
-@inject IHttpClientFactory HttpClientFactory
+@*@inject IHttpClientFactory HttpClientFactory*@
+
 
 <Primary BackUrl="/multiplayer">
     <PrimaryContent>
@@ -91,8 +92,8 @@
 
     protected override async Task OnInitializedAsync()
     {
-        var http = HttpClientFactory.CreateClient("Wolfden.ServerAPI.Anonymous");
-        Maps = await http.GetFromJsonAsync<List<Map>>("Host/GetMaps");
+        //var http = HttpClientFactory.CreateClient("Wolfden.ServerAPI.Anonymous");
+        Maps = await Http.GetFromJsonAsync<List<Map>>("Host/GetMaps");
         Form.MapName = Maps[0].Name;
         await base.OnInitializedAsync();
     }
@@ -104,8 +105,8 @@
 
         try
         {
-            var http = HttpClientFactory.CreateClient("Wolfden.ServerAPI.Anonymous");
-            var response = await http.PostAsJsonAsync<HostForm>("host", (HostForm)editContext.Model);
+            //var http = HttpClientFactory.CreateClient("Wolfden.ServerAPI.Anonymous");
+            var response = await Http.PostAsJsonAsync<HostForm>("host", (HostForm)editContext.Model);
 
             //var errors = await response.Content.ReadFromJsonAsync<Dictionary<string, List<string>>>();
 

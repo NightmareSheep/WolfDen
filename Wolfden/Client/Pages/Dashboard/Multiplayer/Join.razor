@@ -1,6 +1,7 @@
 ﻿@using Lobbies;
 @using Wolfden.Shared.Models;
-@inject IHttpClientFactory HttpClientFactory
+@*@inject IHttpClientFactory HttpClientFactory*@
+@inject HttpClient Http
 @page "/join"
 
 <Primary BackUrl="/">
@@ -40,17 +41,14 @@
 
 @code {
     List<LobbyListItem> Lobbies { get; set; } = new();
-    HttpClient Client { get; set; }
 
-    protected override async Task OnInitializedAsync()
-    {
-        Client = HttpClientFactory.CreateClient("Wolfden.ServerAPI.Anonymous");
-        Lobbies = await Client.GetFromJsonAsync<List<LobbyListItem>>("api/getLobbies");
+    protected override async Task OnInitializedAsync(){
+        Lobbies = await Http.GetFromJsonAsync<List<LobbyListItem>>("api/getLobbies");
         await base.OnInitializedAsync();
     }
 
     private async Task Refresh()
     {
-        Lobbies = await Client.GetFromJsonAsync<List<LobbyListItem>>("api/getLobbies");
+        Lobbies = await Http.GetFromJsonAsync<List<LobbyListItem>>("api/getLobbies");
     }
 }

@@ -9,7 +9,8 @@
 @inject IJSRuntime JSRuntime;
 @inject NavigationManager NavigationManager
 @inject ILoggerProvider LoggerProvider
-@inject IHttpClientFactory HttpClientFactory
+@inject HttpClient Http
+@*@inject IHttpClientFactory HttpClientFactory*@
 @inject Blazored.LocalStorage.ILocalStorageService localStorage
 @layout EmptyLayout
 
@@ -27,8 +28,8 @@
     {
         await Statics.AudioPlayer.StopMusic();
         var id = await localStorage.GetItemAsync<string>("id");
-        var http = HttpClientFactory.CreateClient("Wolfden.ServerAPI.Anonymous");
-        LupusGameHelper = new LupusGameHelper(http, JSRuntime, NavigationManager, LoggerProvider, GameId, UI, id);
+        //var http = HttpClientFactory.CreateClient("Wolfden.ServerAPI.Anonymous");
+        LupusGameHelper = new LupusGameHelper(Http, JSRuntime, NavigationManager, LoggerProvider, GameId, UI, id);
         await LupusGameHelper.InitializeConnection();
     }
 

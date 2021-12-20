@@ -12,6 +12,9 @@ using Newtonsoft.Json;
 using Lupus.Other.MapLoading;
 using Wolfden.Server.Other;
 using System.Drawing;
+using Microsoft.AspNetCore.Authentication.OpenIdConnect;
+using Microsoft.Identity.Web;
+using System.Configuration;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -22,26 +25,27 @@ builder.Host.UseSerilog((ctx, lc) => lc
 
 // Add services to the container.
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
-builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseSqlServer(connectionString));
-builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
-builder.Services.AddDefaultIdentity<ApplicationUser>(options => {
-                options.SignIn.RequireConfirmedAccount = false;
-                options.Password.RequireDigit = false;
-                options.Password.RequireLowercase = false;
-                options.Password.RequireNonAlphanumeric = false;
-                options.Password.RequireUppercase = false;
-                options.Password.RequiredLength = 3;
-                options.Password.RequiredUniqueChars = 1;
-            })
-    .AddEntityFrameworkStores<ApplicationDbContext>();
+//builder.Services.AddDbContext<ApplicationDbContext>(options =>
+//    options.UseSqlServer(connectionString));
+//builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
-builder.Services.AddIdentityServer()
-    .AddApiAuthorization<ApplicationUser, ApplicationDbContext>();
+//builder.Services.AddDefaultIdentity<ApplicationUser>(options => {
+//                options.SignIn.RequireConfirmedAccount = false;
+//                options.Password.RequireDigit = false;
+//                options.Password.RequireLowercase = false;
+//                options.Password.RequireNonAlphanumeric = false;
+//                options.Password.RequireUppercase = false;
+//                options.Password.RequiredLength = 3;
+//                options.Password.RequiredUniqueChars = 1;
+//            })
+//    .AddEntityFrameworkStores<ApplicationDbContext>();
 
-builder.Services.AddAuthentication()
-    .AddIdentityServerJwt();
+//builder.Services.AddIdentityServer()
+//    .AddApiAuthorization<ApplicationUser, ApplicationDbContext>();
+
+//builder.Services.AddAuthentication(OpenIdConnectDefaults.AuthenticationScheme)
+//        .AddMicrosoftIdentityWebApp(builder.Configuration.GetSection("AzureAd"));
 
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
@@ -69,9 +73,9 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
-app.UseIdentityServer();
-app.UseAuthentication();
-app.UseAuthorization();
+//app.UseIdentityServer();
+//app.UseAuthentication();
+//app.UseAuthorization();
 
 
 app.MapRazorPages();
