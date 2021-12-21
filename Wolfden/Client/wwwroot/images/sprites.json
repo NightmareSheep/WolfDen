@@ -1,21 +1,21 @@
 {
 "frames": {
-	"ChestOpening_0.png": {
+	"chest_opening_0.png": {
 		"frame": {"x":200, "y":45, "w":14, "h":16},
 		"spriteSourceSize": {"x":17,"y":16,"w":48,"h":48},
 		"sourceSize": {"w":48,"h":48}
 	},
-	"ChestOpening_1.png": {
+	"chest_opening_1.png": {
 		"frame": {"x":215, "y":49, "w":14, "h":16},
 		"spriteSourceSize": {"x":17,"y":16,"w":48,"h":48},
 		"sourceSize": {"w":48,"h":48}
 	},
-	"ChestOpening_2.png": {
+	"chest_opening_2.png": {
 		"frame": {"x":211, "y":216, "w":14, "h":16},
 		"spriteSourceSize": {"x":17,"y":16,"w":48,"h":48},
 		"sourceSize": {"w":48,"h":48}
 	},
-	"ChestOpening_3.png": {
+	"chest_opening_3.png": {
 		"frame": {"x":211, "y":183, "w":14, "h":16},
 		"spriteSourceSize": {"x":17,"y":16,"w":48,"h":48},
 		"sourceSize": {"w":48,"h":48}

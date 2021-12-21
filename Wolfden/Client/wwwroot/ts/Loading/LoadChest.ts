@@ -12,7 +12,7 @@
 
     // Opening
     loadResourceFromSpriteSheet(resources.sprites.spritesheet,
-        "ChestOpening",
+        "chest_opening",
         ["objects", "chest", "opening"],
         terrainWidth * 3,
         terrainHeight * 3,
