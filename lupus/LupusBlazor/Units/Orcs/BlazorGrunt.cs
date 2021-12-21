@@ -4,6 +4,7 @@ using Lupus.Behaviours.Attack;
 using Lupus.Behaviours.Defend;
 using Lupus.Behaviours.Movement;
 using Lupus.Tiles;
+using LupusBlazor.Behaviours;
 using LupusBlazor.Behaviours.Attack;
 using LupusBlazor.Behaviours.Defend;
 using LupusBlazor.Behaviours.Displacement;
@@ -46,7 +47,7 @@ namespace LupusBlazor.Units.Orcs
             })
         {
             Health = BlazorHealth = new BlazorHealth(game, jSRuntime, this, 25);
-            SkillPoints = new SkillPoints(game, this, 1);
+            SkillPoints = new BlazorSkillPoints(game, this, 1);
             DamageAndPush = new BlazorDamageAndPush(game, this, 1, SkillPoints, jSRuntime);
             BlazorMove = new BlazorMove(game, game.BlazorMap, this, 3, jSRuntime, SkillPoints);
             BlazorPushable = new BlazorPushable(jSRuntime, game, game.Map, this);
