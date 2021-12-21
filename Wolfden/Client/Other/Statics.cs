@@ -14,7 +14,7 @@ namespace Wolfden.Client.Other
 
         public static Link[] MainMenuLinks { get; } = new Link[]
         {
-            new Link("Singleplayer"),
+            new Link("Singleplayer", "Singleplayer"),
             new Link("Multiplayer"),
             new Link("Options"),
             new Link("About"),

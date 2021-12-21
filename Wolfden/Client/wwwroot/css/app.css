@@ -10990,8 +10990,12 @@ html, body {
 #lobby #mapProfile {
   padding: 20px;
   grid-area: mapProfile;
+  display: grid;
+  grid-template-areas: "mapInfo victoryCondition" "mapPreview victoryCondition";
+  grid-template-columns: 1fr 1fr;
 }
 #lobby #mapProfile #mapInformation {
+  grid-area: mapInfo;
   display: grid;
   grid-template-columns: auto auto;
   justify-content: start;
@@ -10999,9 +11003,16 @@ html, body {
 #lobby #mapProfile #mapInformation > div {
   padding: 20px;
 }
+#lobby #mapProfile #mapPreview {
+  grid-area: mapPreview;
+}
 #lobby #mapProfile #mapPreview img {
   max-width: 100%;
   max-height: 100%;
+}
+#lobby #mapProfile .win-condition-description {
+  grid-area: victoryCondition;
+  margin: 0px;
 }
 #lobby #playerList {
   display: grid;
@@ -11138,6 +11149,10 @@ html, body {
     grid-template-rows: max-content max-content max-content;
   }
   #lobby #playerList {
+    grid-template-columns: 1fr;
+  }
+  #lobby #mapProfile {
+    grid-template-areas: "mapInfo" "mapPreview" "victoryCondition";
     grid-template-columns: 1fr;
   }
 }

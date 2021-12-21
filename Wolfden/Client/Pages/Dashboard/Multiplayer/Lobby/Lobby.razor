@@ -5,6 +5,7 @@
 @using LupusLobbies;
 @using Microsoft.Extensions.Logging;
 @using Wolfden.Client.Pages.Dashboard.Multiplayer.Lobby.Lobby_components;
+@using Wolfden.Client.Pages.Game.UserInterface.WinConditions;
 @inject NavigationManager NavigationManager
 @inject Blazored.LocalStorage.ILocalStorageService localStorage
 @inject ILoggerProvider LoggerProvider
@@ -72,6 +73,7 @@
                     <img src="@("/game/maps/" + CurrentLobby?.MapId + "/" + CurrentLobby?.MapId + ".preview.png")" />
                     }
                 </div>
+                <GatherChestsWinConditionDescription></GatherChestsWinConditionDescription>
             </div>
 
             <!-- List of players -->

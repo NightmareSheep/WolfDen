@@ -264,6 +264,16 @@ var TextStyles = [
     { fontFamily: 'Helvetica', fontSize: 12, fill: 'red', align: 'left', stroke: 'black', strokeThickness: 6 },
     { fontFamily: 'Helvetica', fontSize: 12, fill: 'yellow', align: 'left', stroke: 'black', strokeThickness: 6 }
 ];
+function toggleFullScreen() {
+    if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen();
+    }
+    else {
+        if (document.exitFullscreen) {
+            document.exitFullscreen();
+        }
+    }
+}
 function PlayAnimation(callbackObject, id, queueDuration, duration, x, y, resetAnimation = false, ticker = null) {
     let currentTime = 0;
     let sprite = Sprites[id];
@@ -654,15 +664,5 @@ function setup(callback, resources, mapName) {
         ], null, null, { x: 1 / 3, y: 1 / 3 }, false, false, [3, 2, 1, 0]);
     }
     callback();
-}
-function toggleFullScreen() {
-    if (!document.fullscreenElement) {
-        document.documentElement.requestFullscreen();
-    }
-    else {
-        if (document.exitFullscreen) {
-            document.exitFullscreen();
-        }
-    }
 }
 //# sourceMappingURL=bundle.js.map

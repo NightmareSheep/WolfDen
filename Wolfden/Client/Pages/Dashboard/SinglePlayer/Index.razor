@@ -1,6 +1,19 @@
 ﻿@page "/singleplayer"
+@using Wolfden.Client.Other;
 
-
-<Primary BackUrl="/">
-    <PrimaryContent><BlokHeader Title="Singleplayer" /></PrimaryContent>
+<Primary>
+    <PrimaryContent>
+        <Brand />
+        <BlokHeader Title="Singleplayer"></BlokHeader>
+        <LinkList Links="@Statics.MainMenuLinks" StartActive="false" />
+    </PrimaryContent>
 </Primary>
+
+<Secondary>
+    <Content>
+        <div id=about>
+            <h3>Singleplayer</h3>
+            <p>This is still being worked on, check out the multiplayer in the meantime.</p>
+        </div>
+    </Content>
+</Secondary>
