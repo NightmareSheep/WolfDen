@@ -127,6 +127,7 @@ function setup(callback: () => void, resources, mapName: string) {
     // Load slime pull
     var data1 = ["attack_down", "attack_up", "attack_right", "attack_right"];
     var data2 = ["pullSouth", "pullNorth", "pullEast", "pullWest"];
+    var data3 = [false, false, false, true];
 
     for (let i = 0; i < data1.length; i++) {
         loadResourceFromSpriteSheet(
@@ -144,7 +145,7 @@ function setup(callback: () => void, resources, mapName: string) {
             null,
             { x: 1 / 3, y: 1 / 3 },
             false,
-            false,
+            data3[i],
             [3,2,1,0]
         );
     }

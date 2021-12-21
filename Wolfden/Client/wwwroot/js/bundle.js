@@ -655,13 +655,14 @@ function setup(callback, resources, mapName) {
     // Load slime pull
     var data1 = ["attack_down", "attack_up", "attack_right", "attack_right"];
     var data2 = ["pullSouth", "pullNorth", "pullEast", "pullWest"];
+    var data3 = [false, false, false, true];
     for (let i = 0; i < data1.length; i++) {
         loadResourceFromSpriteSheet(resources.sprites.spritesheet, "slime" + "_" + data1[i], ["units", "slime", data2[i]], terrainWidth * 3, terrainHeight * 3, [
             100,
             100,
             100,
             100,
-        ], null, null, { x: 1 / 3, y: 1 / 3 }, false, false, [3, 2, 1, 0]);
+        ], null, null, { x: 1 / 3, y: 1 / 3 }, false, data3[i], [3, 2, 1, 0]);
     }
     callback();
 }
