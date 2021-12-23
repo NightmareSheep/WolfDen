@@ -11221,12 +11221,11 @@ html, body {
   pointer-events: all;
   font-size: 20px;
   padding: 10px;
-  height: 80px;
   grid-area: top-right;
   background-color: #343a40;
   display: grid;
-  grid-template-columns: repeat(4, 60px);
-  grid-template-rows: 60px;
+  grid-template-columns: repeat(5, 42px);
+  grid-template-rows: 42px;
   gap: 10px;
   justify-content: center;
 }
@@ -11247,12 +11246,11 @@ html, body {
 #unit-UI {
   pointer-events: all;
   justify-content: center;
-  padding-bottom: 10px;
   display: grid;
   grid-column-gap: 10px;
   grid-row-gap: 10px;
-  grid-template-columns: repeat(9, 25px);
-  grid-template-rows: repeat(3, 25px);
+  grid-template-columns: repeat(9, 16px);
+  grid-template-rows: repeat(3, 16px);
   grid-template-areas: "character-portrait character-portrait  character-portrait      status      status      status      status      status      status" "character-portrait character-portrait  character-portrait      skill-1     skill-1     skill-2     skill-2     skill-3     skill-3" "character-portrait character-portrait  character-portrait      skill-1     skill-1     skill-2     skill-2     skill-3     skill-3";
 }
 #unit-UI #character-portrait {
@@ -11267,19 +11265,21 @@ html, body {
 #unit-UI #skill-1 {
   grid-area: skill-1;
   pointer-events: All;
+  position: relative;
 }
 #unit-UI #skill-1 button {
   width: 100%;
   height: 100%;
+  padding: 0px;
 }
 #unit-UI #skill-1 img {
   width: 100%;
   height: 100%;
 }
 #unit-UI #skill-1 .key {
-  position: relative;
-  right: -20px;
-  bottom: 18px;
+  position: absolute;
+  right: 2px;
+  bottom: 0px;
 }
 #unit-UI .skill-2 {
   grid-area: skill-2;

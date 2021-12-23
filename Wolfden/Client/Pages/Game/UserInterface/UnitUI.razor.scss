@@ -6,12 +6,11 @@
 #unit-UI {
     pointer-events: all;
     justify-content: center;
-    padding-bottom: $UI_padding_1;
     display: grid;
     grid-column-gap: $UI_padding_1;
     grid-row-gap: $UI_padding_1;
-    grid-template-columns: repeat(9, 25px);
-    grid-template-rows: repeat(3, 25px);
+    grid-template-columns: repeat(9, 16px);
+    grid-template-rows: repeat(3, 16px);
     grid-template-areas:
         'character-portrait character-portrait  character-portrait      status      status      status      status      status      status' 'character-portrait character-portrait  character-portrait      skill-1     skill-1     skill-2     skill-2     skill-3     skill-3' 'character-portrait character-portrait  character-portrait      skill-1     skill-1     skill-2     skill-2     skill-3     skill-3';
 
@@ -29,11 +28,12 @@
     #skill-1 {
         grid-area: skill-1;
         pointer-events: All;
-
+        position: relative;
 
         button {
             width: 100%;
             height: 100%;
+            padding:0px;
         }
 
         img {
@@ -42,9 +42,9 @@
         }
 
         .key {
-            position: relative;
-            right: -20px;
-            bottom: 18px;
+            position: absolute;
+            right: 2px;
+            bottom: 0px;
         }
     }
 

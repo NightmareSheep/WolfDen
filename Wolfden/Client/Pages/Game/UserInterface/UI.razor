@@ -15,24 +15,27 @@
     <Message @ref="Message"></Message>
     <Loading @ref="Loading"></Loading>
 
-
+    
     <div id="menu-panel">
+        <button class="btn btn-secondary" @onclick="ClickEndTurn">
+           <i class="fas fa-hourglass"></i>
+        </button>
         <button class="btn btn-secondary" @onclick="OpenWinCondition">
-            <i class="fas fa-trophy fa-2x"></i>
+            <i class="fas fa-trophy "></i>
         </button>
         <button class="btn btn-secondary" @onclick="OpenPlayers">
-            <i class="fas fa-users fa-2x"></i>
+            <i class="fas fa-users "></i>
         </button>
         <button class="btn btn-secondary" @onclick="ToggleFullscreen">
-            <i class="fas fa-expand fa-2x"></i>
+            <i class="fas fa-expand "></i>
         </button>
         <button class="btn btn-secondary" @onclick="OpenOptions">
-            <i class="fas fa-cog fa-2x"></i>
+            <i class="fas fa-cog "></i>
         </button>
     </div>
     <div id="skill-panel">
         <UnitUI @ref="UnitUI"></UnitUI>
-        <div id="endTurn"><button class="btn btn-secondary" id="endTurnButton" @onclick="ClickEndTurn"><h3>End turn</h3></button></div>
+        @*<div id="endTurn"><button class="btn btn-secondary" id="endTurnButton" @onclick="ClickEndTurn"><h3>End turn</h3></button></div>*@
     </div>
     
 
