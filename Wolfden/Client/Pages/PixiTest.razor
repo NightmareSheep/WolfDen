@@ -1,0 +1,61 @@
+﻿@page "/PixiTest"
+@layout EmptyLayout
+@using LupusBlazor.Pixi;
+@using LupusBlazor.Pixi.LupusPixi
+@inject IJSRuntime JSRuntime;
+@implements IAsyncDisposable;
+
+<div id="test-game"></div>
+
+@code {
+    private Application? Application { get; set; }
+    private ViewPort? Viewport { get; set; }
+    private PixiUnit? Unit { get; set; }
+
+    protected async override Task OnAfterRenderAsync(bool firstRender)
+    {
+        await base.OnAfterRenderAsync(firstRender);
+        this.Application = new Application(JSRuntime);
+        this.Application.ResourcesLoadedEvent += LoadSprite;
+        await this.Application.Initialize("test-game", 3000, 3000);
+        await this.Application.AddSpriteSheet("sprites", "/Images/sprites.json");
+        await this.Application.Load();
+
+    }
+
+    public async Task LoadSprite()
+    {
+        this.Viewport = await new ViewPort(JSRuntime, this.Application, 3000, 3000).Initialize();
+
+        var animationFactory = new AnimationFactory(this.Application, JSRuntime);
+        this.Unit = new PixiUnit(JSRuntime);
+        await this.Unit.Initialize();
+
+        var idleAnimation = await animationFactory.GetGoblinIdleAnimation();
+        var attackUpAnimation = await animationFactory.GetGoblinAttackUpAnimation();
+
+        await this.Unit.AddAnimation(LupusBlazor.Animation.Animations.Idle, idleAnimation);
+        await this.Unit.AddAnimation(LupusBlazor.Animation.Animations.AttackUp, attackUpAnimation);
+
+
+        await this.Application.Stage.AddChild(this.Viewport);
+        await this.Viewport.AddChild(this.Unit.Container);
+
+        await this.Unit.PlayAnimation(LupusBlazor.Animation.Animations.Idle);
+
+        var attack = async () => {
+            await Task.Delay(2000);
+            await this.Unit.PlayAnimation(LupusBlazor.Animation.Animations.AttackUp); 
+        };
+
+        attack();
+    }
+
+
+    async ValueTask IAsyncDisposable.DisposeAsync()
+    {
+        if (this.Application != null)
+            await this.Application.Dispose();
+    }
+
+}

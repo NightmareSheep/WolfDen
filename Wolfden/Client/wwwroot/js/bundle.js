@@ -160,6 +160,17 @@ class BlazorPixiHelper {
 let Sprites = {};
 let CsObjects = {};
 window["PixiHelper"] = new BlazorPixiHelper();
+class Foo {
+    a;
+    b;
+    constructor(a, b) {
+        this.a = a;
+        this.b = b;
+    }
+}
+function Bar(a, b) {
+    var x = new Foo(a, b);
+}
 function DrawGrass(x, y) {
     console.log("Drawing grass tile.");
     let sprite = gameResources.terrain.Plain();

@@ -13,6 +13,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Linq;
+using LupusBlazor.Animation;
 
 namespace LupusBlazor.Units
 {
@@ -26,6 +27,7 @@ namespace LupusBlazor.Units
         protected List<ISkill> Skills { get; set; } = new List<ISkill>();
         public BlazorHealth BlazorHealth { get; set; }
         protected string Name { get; set; }
+        public Actors Actor { get; set; }
 
         public event Func<Task> CurrentPlayerClickActive;
         public event Func<Task> CurrentPlayerCLickInactive;

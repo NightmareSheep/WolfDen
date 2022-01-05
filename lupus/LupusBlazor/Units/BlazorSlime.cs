@@ -58,6 +58,7 @@ namespace LupusBlazor.Units.Orcs
             Skills.Add(DamageAndPull);
             Destroyables = new List<Lupus.Other.IDestroy>() { BlazorMove, DamageAndPull, BlazorPushable, SkillPoints };
             Name = "Slime";
+            Actor = Animation.Actors.Slime;
         }
 
         public async override Task Destroy()

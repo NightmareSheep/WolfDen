@@ -8,7 +8,8 @@ namespace LupusBlazor.Animation
 {
     public enum Animations
     {
-        none,
+        None,
+        Idle,
         AttackUp,
         AttackDown,
         AttackLeft,

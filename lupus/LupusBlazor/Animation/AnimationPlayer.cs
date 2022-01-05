@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using LupusBlazor.Extensions;
+using Lupus.Tiles;
 
 namespace LupusBlazor.Animation
 {
@@ -33,11 +34,11 @@ namespace LupusBlazor.Animation
             if (!Playing)
             {
                 Playing = true;
-                await PlayAnimation();
+                await Play();
             }
         }
 
-        public async Task PlayAnimation()
+        public async Task Play()
         {
             if (AnimationQueue.Count == 0)
             {
@@ -46,7 +47,7 @@ namespace LupusBlazor.Animation
             }
 
             var animation = AnimationQueue.Dequeue();
-            await animation.Play(PlayAnimation);
+            await animation.Play(Play);
         }
 
         public async Task PlayUnitAnimation(BlazorUnit unit, string animationId, int duration, Audio.Effects sound = Audio.Effects.none, Func<Task> callback = null)
@@ -62,6 +63,10 @@ namespace LupusBlazor.Animation
                 );
 
             await this.QueueAnimation(animation);
+        }
+
+        public async Task PlayAnimation(Tile tile, Actors actor, Animations animation)
+        {
         }
     }
 }

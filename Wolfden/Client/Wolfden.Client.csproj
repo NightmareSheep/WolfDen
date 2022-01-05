@@ -54,6 +54,7 @@
   <ItemGroup>
     <Folder Include="wwwroot\game\icons\units\grunt\" />
     <Folder Include="wwwroot\logs\" />
+    <Folder Include="wwwroot\ts\BlazorPixi\" />
   </ItemGroup>
 
 </Project>

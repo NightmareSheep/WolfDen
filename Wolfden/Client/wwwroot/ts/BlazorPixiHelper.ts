@@ -139,3 +139,14 @@ let Sprites = {};
 let CsObjects = {};
 window["PixiHelper"] = new BlazorPixiHelper();
 
+class Foo {
+    constructor(public a: string, public b: string) {
+
+    }
+}
+
+
+function Bar(a: string, b: string) {
+    var x = new Foo(a, b);
+}
+

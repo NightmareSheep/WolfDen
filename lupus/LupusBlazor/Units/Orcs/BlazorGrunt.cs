@@ -54,6 +54,7 @@ namespace LupusBlazor.Units.Orcs
             Skills.Add(DamageAndPush);
             Destroyables = new List<Lupus.Other.IDestroy>() { BlazorMove, DamageAndPush, BlazorPushable, SkillPoints };
             Name = "Grunt";
+            Actor = Animation.Actors.Grunt;
         }
 
         public async override Task Destroy()

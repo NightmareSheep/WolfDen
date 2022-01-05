@@ -54,6 +54,7 @@ namespace LupusBlazor.Units
             Skills.Add(DamageAndPush);
             Destroyables = new List<Lupus.Other.IDestroy>() { BlazorMove, DamageAndPush, BlazorPushable, SkillPoints };
             Name = "Hero";
+            Actor = Animation.Actors.Hero;
         }
 
         public async override Task Destroy()

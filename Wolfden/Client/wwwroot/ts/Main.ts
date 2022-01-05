@@ -82,3 +82,5 @@ function getImageAsync(src): Promise<HTMLImageElement>
     })
 }
 
+
+
