@@ -11,8 +11,9 @@ namespace LupusBlazor.Pixi.LupusPixi
         public AnimatedSprite Sprite { get; set; }
         public event Func<Task> OnCompleteEvent;
         public event Func<Task> OnQueueCompleteEvent;
+        public int QueueFrame = 0;
 
-        private async Task RaiseOnCompleteEvent()
+        protected async Task RaiseOnCompleteEvent()
         {
             if (OnCompleteEvent != null)
             {
@@ -22,9 +23,12 @@ namespace LupusBlazor.Pixi.LupusPixi
             }
         }
 
-        private async Task RaiseOnQueueCompleteEvent()
+        protected async Task RaiseOnQueueCompleteEvent(int currentFrame)
         {
-            if (OnCompleteEvent != null)
+            if (currentFrame != QueueFrame)
+                return;
+
+            if (OnQueueCompleteEvent != null)
             {
                 var invocationList = OnQueueCompleteEvent.GetInvocationList().Cast<Func<Task>>();
                 foreach (var subscriber in invocationList)
@@ -37,19 +41,29 @@ namespace LupusBlazor.Pixi.LupusPixi
             this.Sprite = sprite;
             this.OnCompleteEvent += this.End;
             this.Sprite.OnCompleteEvent += this.RaiseOnCompleteEvent;
+            this.Sprite.OnFrameChangeEvent += this.RaiseOnQueueCompleteEvent;
+            if (sprite.Loop)
+                this.QueueFrame = -1;
         }
 
 
-        public async Task Play()
+        public virtual async Task Play()
         {
-            await this.Sprite.GotoAndPlay(0);
+            await this.Sprite.Play();
             await this.Sprite.SetVisibility(true);
         }
 
-        public async Task End()
+        public virtual async Task End()
         {
-            await this.Sprite.Stop();
+            if (!Sprite.Loop)
+                await this.Sprite.GotoAndStop(0);
             await this.Sprite.SetVisibility(false);
+        }
+
+        public void Dispose()
+        {
+            this.Sprite.OnCompleteEvent -= this.RaiseOnCompleteEvent;
+            this.Sprite.OnFrameChangeEvent -= this.RaiseOnQueueCompleteEvent;
         }
     }
 }

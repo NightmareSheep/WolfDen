@@ -8,8 +8,27 @@
     obj[propertyPath[propertyPath.length - 1]] = value;
 }
 
+//export function SetFunctionProperty(csObject, method, propertyPath, object = window) {
+//    var value = () => {
+//        var args = Array.prototype.slice.call(arguments);
+//        args.unshift(method);
+//        csObject.invokeMethodAsync.apply(csObject, args);
+//    };
+//    SetProperty(propertyPath, value, object);
+//}
+
 export function SetFunctionProperty(csObject, method, propertyPath, object = window) {
-    var value = () => { csObject.invokeMethodAsync(method); };
+    var value = (arg1, arg2, arg3) => {
+
+        if (typeof arg3 != "undefined")
+            csObject.invokeMethodAsync(method, arg1, arg2, arg3);
+        if (typeof arg2 != "undefined")
+            csObject.invokeMethodAsync(method, arg1, arg2);
+        if (typeof arg1 != "undefined")
+            csObject.invokeMethodAsync(method, arg1);
+        if (typeof arg1 == "undefined")
+            csObject.invokeMethodAsync(method);
+    };
     SetProperty(propertyPath, value, object);
 }
 
@@ -19,6 +38,9 @@ export function GetProperty(propertyPath, object = window) {
     for (var i = 0; i < propertyPath.length; i++) {
         obj = obj[propertyPath[i]];
     }
+
+    if (obj == undefined)
+        throw "Could not find property";
 
     return obj;
 }

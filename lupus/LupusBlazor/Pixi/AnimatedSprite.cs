@@ -9,7 +9,7 @@ namespace LupusBlazor.Pixi
 {
     public class AnimatedSprite : Sprite
     {
-        private IJSObjectReference PixiModule { get; set; }
+        public bool Loop { get; private set; } = true;
         public List<IJSObjectReference> Textures { get;}
         public List<int> Times { get; }
         public event Func<Task> OnCompleteEvent;
@@ -23,19 +23,22 @@ namespace LupusBlazor.Pixi
 
         public async override Task Initialize()
         {
-            if (this.JavascriptHelper == null)
-                this.JavascriptHelper = await new JavascriptHelper(this.JSRuntime).Initialize();            
-
-            this.PixiModule = await JSRuntime.InvokeAsync<IJSObjectReference>("import", "./js/modules/PixiApplication.js");
-            this.JSInstance = await this.PixiModule.InvokeAsync<IJSObjectReference>("ConstructAnimatedSprite", this.Textures, this.Times);
+            await base.Initialize();            
+            
 
             this.ObjRef = DotNetObjectReference.Create(this);
             await this.JavascriptHelper.SetJavascriptFunctionProperty(this.ObjRef, "RaiseOnCompleteEvent", new string[] { "onComplete" }, this.JSInstance);
+            await this.JavascriptHelper.SetJavascriptFunctionProperty(this.ObjRef, "RaiseOnFrameChangeEvent", new string[] { "onFrameChange" }, this.JSInstance);
 
         }
 
+        public override async  Task InstantiateJSInstance()
+        {
+            this.JSInstance = await this.PixiApplicationModule.InvokeAsync<IJSObjectReference>("ConstructAnimatedSprite", this.Textures, this.Times);
+        }
 
-        
+
+
 
         [JSInvokable]
         public async Task RaiseOnCompleteEvent()
@@ -48,17 +51,22 @@ namespace LupusBlazor.Pixi
             }
         }
 
-        public event Func<Task<int>> OnFrameChangeEvent;
+        public event Func<int, Task> OnFrameChangeEvent;
 
         [JSInvokable]
         public async Task RaiseOnFrameChangeEvent(int frame)
         {
             if (OnCompleteEvent != null)
             {
-                var invocationList = OnCompleteEvent.GetInvocationList().Cast<Func<int, Task>>();
+                var invocationList = OnFrameChangeEvent.GetInvocationList().Cast<Func<int, Task>>();
                 foreach (var subscriber in invocationList)
                     await subscriber(frame);
             }
+        }
+
+        public async Task Play()
+        {
+            await this.JSInstance.InvokeVoidAsync("play");
         }
 
         public async Task GotoAndPlay(int frameNumber)
@@ -78,6 +86,7 @@ namespace LupusBlazor.Pixi
 
         public async Task SetLoop(bool value)
         {
+            this.Loop = value;
             await this.JavascriptHelper.SetJavascriptProperty(new string[] { "loop" }, value, this.JSInstance);
         }
         public override async Task Dispose()

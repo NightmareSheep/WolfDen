@@ -16,10 +16,12 @@ namespace LupusBlazor.Pixi
 
         public override async Task Initialize()
         {
-            await base.Initialize();
+            await base.Initialize();                
+        }
 
-            if (this.JSInstance == null)
-                this.JSInstance = await JavascriptHelper.InstantiateJavascriptClass(new string[] { "PIXI", "Container" }, null);
+        public override async Task InstantiateJSInstance()
+        {
+            this.JSInstance = await JavascriptHelper.InstantiateJavascriptClass(new string[] { "PIXI", "Container" }, null);
         }
 
         public async Task AddChild(Container child)

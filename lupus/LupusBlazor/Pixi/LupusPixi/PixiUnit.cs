@@ -11,6 +11,7 @@ namespace LupusBlazor.Pixi.LupusPixi
     public class PixiUnit
     {
         public IJSRuntime JSRuntime { get; }
+        public ActionQueue ActionQueue { get; }
         public Container Container { get; private set; }
         private Dictionary<Animations, Animation> UnitAnimations { get; set; } = new Dictionary<Animations, Animation>();
 
@@ -25,10 +26,13 @@ namespace LupusBlazor.Pixi.LupusPixi
 
             if (name != this.BaseAnimation)
                 animation.OnCompleteEvent += PlayBaseAnimation;
+
+            animation.OnQueueCompleteEvent += this.ActionQueue.ContinueQueue;
         }
-        public PixiUnit(IJSRuntime jSRuntime)
+        public PixiUnit(IJSRuntime jSRuntime, ActionQueue actionQueue)
         {
             JSRuntime = jSRuntime;
+            ActionQueue = actionQueue;
         }
 
         public async Task Initialize()
@@ -36,12 +40,24 @@ namespace LupusBlazor.Pixi.LupusPixi
             this.Container = new Container(this.JSRuntime);
             await this.Container.Initialize();
         }
+
+        public async Task QueueAnimation(Animations animation)
+        {
+            var action = async () =>
+            {
+                await this.PlayAnimation(animation);
+            };
+
+            await this.ActionQueue.AddAction(action);
+        }
+
         public async Task PlayAnimation(Animations animation)
         {
             if (this.CurrentAnimation != null)
                 await this.CurrentAnimation.End();
 
             this.UnitAnimations.TryGetValue(animation, out var instance);
+
             if (instance == null)
                 return;
 

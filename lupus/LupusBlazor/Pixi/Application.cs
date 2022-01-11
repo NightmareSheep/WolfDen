@@ -20,6 +20,22 @@ namespace LupusBlazor.Pixi
 
         public string ElementId { get; private set; }
         public event Func<Task> ResourcesLoadedEvent;
+        public event Func<Task> TickEvent;
+
+        private ScaleMode scaleMode;
+        public ScaleMode ScaleMode { 
+            get { return scaleMode; } 
+            set { 
+                scaleMode = value;
+                this.JavascriptHelper.SetJavascriptProperty(new string[] { "renderer", "options", "scaleMode" }, value, this.PixiApp);
+            } 
+        }
+
+        public Application(IJSRuntime jSRuntime)
+        {
+            this.JSRuntime = jSRuntime;
+            this.ObjRef = DotNetObjectReference.Create(this);
+        }
 
         [JSInvokable]
         public async void RaiseResourcesLoadedEvent()
@@ -37,11 +53,18 @@ namespace LupusBlazor.Pixi
             }
         }
 
-        public Application(IJSRuntime jSRuntime)
+        [JSInvokable]
+        public async Task Tick()
         {
-            this.JSRuntime = jSRuntime;
-            this.ObjRef = DotNetObjectReference.Create(this);
+            if (TickEvent != null)
+            {
+                var invocationList = TickEvent.GetInvocationList().Cast<Func<Task>>();
+                foreach (var subscriber in invocationList)
+                    await subscriber();
+            }
         }
+
+        
 
         public async Task<Application> Initialize(string elementId, int worldWidth, int worldHeight)
         {

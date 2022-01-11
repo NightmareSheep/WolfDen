@@ -20,14 +20,20 @@ namespace LupusBlazor.Pixi
 
         public override async Task Initialize()
         {
-            await base.Initialize();
-            if (this.JSInstance != null)
-                this.JSInstance?.DisposeAsync();
+            await base.Initialize();          
+        }
 
-            
+        public override async Task InstantiateJSInstance()
+        {
             this.JSInstance = await this.JavascriptHelper.InstantiateJavascriptClass(new string[] { "PIXI", "Sprite" }, new() { this.Texture });
         }
 
-        
+        public async Task SetAnchor(float x, float? y = null)
+        {
+            if (y == null)
+                y = x;
+
+            await this.JSInstance.InvokeVoidAsync("anchor.set", x, y);
+        }
     }
 }

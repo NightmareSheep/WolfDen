@@ -32,7 +32,7 @@ namespace LupusBlazor.Other
             jSRuntime.InvokeVoidAsync("setFilters", JsonConvert.SerializeObject(colorFilters));
         }
 
-        private Color[] GenerateTints(Color source)
+        public Color[] GenerateTints(Color source)
         {
             var colors = new Color[6];
             colors[0] = Tint(source, Color.White, 0.8m);

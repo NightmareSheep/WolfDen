@@ -37,7 +37,6 @@ namespace LupusBlazor.Pixi
             await this.JSInstance.InvokeVoidAsync("pinch");
             await this.JSInstance.InvokeVoidAsync("wheel");
             return this;
-
         }
 
         public override async Task Dispose()

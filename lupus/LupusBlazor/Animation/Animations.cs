@@ -22,6 +22,10 @@ namespace LupusBlazor.Animation
         DamagedFromDown,
         DamagedFromLeft,
         DamagedFromRight,
+        ShortDamagedFromUp,
+        ShortDamagedFromDown,
+        ShortDamagedFromLeft,
+        ShortDamagedFromRight,
         Cheer
     }
 }
