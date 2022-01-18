@@ -9,6 +9,8 @@ using Microsoft.JSInterop;
 using LupusBlazor.UI;
 using LupusBlazor.Animation;
 using LupusBlazor.Audio;
+using LupusBlazor.Pixi;
+using LupusBlazor.Pixi.LupusPixi;
 
 namespace LupusBlazor
 {
@@ -24,7 +26,9 @@ namespace LupusBlazor
         public AudioPlayer AudioPlayer { get; }
 
         public AnimationPlayer AnimationPlayer;
+        public ActionQueue ActionQueue { get; set; }
         public BlazorTurnResolver BlazorTurnResolver { get; }
+        public LupusPixiApplication LupusPixiApplication { get; set; }
 
         public async Task RaiseClickEvent(object sender)
         {
@@ -41,15 +45,19 @@ namespace LupusBlazor
             this.CurrentPlayer = CurrentPlayer;
             Hub = hub;
             JSRuntime = jSRuntime;
-            Map = BlazorMap = new BlazorMap();
+            Map = BlazorMap = new BlazorMap(this);
             AnimationPlayer = new AnimationPlayer(jSRuntime, this);
             UI = ui;
             AudioPlayer = audioPlayer;
             TurnResolver = BlazorTurnResolver = new BlazorTurnResolver(this, players, CurrentPlayer);
+            this.ActionQueue = new ActionQueue();
         }
 
         public async Task Draw()
         {
+            this.LupusPixiApplication = new LupusPixiApplication(this.JSRuntime, this.Map.Width * 16, this.Map.Height * 16);
+            await this.LupusPixiApplication.Initialize();
+
             await BlazorMap.Draw(JSRuntime);
             var drawables = GameObjects.Values.OfType<IDrawable>();
             foreach (var drawable in drawables)

@@ -16,6 +16,7 @@ using Microsoft.AspNetCore.SignalR.Client;
 using LupusBlazor.Animation;
 using LupusBlazor.Extensions;
 using Lupus.Behaviours;
+using LupusBlazor.Pixi.LupusPixi;
 
 namespace LupusBlazor.Behaviours.Attack
 {
@@ -23,15 +24,15 @@ namespace LupusBlazor.Behaviours.Attack
     {
         private TileIndicators AttackIndicators;
         private BlazorGame BlazorGame { get; set; }
-        public Unit Unit { get; }
+        public BlazorUnit Unit { get; }
         public IJSRuntime IJSRuntime { get; }
 
-        public BlazorDamageAndPull(BlazorGame game, Unit unit, int strength, SkillPoints skillPoints, IJSRuntime iJSRuntime) : base(game, unit, strength, skillPoints)
+        public BlazorDamageAndPull(BlazorGame game, BlazorUnit unit, int strength, SkillPoints skillPoints, IJSRuntime iJSRuntime) : base(game, unit, strength, skillPoints)
         {
             BlazorGame = game;
             Unit = unit;
             IJSRuntime = iJSRuntime;
-            AttackIndicators = new TileIndicators(game, game.Map, iJSRuntime, new string[] { "indicators", "red" });
+            AttackIndicators = new TileIndicators(game, game.Map, iJSRuntime, System.Drawing.KnownColor.Red);
             AttackIndicators.TileClickEvent += ClickIndicator;
             game.ClickEvent += Click;
 
@@ -83,24 +84,7 @@ namespace LupusBlazor.Behaviours.Attack
 
         public override async Task DamageAndPullUnit(Direction direction)
         {
-            var target = this.unit.Tile.GetTileInDirection(BlazorGame, direction);
-            var target2 = target?.GetTileInDirection(BlazorGame, direction);
-            var soundEffect = Audio.Effects.TakeASipOfWater;
-
-            //if (target.Unit != null && target2?.Unit == null)
-            //    await BlazorGame.AnimationPlayer.PlayUnitAnimation(target.Unit as BlazorUnit, "ShortDamagedFrom" + direction.OppositeDirection().ToString(), 360);
-
-            await PixiHelper.SetSpriteVisible(IJSRuntime, Unit.Id + " Idle", false);
-            var tile = Unit.Tile;
-            var directionVector = VectorHelper.GetDirectionVector(direction) * (LupusBlazor.Other.Statics.tileWidth / 2);
-            var x = tile.XCoord() + (int)directionVector.X;
-            var y = tile.YCoord() + (int)directionVector.Y;
-
-            var animation = new MoveAnimation(BlazorGame, IJSRuntime, Unit.Id + " Pull" + direction.ToString(), 400, 100,
-                    x, y, x, y, true, soundEffect,
-                    async () => { await PixiHelper.SetSpriteVisible(IJSRuntime, Unit.Id + " Idle", true); }
-                    );
-            await BlazorGame.AnimationPlayer.QueueAnimation(animation);
+            await (this.Unit?.PixiUnit?.QueueAnimation(Animations.Pull, direction) ?? Task.CompletedTask);
             await base.DamageAndPullUnit(direction);
         }
 

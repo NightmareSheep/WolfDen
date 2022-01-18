@@ -6,7 +6,7 @@ namespace LupusBlazor.Other
 {
     public static class Statics
     {
-        public const int tileHeight = 48;
-        public const int tileWidth = 48;
+        public const int tileHeight = 16;
+        public const int tileWidth = 16;
     }
 }

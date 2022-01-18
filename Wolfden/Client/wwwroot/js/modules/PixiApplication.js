@@ -1,4 +1,4 @@
-﻿export function InitializePixiApp(blazorApplication, elementId, worldWidth, worldHeight) {
+﻿export function InitializePixiApp(blazorApplication, elementId) {
 
     var pixiApp = new PIXI.Application({ resizeTo: window });
     PIXI.settings.SCALE_MODE = PIXI.SCALE_MODES.NEAREST;
@@ -14,6 +14,16 @@
     }
 
     return pixiApp;
+}
+
+export async function LoadResources() {
+    var promise = new Promise(resolve => {
+        PIXI.Loader.shared.load((loader, resources) => {
+            resolve();
+        });
+    });
+
+    await promise;
 }
 
 export function ConstructAnimatedSprite(textures, times) {
@@ -41,7 +51,9 @@ export function AddFilter(obj, filter) {
         obj.filters = [];
 
     var filters = obj.filters;
-    filters.push(filter);
+
+    if (filters.indexOf(filter) == -1)
+        filters.push(filter);
     obj.filters = filters;
 }
 
@@ -56,4 +68,22 @@ export function RemoveFilter(obj, filter) {
         filters.splice(pos, 1);
         obj.filters = filters;
     }    
+}
+
+export function On(displayObject, event, csObject, functionName) {
+    displayObject.on(event, (e) => {
+        csObject.invokeMethodAsync(functionName);
+    });
+}
+
+
+export function SetOnClick(displayObject, csObject, functionName) {
+    displayObject.on("pointertap", function (e) {
+
+        // Do not trigger on right click
+        if (e.data && e.data.button == 2)
+            return;
+
+        csObject.invokeMethodAsync(functionName);
+    });
 }

@@ -15,18 +15,30 @@ namespace LupusBlazor.WinConditions.GatherChests
 {
     public class BlazorZone : Zone, IDrawable
     {
-        public BlazorZone(Game game, Player owner, string id, Tile tile, IJSRuntime iJSRuntime, int zoneId) : base(game, owner, id, tile)
+        Sprite sprite;
+
+        public BlazorZone(BlazorGame game, Player owner, string id, Tile tile, IJSRuntime iJSRuntime, int zoneId) : base(game, owner, id, tile)
         {
+            BlazorGame = game;
             IJSRuntime = iJSRuntime;
             ZoneId = zoneId;
         }
 
+        public BlazorGame BlazorGame { get; }
         public IJSRuntime IJSRuntime { get; }
         public int ZoneId { get; }
 
         public async Task Draw()
         {
-            await PixiHelper.CreateSprite(IJSRuntime, new string[] { "other", "zones", "zone" + ZoneId }, Id, Tile.XCoord(), Tile.YCoord(), null, true, ColorTranslator.ToHtml(Color.FromArgb(Color.FromKnownColor(Owner.Color).ToArgb())));
+            var jsHelper = await JavascriptHelperModule.GetInstance(this.IJSRuntime);
+            var texture = await jsHelper.GetJavascriptProperty<IJSObjectReference?>(new string[] { "PIXI", "Loader", "shared", "resources", "sprites", "spritesheet", "textures", "zone " + ZoneId + ".png" });
+            sprite = new Sprite(this.IJSRuntime, texture);
+            await sprite.Initialize();
+            sprite.X = this.Tile.XCoord();
+            sprite.Y = this.Tile.YCoord();
+            sprite.Tint = this.Owner.Color;
+            await this.BlazorGame.LupusPixiApplication.ViewPort.AddChild(sprite);
+            await texture.DisposeAsync();
         }
     }
 }

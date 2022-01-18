@@ -10,7 +10,22 @@ namespace LupusBlazor.Pixi
 {
     public class Text : Sprite
     {
-        public string SpriteText { get; }
+        private string spriteText;
+
+        public string SpriteText
+        {
+            get
+            {
+                return spriteText;
+            }
+            set
+            {
+                if (this.JavascriptHelper != null)
+                    this.JavascriptHelper.SetJavascriptProperty(new string[] { "text" }, value, this.JSInstance);
+                spriteText = value;
+            }
+        }
+
         private KnownColor color = KnownColor.Black; 
         public KnownColor Color { 
             get { return color;  } 
@@ -20,7 +35,18 @@ namespace LupusBlazor.Pixi
             } 
         }
 
-        public Text(Application application, IJSRuntime jSRuntime, string text, JavascriptHelper javascriptHelper = null) : base(application, jSRuntime, null, null, javascriptHelper)
+        private float strokeThickness = 0f;
+        public float StrokeThickNess
+        {
+            get { return strokeThickness; }
+            set
+            {
+                strokeThickness = value;
+                this.JavascriptHelper.SetJavascriptProperty(new string[] { "style", "strokeThickness" }, strokeThickness, this.JSInstance);
+            }
+        }
+
+        public Text(IJSRuntime jSRuntime, string text, JavascriptHelperModule javascriptHelper = null) : base(jSRuntime, null, null, javascriptHelper)
         {
             SpriteText = text;
         }
@@ -29,8 +55,9 @@ namespace LupusBlazor.Pixi
 
         public override async Task Initialize()
         {
-            if (this.JavascriptHelper == null)
-                this.JavascriptHelper = await new JavascriptHelper(this.JSRuntime).Initialize();
+            await base.Initialize();
+
+            this.SpriteText = this.SpriteText;
 
             this.JSInstance = await this.JavascriptHelper.InstantiateJavascriptClass(new string[] { "PIXI", "Text" }, new() { this.SpriteText });
         }

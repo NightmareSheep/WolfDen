@@ -1,6 +1,7 @@
 ﻿using Microsoft.JSInterop;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -9,12 +10,36 @@ namespace LupusBlazor.Pixi
 {
     public class Sprite : Container
     {
-        public Application Application { get; }
         public IJSObjectReference Texture { get; }
 
-        public Sprite(Application application, IJSRuntime jSRuntime, IJSObjectReference texture, IJSObjectReference instance = null, JavascriptHelper javascriptHelper = null) : base(jSRuntime, instance, javascriptHelper)
+        private KnownColor tint;
+        public KnownColor Tint { 
+            get { return tint; }
+            set {
+                var color = Color.FromKnownColor(value);
+                var hexValue = ColorTranslator.ToHtml(Color.FromArgb(color.ToArgb())).Remove(0,1);
+                var colorNr = int.Parse(hexValue, System.Globalization.NumberStyles.HexNumber);               
+                this.JavascriptHelper.SetJavascriptProperty(new string[] { "tint" }, colorNr, this.JSInstance); 
+                tint = value; 
+            }
+        }
+
+        private int width;
+        public int Width
         {
-            Application = application;
+            get { return width; }
+            set { this.JavascriptHelper.SetJavascriptProperty(new string[] { "width" }, value, this.JSInstance); width = value; }
+        }
+
+        private int height;
+        public int Height
+        {
+            get { return height; }
+            set { this.JavascriptHelper.SetJavascriptProperty(new string[] { "height" }, value, this.JSInstance); height = value; }
+        }
+
+        public Sprite(IJSRuntime jSRuntime, IJSObjectReference texture, IJSObjectReference instance = null, JavascriptHelperModule javascriptHelper = null) : base(jSRuntime, instance, javascriptHelper)
+        {
             this.Texture = texture;
         }
 
@@ -25,7 +50,8 @@ namespace LupusBlazor.Pixi
 
         public override async Task InstantiateJSInstance()
         {
-            this.JSInstance = await this.JavascriptHelper.InstantiateJavascriptClass(new string[] { "PIXI", "Sprite" }, new() { this.Texture });
+            if (JSInstance == null)
+                this.JSInstance = await this.JavascriptHelper.InstantiateJavascriptClass(new string[] { "PIXI", "Sprite" }, new() { this.Texture });
         }
 
         public async Task SetAnchor(float x, float? y = null)

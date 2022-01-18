@@ -14,6 +14,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Linq;
 using LupusBlazor.Animation;
+using LupusBlazor.Pixi.LupusPixi;
 
 namespace LupusBlazor.Units
 {
@@ -22,12 +23,13 @@ namespace LupusBlazor.Units
         public BlazorGame Game { get; }
         private IJSRuntime JSRuntime { get; }
         public Clickable Clickable { get; }
-        private DotNetObjectReference<Clickable> ObjRef { get; }
+        public DotNetObjectReference<Clickable> ObjRef { get; }
         public Dictionary<string, string[]> Assets { get; set; }
         protected List<ISkill> Skills { get; set; } = new List<ISkill>();
         public BlazorHealth BlazorHealth { get; set; }
         protected string Name { get; set; }
         public Actors Actor { get; set; }
+        public PixiUnit PixiUnit { get; set; }
 
         public event Func<Task> CurrentPlayerClickActive;
         public event Func<Task> CurrentPlayerCLickInactive;
@@ -49,25 +51,25 @@ namespace LupusBlazor.Units
 
         public async Task RightClick()
         {
-            await PixiHelper.SetFilter(JSRuntime, Id + " Idle", Pixi.PixiFilter.GlowFilter, false);
+            await this.PixiUnit.Container.RemoveFilter(PixiFilters.Filters[PixiFilter.GlowFilter]);
         }
 
         public async Task Click(object sender)
         {        
             if (sender != this && sender is BlazorUnit)
-                await PixiHelper.SetFilter(JSRuntime, Id + " Idle", Pixi.PixiFilter.GlowFilter, false);
+                await this.PixiUnit.Container.RemoveFilter(PixiFilters.Filters[PixiFilter.GlowFilter]);
         }
 
         private async Task StartTurn(List<Player> players)
         {
-            await PixiHelper.SetFilter(JSRuntime, Id + " Idle", Pixi.PixiFilter.GlowFilter, false);
+            await this.PixiUnit.Container.RemoveFilter(PixiFilters.Filters[PixiFilter.GlowFilter]);
         }
 
         public async Task ClickUnit()
         {
             await Game.AudioPlayer.PlaySound(Audio.Effects.CoolInterfaceClickTone);
             await Game.RaiseClickEvent(this);
-            await PixiHelper.SetFilter(JSRuntime, Id + " Idle", Pixi.PixiFilter.GlowFilter, true);
+            await this.PixiUnit.Container.AddFilter(PixiFilters.Filters[PixiFilter.GlowFilter]);
             await Game.UI.UnitUI.ResetCharacterUI();
             await Game.UI.UnitUI.SetCharacterUI(this.Name);
             foreach (var skill in Skills)
@@ -99,19 +101,15 @@ namespace LupusBlazor.Units
 
         public async Task Draw()
         {
-            await PixiHelper.CreateSprite(JSRuntime, Assets["Idle"], Id + " Idle", Tile.XCoord(), Tile.YCoord(), ObjRef);
-            var teamFilter = Enum.Parse<PixiFilter>(Owner.Color.ToString() + "Team");
-            await PixiHelper.SetFilter(JSRuntime, Id + " Idle", teamFilter, true);
-            foreach (var pair in Assets)
-            {
-                if (pair.Key == "Idle")
-                    continue;
-
-                await PixiHelper.CreateSprite(JSRuntime, Assets[pair.Key], Id + " " + pair.Key, 0, 0, null, false);
-                                
-                await PixiHelper.SetFilter(JSRuntime, Id + " " + pair.Key, teamFilter, true);
-                await BlazorHealth.Draw();
-            }
+            this.PixiUnit = new PixiUnit(this.JSRuntime, this.Game.LupusPixiApplication.Application, this.Game.AudioPlayer, this.Actor, this.Game.ActionQueue, this.ObjRef);
+            await this.PixiUnit.Initialize();
+            this.PixiUnit.Container.X = this.Tile.X * 16 + 8;
+            this.PixiUnit.Container.Y = this.Tile.Y * 16 + 8;
+            await PixiUnit.PlayBaseAnimation();
+            var teamFilter = await PixiFilters.GetTeamFilter(this.Owner.Color);
+            await this.PixiUnit.Container.AddFilter(teamFilter);
+            await BlazorHealth.Draw();
+            await this.Game.LupusPixiApplication.ViewPort.AddChild(this.PixiUnit.Container);
         }
 
         public async override Task Destroy()
@@ -120,6 +118,9 @@ namespace LupusBlazor.Units
             Game.ClickEvent -= Click;
             Game.TurnResolver.StartTurnEvent -= this.StartTurn;
             Game.UI.MouseRightClickEvent -= RightClick;
+            await this.BlazorHealth.Dispose();
+            await this.PixiUnit.Dispose();
+            
         }
 
         public async Task UpdatePosition()

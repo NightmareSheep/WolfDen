@@ -12,6 +12,7 @@ namespace LupusBlazor.Animation
         Hero,
         Grunt,
         Slime,
-        Goblin
+        Goblin,
+        Chest
     }
 }

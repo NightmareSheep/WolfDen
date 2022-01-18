@@ -10,22 +10,13 @@ namespace LupusBlazor.Animation
     {
         None,
         Idle,
-        AttackUp,
-        AttackDown,
-        AttackLeft,
-        AttackRight,        
-        MoveUp,
-        MoveDown,
-        MoveLeft,
-        MoveRight,
-        DamagedFromUp,
-        DamagedFromDown,
-        DamagedFromLeft,
-        DamagedFromRight,
-        ShortDamagedFromUp,
-        ShortDamagedFromDown,
-        ShortDamagedFromLeft,
-        ShortDamagedFromRight,
-        Cheer
+        Attack,
+        MissedAttack,
+        Move,
+        Damaged,
+        ShortDamaged,
+        Cheer,
+        Pull,
+        Open
     }
 }

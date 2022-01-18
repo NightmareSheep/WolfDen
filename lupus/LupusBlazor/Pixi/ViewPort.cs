@@ -15,7 +15,7 @@ namespace LupusBlazor.Pixi
         public int WorldHeight { get; }
         private IJSObjectReference ViewportModule { get; set; }
 
-        public ViewPort(IJSRuntime jSRuntime, Application application, int worldWidth, int worldHeight, JavascriptHelper javascriptHelper = null) : base(jSRuntime, null, javascriptHelper)
+        public ViewPort(IJSRuntime jSRuntime, Application application, int worldWidth, int worldHeight, JavascriptHelperModule javascriptHelper = null) : base(jSRuntime, null, javascriptHelper)
         {
             Application = application;
             WorldWidth = worldWidth;

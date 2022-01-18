@@ -17,6 +17,7 @@ namespace LupusBlazor.Pixi.LupusPixi
             {
                 busy = true;
                 await action();
+                Console.WriteLine("execute action");
             }
             else
                 Actions.Enqueue(action);
@@ -24,9 +25,11 @@ namespace LupusBlazor.Pixi.LupusPixi
 
         public async Task ContinueQueue()
         {
+            Console.WriteLine("continue queue");
+
             if (Actions.Count == 0)
             {
-                busy |= false;
+                busy = false;
                 return;
             }
 

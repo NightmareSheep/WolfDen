@@ -39,13 +39,7 @@ namespace LupusBlazor.WinConditions.GatherChests
                     if (chest.Tile == zone.Tile)
                     {
                         var blazorUnit = chest as BlazorUnit;
-                        await BlazorGame.AnimationPlayer.PlayUnitAnimation(blazorUnit, "Opening", 3000);
-                        await PixiHelper.SetTextSprite(BlazorGame.JSRuntime, blazorUnit.Id + " point", blazorUnit.Tile.XCoord() - 4, blazorUnit.Tile.YCoord() - 6, "+1", true, null, UI.TextStyle.Gold);
-                        Func<Task> f = async () => { 
-                            await Task.Delay(3000);
-                            await PixiHelper.DestroySprite(BlazorGame.JSRuntime, blazorUnit.Id + " point");
-                        };
-                        f();
+                        await blazorUnit.PixiUnit.QueueAnimation(Animation.Animations.Open);
                     }
                 }
             }

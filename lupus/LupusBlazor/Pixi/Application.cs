@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using LupusBlazor.Pixi;
 
 namespace LupusBlazor.Pixi
 {
@@ -13,8 +14,7 @@ namespace LupusBlazor.Pixi
         public Dictionary<string, IJSObjectReference> SpriteSheets { get; set; } = new Dictionary<string, IJSObjectReference>();
         private IJSRuntime JSRuntime { get; set; }
         private DotNetObjectReference<Application> ObjRef { get; set; }
-        public JavascriptHelper JavascriptHelper { get; set; }
-        private IJSObjectReference PixiApplicationModule { get; set; }
+        public JavascriptHelperModule JavascriptHelper { get; set; }
         public IJSObjectReference PixiApp { get; private set; }
         public Container Stage { get; private set; }
 
@@ -66,12 +66,14 @@ namespace LupusBlazor.Pixi
 
         
 
-        public async Task<Application> Initialize(string elementId, int worldWidth, int worldHeight)
+        public async Task<Application> Initialize(string elementId)
         {
-            this.JavascriptHelper = await new JavascriptHelper(this.JSRuntime).Initialize();
+            this.JavascriptHelper = await JavascriptHelperModule.GetInstance(JSRuntime);
             this.ElementId = elementId;
-            this.PixiApplicationModule = await JSRuntime.InvokeAsync<IJSObjectReference>("import", "./js/modules/PixiApplication.js");
-            this.PixiApp = await PixiApplicationModule.InvokeAsync<IJSObjectReference>("InitializePixiApp", this.ObjRef, elementId, worldWidth, worldHeight);
+
+            var pixiModule = await PixiApplicationModule.GetInstance(JSRuntime);
+            this.PixiApp = await pixiModule.InitializePixiApp(this.ObjRef, elementId);
+
             var JSStage = await JavascriptHelper.GetJavascriptProperty<IJSObjectReference>(new string[] { "stage" }, this.PixiApp);
             this.Stage = new Container(this.JSRuntime, JSStage, JavascriptHelper);
 
@@ -92,9 +94,7 @@ namespace LupusBlazor.Pixi
         public async Task Dispose()
         {
             this.ObjRef?.Dispose();
-            this.PixiApplicationModule?.DisposeAsync();
             this.PixiApp?.DisposeAsync();
-            await this.JavascriptHelper.Dispose();
             await Stage.Dispose();
 
             foreach (var key in this.SpriteSheets.Keys)

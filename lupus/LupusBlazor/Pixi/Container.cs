@@ -10,7 +10,7 @@ namespace LupusBlazor.Pixi
     public class Container : DisplayObject
     {
 
-        public Container(IJSRuntime jSRuntime, IJSObjectReference instance = null, JavascriptHelper javascriptHelper = null) : base(jSRuntime, instance, javascriptHelper)
+        public Container(IJSRuntime jSRuntime, IJSObjectReference instance = null, JavascriptHelperModule javascriptHelper = null) : base(jSRuntime, instance, javascriptHelper)
         {
         }
 
@@ -31,7 +31,8 @@ namespace LupusBlazor.Pixi
 
         public async Task RemoveChild(Container child)
         {
-            await this.JSInstance.InvokeVoidAsync("removeChild", child.JSInstance);
+            if (JSInstance != null && child?.JSInstance != null)
+                await this.JSInstance.InvokeVoidAsync("removeChild", child.JSInstance);
         }
 
         

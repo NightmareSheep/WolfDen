@@ -16,6 +16,7 @@ using Microsoft.AspNetCore.SignalR.Client;
 using LupusBlazor.Animation;
 using LupusBlazor.Extensions;
 using Lupus.Behaviours;
+using LupusBlazor.Pixi.LupusPixi;
 
 namespace LupusBlazor.Behaviours.Attack
 {
@@ -23,15 +24,15 @@ namespace LupusBlazor.Behaviours.Attack
     {
         private TileIndicators AttackIndicators;
         private BlazorGame BlazorGame { get; set; }
-        public Unit Unit { get; }
+        public BlazorUnit Unit { get; }
         public IJSRuntime IJSRuntime { get; }
 
-        public BlazorDamageAndPush(BlazorGame game, Unit unit, int strength, SkillPoints skillPoints,  IJSRuntime iJSRuntime) : base(game, unit, strength, skillPoints)
+        public BlazorDamageAndPush(BlazorGame game, BlazorUnit unit, int strength, SkillPoints skillPoints,  IJSRuntime iJSRuntime) : base(game, unit, strength, skillPoints)
         {
             BlazorGame = game;
             Unit = unit;
             IJSRuntime = iJSRuntime;
-            AttackIndicators = new TileIndicators(game, game.Map, iJSRuntime, new string[] { "indicators", "red" });
+            AttackIndicators = new TileIndicators(game, game.Map, iJSRuntime, System.Drawing.KnownColor.Red);
             AttackIndicators.TileClickEvent += ClickIndicator;
             game.ClickEvent += Click;
             
@@ -71,15 +72,9 @@ namespace LupusBlazor.Behaviours.Attack
         public override async Task DamageAndPushUnit(Direction direction)
         {
             var target = this.GetTarget(direction);
-            var soundEffect = target.Unit == null ? Audio.Effects.DaggerWoosh : Audio.Effects.SwordStrikesArmor;
-
-            await PixiHelper.SetSpriteVisible(IJSRuntime, Unit.Id + " Idle", false);
-            var tile = Unit.Tile;
-            var animation = new MoveAnimation(BlazorGame, IJSRuntime, Unit.Id + " Attack" + direction.ToString(), 400, 100,
-                    tile.XCoord(), tile.YCoord(), tile.XCoord(), tile.YCoord(), true, soundEffect,
-                    async ()=> { await PixiHelper.SetSpriteVisible(IJSRuntime, Unit.Id + " Idle", true); }
-                    );
-            await BlazorGame.AnimationPlayer.QueueAnimation(animation);
+            var animation = target.Unit != null ? Animations.Attack : Animations.MissedAttack;
+            await (this.Unit?.PixiUnit?.QueueAnimation(animation, direction) ?? Task.CompletedTask);
+            
             await base.DamageAndPushUnit(direction);
         }
 

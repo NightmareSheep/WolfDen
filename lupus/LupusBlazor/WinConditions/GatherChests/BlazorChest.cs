@@ -35,6 +35,7 @@ namespace LupusBlazor.WinConditions.GatherChests
             BlazorPushable = new BlazorPushable(jSRuntime, game, game.Map, this);
             this.Health = this.BlazorHealth = new BlazorInvulnurable(Game, jSRuntime, this);
             Destroyables = new List<Lupus.Other.IDestroy>() { BlazorPushable };
+            this.Actor = Animation.Actors.Chest;
         }
     }
 }

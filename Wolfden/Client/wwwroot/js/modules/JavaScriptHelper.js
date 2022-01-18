@@ -1,5 +1,5 @@
 ﻿export function SetProperty(propertyPath, value, object = window) {
-    var obj = object;
+    var obj = object ?? window;
 
     for (var i = 0; i < propertyPath.length - 1; i++) {
         obj = obj[propertyPath[i]];
@@ -33,10 +33,14 @@ export function SetFunctionProperty(csObject, method, propertyPath, object = win
 }
 
 export function GetProperty(propertyPath, object = window) {
-    var obj = object;
+    var obj = object ?? window;
 
     for (var i = 0; i < propertyPath.length; i++) {
         obj = obj[propertyPath[i]];
+        if (obj == undefined) {
+            throw "Could not find property";
+            return null;
+        }
     }
 
     if (obj == undefined)
@@ -56,7 +60,8 @@ export function InstantiateClass(constructorPath, args) {
         args = [];
 
     args.unshift(obj);
-    return ConstructorArgumentShimmer.apply(null, args);
+    var result = ConstructorArgumentShimmer.apply(null, args);
+    return result;
 }
 
 function construct(constructor, args) {

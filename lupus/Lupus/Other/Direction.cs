@@ -6,6 +6,7 @@ namespace Lupus.Other
 {
     public enum Direction
     {
+        None,
         North,
         East,
         South,

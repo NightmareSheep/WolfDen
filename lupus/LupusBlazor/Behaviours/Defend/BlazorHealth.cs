@@ -2,6 +2,8 @@
 using Lupus.Units;
 using LupusBlazor.Animation;
 using LupusBlazor.Extensions;
+using LupusBlazor.Pixi;
+using LupusBlazor.Units;
 using Microsoft.JSInterop;
 using System;
 using System.Collections.Generic;
@@ -18,39 +20,38 @@ namespace LupusBlazor.Behaviours.Defend
         public Guid DelayedDisplayId { get; set; }
         public BlazorGame BlazorGame { get; }
         public IJSRuntime JSRuntime { get; }
+        public BlazorUnit BlazorUnit { get; }
+        public Text text { get; set; }
 
-        public BlazorHealth(BlazorGame blazorGame, IJSRuntime jSRuntime, Unit unit, int health) : base(unit, health)
+        public BlazorHealth(BlazorGame blazorGame, IJSRuntime jSRuntime, BlazorUnit unit, int health) : base(unit, health)
         {
             BlazorGame = blazorGame;
             JSRuntime = jSRuntime;
+            BlazorUnit = unit;
             HealthDisplay = health;
         }
 
         public virtual async Task Draw()
         {
-            await PixiHelper.SetTextSprite(JSRuntime, Unit.Id + " Health damage",   Unit.Tile.XCoord() - 4, Unit.Tile.YCoord() - 6, DamageDisplay != 0 ? HealthDisplay.ToString() + " - " + DamageDisplay.ToString() : HealthDisplay.ToString(), true, null, UI.TextStyle.Damage);
-            await PixiHelper.SetTextSprite(JSRuntime, Unit.Id + " Health",          Unit.Tile.XCoord() - 4, Unit.Tile.YCoord() - 6, HealthDisplay.ToString(), true);
+            this.text = new Text(this.JSRuntime, this.CurrentHealth.ToString());
+            await this.text.Initialize();
+            text.ScaleX = 0.2f;
+            text.ScaleY = 0.2f;
+            text.X = -7;
+            text.Y = -7;
+            text.StrokeThickNess = 5f;
+            await text.SetAnchor(0.5f);
+            text.Color = this.Unit.Owner.Color;
+            await this.BlazorUnit.PixiUnit.Container.AddChild(text);
         }
 
         public override async Task Damage(int damage)
         {
-            DelayedDisplayId = Guid.NewGuid();
             await base.Damage(damage);
-            DamageDisplay += damage;
-
-
-            if (CurrentHealth > 0)
-                await Draw();
-            else
-            {
-                await PixiHelper.DestroySprite(JSRuntime, Unit.Id + " Health damage");
-                await PixiHelper.DestroySprite(JSRuntime, Unit.Id + " Health");
-
-                var makeInvisible = new ChangeVisibilityAnimation(JSRuntime, this.Unit.Id + " Idle", false);
-                await BlazorGame.AnimationPlayer.QueueAnimation(makeInvisible);
-            }
-
-            DelayedHealthDisplay(DelayedDisplayId);
+            DelayedDisplayId = Guid.NewGuid();
+            if (text != null)
+                this.text.SpriteText = CurrentHealth.ToString();
+            
         }
 
         public async Task DelayedHealthDisplay(Guid delayedDisplayId)
@@ -63,6 +64,11 @@ namespace LupusBlazor.Behaviours.Defend
             DamageDisplay = 0;
             HealthDisplay = this.CurrentHealth;
             await this.Draw();
+        }
+
+        public async Task Dispose()
+        {
+            await this.text.Dispose();
         }
 
         

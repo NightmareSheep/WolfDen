@@ -25,7 +25,7 @@ namespace LupusBlazor.Pixi.LupusPixi
         private long startingTime;
         private long queueEndingTime;
 
-        public MovingAnimation(AnimatedSprite sprite, Application application, int xDistance, int yDistance, int duration, int queueDuration = -1, Container containerToMove = null) : base(sprite)
+        public MovingAnimation(Application application, AnimatedSprite sprite, int xDistance, int yDistance, int duration, int queueDuration = -1, Container containerToMove = null) : base(sprite)
         {
             QueueFrame = -1;
 
@@ -47,6 +47,8 @@ namespace LupusBlazor.Pixi.LupusPixi
 
         public override async Task Play()
         {
+            Console.WriteLine("Play animation");
+
             await base.Play();
             startingX = this.ContainerToMove.X;
             startingY = this.ContainerToMove.Y;
@@ -85,6 +87,7 @@ namespace LupusBlazor.Pixi.LupusPixi
 
             if (!queueDurationExpired && (currentTime >= queueEndingTime || elapsed == 1))
             {
+                Console.WriteLine("queue complete");
                 queueDurationExpired = true;
                 await RaiseOnQueueCompleteEvent(this.QueueFrame);
             }

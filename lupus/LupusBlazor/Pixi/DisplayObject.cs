@@ -9,6 +9,13 @@ namespace LupusBlazor.Pixi
 {
     public class DisplayObject
     {
+        private float alpha;
+        public float Alpha
+        {
+            get { return alpha; }
+            set { this.JavascriptHelper.SetJavascriptProperty(new string[] { "alpha" }, value, this.JSInstance); alpha = value; }
+        }
+
         private int x;
         public int X { 
             get {
@@ -62,6 +69,20 @@ namespace LupusBlazor.Pixi
             }
         }
 
+        private bool interactive;
+        public bool Interactive
+        {
+            get
+            {
+                return interactive;
+            }
+            set
+            {
+                this.JavascriptHelper.SetJavascriptProperty(new string[] { "interactive" }, value, this._JSInstance);
+                interactive = value;
+            }
+        }
+
         private IJSObjectReference _JSInstance;
         public IJSObjectReference JSInstance
         {
@@ -77,10 +98,15 @@ namespace LupusBlazor.Pixi
             }
         }
         public IJSRuntime JSRuntime { get; }
-        protected JavascriptHelper JavascriptHelper { get; set; }
-        public IJSObjectReference PixiApplicationModule { get; set; }
+        protected JavascriptHelperModule JavascriptHelper { get; set; }
+        public PixiApplicationModule PixiApplicationModule { get; set; }
 
-        public DisplayObject(IJSRuntime jSRuntime, IJSObjectReference instance = null, JavascriptHelper javascriptHelper = null)
+        public async Task On<T>(string id, DotNetObjectReference<T> csObject, string functionName) where T : class
+        {
+            await this.PixiApplicationModule.On(this, id, csObject, functionName);
+        }
+
+        public DisplayObject(IJSRuntime jSRuntime, IJSObjectReference instance = null, JavascriptHelperModule javascriptHelper = null)
         {
             JSRuntime = jSRuntime;
             this.JavascriptHelper = javascriptHelper;
@@ -89,9 +115,8 @@ namespace LupusBlazor.Pixi
 
         public virtual async Task Initialize()
         {
-            if (this.JavascriptHelper == null)
-                this.JavascriptHelper = await new JavascriptHelper(this.JSRuntime).Initialize();
-            PixiApplicationModule = await JSRuntime.InvokeAsync<IJSObjectReference>("import", "./js/modules/PixiApplication.js");
+            JavascriptHelper = await JavascriptHelperModule.GetInstance(JSRuntime);
+            PixiApplicationModule = await PixiApplicationModule.GetInstance(JSRuntime);
             await InstantiateJSInstance();
         }
 
@@ -105,19 +130,18 @@ namespace LupusBlazor.Pixi
 
         public virtual async Task Dispose()
         {
+            await this.JSInstance.InvokeVoidAsync("destroy");
             await this._JSInstance.DisposeAsync();
-            await this.JavascriptHelper?.Dispose();
-            await this.PixiApplicationModule.DisposeAsync();
         }
 
         public async Task AddFilter(IJSObjectReference filter)
         {
-            await PixiApplicationModule.InvokeVoidAsync("AddFilter", this.JSInstance, filter);
+            await PixiApplicationModule.AddFilter(this, filter);
         }
 
         public async Task RemoveFilter(IJSObjectReference filter)
-        {
-            await PixiApplicationModule.InvokeVoidAsync("RemoveFilter", this.JSInstance, filter);
+        { 
+            await PixiApplicationModule.RemoveFilter(this, filter);
         }
     }
 }

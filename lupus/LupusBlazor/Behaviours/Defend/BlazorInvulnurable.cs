@@ -1,4 +1,5 @@
 ﻿using Lupus.Units;
+using LupusBlazor.Units;
 using Microsoft.JSInterop;
 using System;
 using System.Collections.Generic;
@@ -10,7 +11,7 @@ namespace LupusBlazor.Behaviours.Defend
 {
     public class BlazorInvulnurable : BlazorHealth
     {
-        public BlazorInvulnurable(BlazorGame blazorGame, IJSRuntime jSRuntime, Unit unit) : base(blazorGame, jSRuntime, unit, 9999)
+        public BlazorInvulnurable(BlazorGame blazorGame, IJSRuntime jSRuntime, BlazorUnit unit) : base(blazorGame, jSRuntime, unit, 9999)
         {
         }
 

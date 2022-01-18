@@ -14,11 +14,11 @@ namespace LupusBlazor.Pixi.LupusPixi
     {
         public static Dictionary<PixiFilter, IJSObjectReference> Filters = new();
         public static Dictionary<KnownColor, IJSObjectReference> TeamFilters = new();
-        public static JavascriptHelper JavascriptHelper { get; set; }
+        public static JavascriptHelperModule JavascriptHelper { get; set; }
 
         public static async Task Initialize(IJSRuntime jSRuntime)
         {
-            JavascriptHelper = await new JavascriptHelper(jSRuntime).Initialize();
+            JavascriptHelper = await JavascriptHelperModule.GetInstance(jSRuntime);
 
             var desaturateFilter = await JavascriptHelper.InstantiateJavascriptClass(new string[] { "PIXI", "filters", "ColorMatrixFilter" }, new List<object>() { });
             await desaturateFilter.InvokeVoidAsync("desaturate");

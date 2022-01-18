@@ -35,7 +35,7 @@ namespace LupusBlazor.Behaviours.Movement
             JSRuntime = jSRuntime;
             Game = game;
             unit.CurrentPlayerClickActive += SpawnMovementIndicators;
-            MovementIndicators = new TileIndicators(game, map, jSRuntime, new string[] { "indicators", "green" });
+            MovementIndicators = new TileIndicators(game, map, jSRuntime, System.Drawing.KnownColor.Cyan);
             MovementIndicators.TileClickEvent += ClickTile;
             Game.ClickEvent += Click;
         }
@@ -50,6 +50,7 @@ namespace LupusBlazor.Behaviours.Movement
 
         public async Task SpawnMovementIndicators()
         {
+
             if (!CanMove)
                 return;
 
@@ -103,7 +104,6 @@ namespace LupusBlazor.Behaviours.Movement
 
         public override async Task MoveOverPath(int[] path)
         {
-            await PixiHelper.SetSpriteVisible(JSRuntime, Unit.Id + " Idle", false);
             var previousTile = Unit.Tile;
             for (var i = 1; i < path.Length; i++)
             {
@@ -112,23 +112,11 @@ namespace LupusBlazor.Behaviours.Movement
                 var directionVector = tile.ToVector2() - previousTile.ToVector2();
                 var direction = directionVector.GetDirectionFromVector();
 
-                var animationName = "Move" + direction.ToString();
-
-                Func<Task> callback = null;
-                if (i == path.Length - 1)
-                    callback = async () => { await PixiHelper.SetSpriteVisible(JSRuntime, Unit.Id + " Idle", true); };
-
-                var animation = new MoveAnimation(Game, JSRuntime, Unit.Id + " " + animationName, 200, 200, 
-                    previousTile.XCoord(), previousTile.YCoord(), tile.XCoord(), tile.YCoord(), false, Audio.Effects.none, callback);
-                await Game.AnimationPlayer.QueueAnimation(animation);
+                await (this.BlazorUnit?.PixiUnit?.QueueAnimation(Animations.Move, direction) ?? Task.CompletedTask);
                 previousTile = tile;
             }
 
-            await base.MoveOverPath(path);
-
-            
-            await BlazorUnit.UpdatePosition();
-            
+            await base.MoveOverPath(path);            
         }
 
         public override async Task Destroy()

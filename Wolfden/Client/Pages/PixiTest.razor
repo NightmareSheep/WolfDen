@@ -4,6 +4,7 @@
 @using LupusBlazor.Pixi;
 @using LupusBlazor.Pixi.LupusPixi
 @using LupusBlazor.Animation;
+@using Lupus.Other;
 @inject IJSRuntime JSRuntime;
 @implements IAsyncDisposable;
 
@@ -22,53 +23,23 @@
         await base.OnAfterRenderAsync(firstRender);
         this.Application = new Application(JSRuntime);
         this.Application.ResourcesLoadedEvent += LoadSprite;
-        await this.Application.Initialize("test-game", 3000, 3000);
+        await this.Application.Initialize("test-game");
         this.Application.ScaleMode = ScaleMode.Nearest;
 
-        await this.Application.AddSpriteSheet("sprites", "/Images/sprites.json");
-        await this.Application.Load();
+        //await this.Application.AddSpriteSheet("sprites", "/Images/sprites.json");
+        //await this.Application.Load();
+
+        await LoadSprite();
 
     }
 
     public async Task LoadSprite()
     {
         this.Viewport = await new ViewPort(JSRuntime, this.Application, 3000, 3000).Initialize();
-
-        var animationFactory = new AnimationFactory(this.Application, JSRuntime, Statics.AudioPlayer);
-        this.Unit = new PixiUnit(JSRuntime, this.ActionQueue);
+        this.Unit = new PixiUnit(JSRuntime, this.Application, Statics.AudioPlayer, Actors.Goblin, this.ActionQueue);
         await this.Unit.Initialize();
-
-        var idleAnimation = await animationFactory.GetAnimation(Actors.Goblin, Animations.Idle);
-        var attackUpAnimation = await animationFactory.GetAnimation(Actors.Goblin, Animations.AttackUp);
-        var attackDownAnimation = await animationFactory.GetAnimation(Actors.Goblin, Animations.AttackDown);        
-
-        await this.Unit.AddAnimation(LupusBlazor.Animation.Animations.Idle, idleAnimation);
-        await this.Unit.AddAnimation(LupusBlazor.Animation.Animations.AttackUp, attackUpAnimation);
-        await this.Unit.AddAnimation(LupusBlazor.Animation.Animations.AttackDown, attackDownAnimation);
-
-        this.Unit2 = new PixiUnit(JSRuntime, this.ActionQueue);
+        this.Unit2 = new PixiUnit(JSRuntime, this.Application, Statics.AudioPlayer, Actors.Goblin, this.ActionQueue);
         await this.Unit2.Initialize();
-
-        idleAnimation = await animationFactory.GetAnimation(Actors.Goblin, Animations.Idle);
-        var damagedFromUpAnimation = await animationFactory.GetMovingAnimation(Actors.Goblin, Animations.DamagedFromUp);
-        damagedFromUpAnimation.ContainerToMove = this.Unit2.Container;
-
-        var moveUpAnimation =       await animationFactory.GetMovingAnimation(Actors.Goblin, Animations.MoveUp);
-        var moveRightAnimation =    await animationFactory.GetMovingAnimation(Actors.Goblin, Animations.MoveRight);
-        var moveDownAnimation =     await animationFactory.GetMovingAnimation(Actors.Goblin, Animations.MoveDown);
-        var moveLeftAnimation =     await animationFactory.GetMovingAnimation(Actors.Goblin, Animations.MoveLeft);
-        moveUpAnimation.ContainerToMove = this.Unit2.Container;
-        moveRightAnimation.ContainerToMove = this.Unit2.Container;
-        moveDownAnimation.ContainerToMove = this.Unit2.Container;
-        moveLeftAnimation.ContainerToMove = this.Unit2.Container;
-
-
-        await this.Unit2.AddAnimation(Animations.Idle, idleAnimation);
-        await this.Unit2.AddAnimation(Animations.DamagedFromUp, damagedFromUpAnimation);
-        await this.Unit2.AddAnimation(Animations.MoveUp, moveUpAnimation);
-        await this.Unit2.AddAnimation(Animations.MoveRight, moveRightAnimation);
-        await this.Unit2.AddAnimation(Animations.MoveDown, moveDownAnimation);
-        await this.Unit2.AddAnimation(Animations.MoveLeft, moveLeftAnimation);
 
         this.Unit2.Container.Y = 16;
 
@@ -79,8 +50,8 @@
         await this.Unit.PlayAnimation(LupusBlazor.Animation.Animations.Idle);
         await this.Unit2.PlayAnimation(LupusBlazor.Animation.Animations.Idle);
 
-        var text = new LupusBlazor.Pixi.Text(this.Application, this.JSRuntime, "0");
-        
+        var text = new LupusBlazor.Pixi.Text(this.JSRuntime, "0");
+
         await text.Initialize();
 
         text.ScaleX = 0.3f;
@@ -89,26 +60,26 @@
         text.Y = -8;
         await text.SetAnchor(0.5f);
         text.Color = System.Drawing.KnownColor.Red;
-
-        await PixiFilters.Initialize(this.JSRuntime);
         var filter = await PixiFilters.GetTeamFilter(System.Drawing.KnownColor.Red);
         await this.Unit.Container.AddFilter(filter);
 
         await this.Unit2.Container.AddFilter(PixiFilters.Filters[PixiFilter.GlowFilter]);
 
         await this.Unit2.Container.AddChild(text);
+        Unit2.UnitAnimations[Unit2.BaseAnimation].Sprite.Tint = System.Drawing.KnownColor.Red;
+        Unit2.UnitAnimations[Unit2.BaseAnimation].Sprite.Alpha = 0.5f;
 
         var attack = async () => {
             await Task.Delay(2000);
-            await this.Unit.QueueAnimation(Animations.AttackUp); 
-            await this.Unit.QueueAnimation(Animations.AttackDown);
-            await this.Unit2.QueueAnimation(Animations.MoveDown);
-            await this.Unit2.QueueAnimation(Animations.MoveDown);
-            await this.Unit2.QueueAnimation(Animations.MoveRight);
-            await this.Unit2.QueueAnimation(Animations.MoveRight);
-            await this.Unit2.QueueAnimation(Animations.MoveUp);
-            await this.Unit2.QueueAnimation(Animations.MoveLeft);
-            await this.Unit2.QueueAnimation(Animations.MoveLeft);
+            await this.Unit.QueueAnimation(Animations.Attack, Direction.North); 
+            await this.Unit.QueueAnimation(Animations.Attack, Direction.South);
+            await this.Unit2.QueueAnimation(Animations.Move, Direction.South);
+            await this.Unit2.QueueAnimation(Animations.Move, Direction.South);
+            await this.Unit2.QueueAnimation(Animations.Move, Direction.East);
+            await this.Unit2.QueueAnimation(Animations.Move, Direction.East);
+            await this.Unit2.QueueAnimation(Animations.Move, Direction.North);
+            await this.Unit2.QueueAnimation(Animations.Move, Direction.West);
+            await this.Unit2.QueueAnimation(Animations.Move, Direction.West);
         };
 
         attack();

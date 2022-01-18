@@ -15,7 +15,7 @@ namespace LupusBlazor.Pixi
         public event Func<Task> OnCompleteEvent;
         private DotNetObjectReference<AnimatedSprite> ObjRef { get; set; }
 
-        public AnimatedSprite(Application application, IJSRuntime jSRuntime, List<IJSObjectReference> textures, List<int> times, IJSObjectReference instance = null, JavascriptHelper javascriptHelper = null) : base(application, jSRuntime, null, instance, javascriptHelper)
+        public AnimatedSprite(IJSRuntime jSRuntime, List<IJSObjectReference> textures, List<int> times, IJSObjectReference instance = null, JavascriptHelperModule javascriptHelper = null) : base(jSRuntime, null, instance, javascriptHelper)
         {
             this.Textures = textures;
             this.Times = times;
@@ -34,11 +34,8 @@ namespace LupusBlazor.Pixi
 
         public override async  Task InstantiateJSInstance()
         {
-            this.JSInstance = await this.PixiApplicationModule.InvokeAsync<IJSObjectReference>("ConstructAnimatedSprite", this.Textures, this.Times);
+            this.JSInstance = await this.PixiApplicationModule.ConstructAnimatedSprite(Textures, Times);
         }
-
-
-
 
         [JSInvokable]
         public async Task RaiseOnCompleteEvent()

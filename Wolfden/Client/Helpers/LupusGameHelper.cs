@@ -90,26 +90,23 @@ namespace WolfDen.Client.Helpers
             HubConnection.On<string, string, string>("Start", async (mapId, serializedHistory, serializedPlayers) => {
                 Wolfden.Client.Other.Statics.AudioPlayer.SoundEnabled = false;
                 var colorHelper = new ColorHelper();
-                colorHelper.GenerateColorFilters(jSRuntime, Lupus.Statics.Colors);
                 var settings = new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.Auto };
                 var players = JsonConvert.DeserializeObject<List<Player>>(serializedPlayers, settings);
                 GameFactory = new BlazorGameFactory(HttpClient, JSRuntime, HubConnection, UI, players, currentPlayerId, Wolfden.Client.Other.Statics.AudioPlayer);
 
                 var mapString = await HttpClient.GetStringAsync("/api/map/" + mapId);
-                var mapString2 = await HttpClient.GetStringAsync("api/map/" + mapId);
                 var jsonMap = JsonConvert.DeserializeObject<JsonMap>(mapString);
                 Game = await GameFactory.GetBlazorGame(jsonMap, mapId);
-                MapName = Game?.Map?.Name;
                 Game.Id = new Guid(GameId);
                 
                 var moveHistory = JsonConvert.DeserializeObject<List<IHistoryMove>>(serializedHistory, settings);
                 Game.History.Moves = moveHistory;
                 await Game.History.PlayHistory();
                 this.Game.AudioPlayer.SoundEnabled = true;
-                Game.AnimationPlayer.AnimationsEnabled = true;
-                await JSRuntime.InvokeVoidAsync("InitializePixiApp", objRef, MapName);
+                await Game.Draw();
+                await Game.UI.DoneLoading();
+                await Wolfden.Client.Other.Statics.AudioPlayer.PlayMusic(LupusBlazor.Audio.Tracks.ExploringTheUnkown);
 
-                
             });
 
             objRef = DotNetObjectReference.Create(this);
@@ -121,14 +118,6 @@ namespace WolfDen.Client.Helpers
         {
             await HubConnection.StartAsync();            
             await HubConnection.InvokeAsync("Join", GameId);            
-        }
-
-        [JSInvokable]
-        public async Task Draw()
-        {
-            await Game.Draw();
-            await Game.UI.DoneLoading();
-            await Wolfden.Client.Other.Statics.AudioPlayer.PlayMusic(LupusBlazor.Audio.Tracks.ExploringTheUnkown);
         }
 
         public void Dispose()

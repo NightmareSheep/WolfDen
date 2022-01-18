@@ -4,6 +4,7 @@ using LupusBlazor.Units;
 using Microsoft.JSInterop;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -15,18 +16,18 @@ namespace LupusBlazor.Interaction
         private BlazorGame Game { get; }
         public Map Map { get; }
         private IJSRuntime JSRuntime { get; }
-        private string[] TileAsset { get; }
+        public KnownColor Tint { get; }
         private List<TileIndicator> Indicators { get; set; }
         public Guid Id { get; set; } = Guid.NewGuid();
         public event Func<int, Task> TileClickEvent;
 
 
-        public TileIndicators(BlazorGame game, Map map, IJSRuntime jSRuntime, string[] tileAsset)
+        public TileIndicators(BlazorGame game, Map map, IJSRuntime jSRuntime, KnownColor tint)
         {
             Game = game;
             Map = map;
             JSRuntime = jSRuntime;
-            TileAsset = tileAsset;
+            Tint = tint;
             game.TurnResolver.StartTurnEvent += StartTurn;
             game.UI.MouseRightClickEvent += this.RemoveIndicators;
         }
@@ -39,14 +40,15 @@ namespace LupusBlazor.Interaction
         public async Task Spawn(IEnumerable<int> indices)
         {
             await RemoveIndicators();
-            
+
             foreach (var index in indices)
             {
                 var tile = Map.GetTile(index);
-                var indicator = new TileIndicator(this, tile, TileAsset, JSRuntime);
+                var indicator = new TileIndicator(this.Game, this, tile, this.Tint, JSRuntime);
                 Indicators.Add(indicator);
                 await indicator.Draw();
             }
+
         }
 
         public async Task ClickTile(int index)

@@ -1,5 +1,7 @@
-﻿@using Wolfden.Client.Other;
+﻿@using LupusBlazor.Pixi
+@using Wolfden.Client.Other;
 @using System.Threading;
+@using LupusBlazor.Pixi.LupusPixi;
 @inject IJSRuntime JSRuntime;
 @inject Blazored.LocalStorage.ILocalStorageService localStorage;
 
@@ -46,6 +48,14 @@
 
     public override async Task SetParametersAsync(ParameterView parameters)
     {
+        var javascriptHelper = await JavascriptHelperModule.GetInstance(JSRuntime);
+        await javascriptHelper.SetJavascriptProperty(new string[] { "PIXI", "settings", "SCALE_MODE" }, 2);
+
+        await JSRuntime.InvokeVoidAsync("PIXI.Loader.shared.add", "sprites", "/Images/sprites.json");
+
+        var pixiModule = await PixiApplicationModule.GetInstance(JSRuntime);
+        await pixiModule.LoadResources();
+        await PixiFilters.Initialize(JSRuntime);
 
         var name = await localStorage.GetItemAsync<string>("name");
         var id = await localStorage.GetItemAsync<string>("id");
