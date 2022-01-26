@@ -51,25 +51,25 @@ namespace LupusBlazor.Units
 
         public async Task RightClick()
         {
-            await this.PixiUnit.Container.RemoveFilter(PixiFilters.Filters[PixiFilter.GlowFilter]);
+            await this.PixiUnit.AnimationContainer.RemoveFilter(PixiFilters.Filters[PixiFilter.GlowFilter]);
         }
 
         public async Task Click(object sender)
         {        
             if (sender != this && sender is BlazorUnit)
-                await this.PixiUnit.Container.RemoveFilter(PixiFilters.Filters[PixiFilter.GlowFilter]);
+                await this.PixiUnit.AnimationContainer.RemoveFilter(PixiFilters.Filters[PixiFilter.GlowFilter]);
         }
 
         private async Task StartTurn(List<Player> players)
         {
-            await this.PixiUnit.Container.RemoveFilter(PixiFilters.Filters[PixiFilter.GlowFilter]);
+            await this.PixiUnit.AnimationContainer.RemoveFilter(PixiFilters.Filters[PixiFilter.GlowFilter]);
         }
 
         public async Task ClickUnit()
         {
             await Game.AudioPlayer.PlaySound(Audio.Effects.CoolInterfaceClickTone);
             await Game.RaiseClickEvent(this);
-            await this.PixiUnit.Container.AddFilter(PixiFilters.Filters[PixiFilter.GlowFilter]);
+            await this.PixiUnit.AnimationContainer.AddFilter(PixiFilters.Filters[PixiFilter.GlowFilter]);
             await Game.UI.UnitUI.ResetCharacterUI();
             await Game.UI.UnitUI.SetCharacterUI(this.Name);
             foreach (var skill in Skills)
@@ -107,7 +107,7 @@ namespace LupusBlazor.Units
             this.PixiUnit.Container.Y = this.Tile.Y * 16 + 8;
             await PixiUnit.PlayBaseAnimation();
             var teamFilter = await PixiFilters.GetTeamFilter(this.Owner.Color);
-            await this.PixiUnit.Container.AddFilter(teamFilter);
+            await this.PixiUnit.AnimationContainer.AddFilter(teamFilter);
             await BlazorHealth.Draw();
             await this.Game.LupusPixiApplication.ViewPort.AddChild(this.PixiUnit.Container);
         }

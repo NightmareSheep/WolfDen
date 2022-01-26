@@ -34,7 +34,7 @@ namespace LupusBlazor.Behaviours.Movement
             BlazorUnit = unit;
             JSRuntime = jSRuntime;
             Game = game;
-            unit.CurrentPlayerClickActive += SpawnMovementIndicators;
+            unit.CurrentPlayerClickActive += ClickUnit;
             MovementIndicators = new TileIndicators(game, map, jSRuntime, System.Drawing.KnownColor.Cyan);
             MovementIndicators.TileClickEvent += ClickTile;
             Game.ClickEvent += Click;
@@ -46,6 +46,14 @@ namespace LupusBlazor.Behaviours.Movement
                 return;
 
             await MovementIndicators.RemoveIndicators();
+        }
+
+        public async Task ClickUnit()
+        {
+            if (this.MovementIndicators.Indicators.Count > 0)
+                await MovementIndicators.RemoveIndicators();
+            else
+                await this.SpawnMovementIndicators();
         }
 
         public async Task SpawnMovementIndicators()
@@ -115,6 +123,7 @@ namespace LupusBlazor.Behaviours.Movement
                 await (this.BlazorUnit?.PixiUnit?.QueueAnimation(Animations.Move, direction) ?? Task.CompletedTask);
                 previousTile = tile;
             }
+            await (this.BlazorUnit?.PixiUnit?.QueueAnimation(BlazorUnit.PixiUnit.BaseAnimation) ?? Task.CompletedTask);
 
             await base.MoveOverPath(path);            
         }

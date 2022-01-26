@@ -47,8 +47,6 @@ namespace LupusBlazor.Pixi.LupusPixi
 
         public override async Task Play()
         {
-            Console.WriteLine("Play animation");
-
             await base.Play();
             startingX = this.ContainerToMove.X;
             startingY = this.ContainerToMove.Y;
@@ -82,12 +80,11 @@ namespace LupusBlazor.Pixi.LupusPixi
             if (elapsed == 1)
             {
                 await this.RaiseOnCompleteEvent();
-                await this.End();
+                Application.TickEvent -= Tick;
             }
 
             if (!queueDurationExpired && (currentTime >= queueEndingTime || elapsed == 1))
             {
-                Console.WriteLine("queue complete");
                 queueDurationExpired = true;
                 await RaiseOnQueueCompleteEvent(this.QueueFrame);
             }

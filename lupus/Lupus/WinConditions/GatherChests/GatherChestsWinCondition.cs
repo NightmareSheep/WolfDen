@@ -26,22 +26,24 @@ namespace Lupus.WinConditions.GatherChests
             this.Chests = Chests;
             Scores = new int[Teams.Count];
 
-            game.TurnResolver.StartTurnEvent += StartTurn;
+            game.TurnResolver.EndTurnEvent += EndTurn;
+            game.TurnResolver.StartTurnEvent += async (players) => { 
+                CurrentTurn++;
+                if (CurrentTurn > Turns * Teams.Count)
+                    await AnnounceVictor();
+            };
         }
 
-        protected virtual async Task StartTurn(List<Player> activePlayers)
+        protected virtual async Task EndTurn(List<Player> activePlayers)
         {
-            CurrentTurn++;
-            if (CurrentTurn == 1)
-                return;
 
             foreach (var chest in Chests)
             {
                 foreach (var zone in Zones)
                 {
-                    if (chest.Tile == zone.Tile)
+                    if (chest.Tile == zone.Tile && activePlayers.Contains(zone.Owner))
                     {
-                        var owner = zone.Owner;
+                        var owner = zone.Owner;                       
                         var team = Teams.FirstOrDefault(t => t.Contains(owner));
                         var teamIndex = Teams.IndexOf(team);
                         Scores[teamIndex]++;
@@ -49,8 +51,7 @@ namespace Lupus.WinConditions.GatherChests
                 }
             }
 
-            if (CurrentTurn > Turns * Teams.Count)
-                await AnnounceVictor();
+            
         }
 
         protected virtual async Task AnnounceVictor()

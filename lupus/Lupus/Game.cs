@@ -1,4 +1,5 @@
-﻿using Lupus.Other;
+﻿using Lupus.Actions;
+using Lupus.Other;
 using Lupus.Units;
 using System;
 using System.Collections.Generic;
@@ -15,6 +16,7 @@ namespace Lupus
         public List<Player> Players { get; set; }
         public History History { get; set; }
         public TurnResolver TurnResolver { get; set; }
+        public ActionTracker ActionTracker { get; }
 
         public Game(List<Player> players)
         {
@@ -23,6 +25,7 @@ namespace Lupus
             Map = new Map();
             Players = players;
             TurnResolver = new TurnResolver(this, players);
+            ActionTracker = new ActionTracker();
         }
 
         public T GetGameObject<T>(string playerId, string objectId) where T : class

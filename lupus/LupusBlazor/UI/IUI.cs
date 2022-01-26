@@ -10,6 +10,7 @@ namespace LupusBlazor.UI
 {
     public interface IUI
     {
+        BlazorGame BlazorGame { get; set; }
         IUnitUI UnitUI { get; }
         IGatherChestsWinConditionUI GatherChestsWinConditionUI { get; }
         Task SetPlayers(List<Player> players, List<Player> activePlayers, Player currentPlayer);

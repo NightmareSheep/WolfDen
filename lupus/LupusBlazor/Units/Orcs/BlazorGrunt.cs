@@ -46,7 +46,7 @@ namespace LupusBlazor.Units.Orcs
                 { "ShortDamagedFromWest",  new string[] {   "units", "grunt", "shortDamagedFromWest" } },
             })
         {
-            Health = BlazorHealth = new BlazorHealth(game, jSRuntime, this, 25);
+            Health = BlazorHealth = new BlazorHealth(game, jSRuntime, this, 18);
             SkillPoints = new BlazorSkillPoints(game, this, 1);
             DamageAndPush = new BlazorDamageAndPush(game, this, 1, SkillPoints, jSRuntime);
             BlazorMove = new BlazorMove(game, game.BlazorMap, this, 3, jSRuntime, SkillPoints);

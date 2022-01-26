@@ -1,4 +1,5 @@
-﻿using Lupus.Other;
+﻿using Lupus.Actions;
+using Lupus.Other;
 using Lupus.Other.Vector;
 using Lupus.Tiles;
 using Lupus.Units;
@@ -10,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace Lupus.Behaviours.Movement
 {
-    public class Move : IDestroy
+    public class Move : IDestroy, IAction
     {
         private readonly Game Game;
         protected Map Map { get; }
@@ -21,6 +22,7 @@ namespace Lupus.Behaviours.Movement
         public SkillPoints SkillPoints { get; }
         public string Id { get; }
 
+        public ActionAgent Agent { get; }
 
         public Move(Game game, Map map, Unit unit, int speed, SkillPoints skillPoints, MovementType movementType = MovementType.Normal)
         {
@@ -35,11 +37,13 @@ namespace Lupus.Behaviours.Movement
             unit.Owner.GameObjects.Add(Id, this);
             Game.TurnResolver.StartTurnEvent += StartTurn;
             SkillPoints.SkillPointsUsedEvent += SkillPointsUsed;
+            Agent = new ActionAgent(game, this);
         }
 
         public Task SkillPointsUsed(int amount, object spender)
         {
             this.CanMove = false;
+
             return Task.CompletedTask;
         }
 
@@ -62,10 +66,10 @@ namespace Lupus.Behaviours.Movement
 
         public  virtual Task MoveOverPath(List<Tile> path) => MoveOverPath(path.ToArray());
 
-        public virtual Task MoveOverPath(Tile[] path)
+        public virtual async Task MoveOverPath(Tile[] path)
         {
             if (path == null || path.Length < 2 || path[^1].Unit != null || !CanMove)
-                return Task.CompletedTask;
+                return;
 
             // Check if the path is legal.
             var previousTile = path[0];
@@ -75,14 +79,14 @@ namespace Lupus.Behaviours.Movement
                 var tile = path[i];
                 currentCost += DistanceFunction(previousTile, tile);
                 if (currentCost > Speed)
-                    return Task.CompletedTask;
+                    return;
                 previousTile = path[i];
             }
 
             path[^1].Unit = Unit;
             CanMove = false;
             Game.History.AddMove(new MoveHistory(Id, path.Select(t => t.Index).ToArray()));
-            return Task.CompletedTask;
+            await Agent.ActionUsed();
         }
 
         public int DistanceFunction(Tile m, Tile n)
@@ -101,6 +105,13 @@ namespace Lupus.Behaviours.Movement
             Game.TurnResolver.StartTurnEvent -= StartTurn;
             SkillPoints.SkillPointsUsedEvent -= SkillPointsUsed;
             return Task.CompletedTask;
+        }
+
+        public int GetAvailableActions()
+        {
+            if (CanMove)
+                return 1;
+            return 0;
         }
     }
 }

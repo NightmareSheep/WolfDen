@@ -39,7 +39,6 @@ namespace LupusBlazor.Pixi.LupusPixi
         public Animation(AnimatedSprite sprite)
         {
             this.Sprite = sprite;
-            this.OnCompleteEvent += this.End;
             this.Sprite.OnCompleteEvent += this.RaiseOnCompleteEvent;
             this.Sprite.OnFrameChangeEvent += this.RaiseOnQueueCompleteEvent;
             if (sprite.Loop)

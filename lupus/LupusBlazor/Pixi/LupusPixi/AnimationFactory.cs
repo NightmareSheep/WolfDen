@@ -106,83 +106,62 @@ namespace LupusBlazor.Pixi.LupusPixi
             MovingAnimation result;
             var audioPlayer = this.Audioplayer;
 
+            var xDirection = 0;
+            var yDirection = 0;
+
+            switch (direction)
+            {
+                case Direction.North:
+                    yDirection = -16;
+                    break;
+                case Direction.East:
+                    xDirection = 16;
+                    break;
+                case Direction.South:
+                    yDirection = 16;
+                    break;
+                case Direction.West:
+                    xDirection = -16;
+                    break;
+            }
+
+
             switch (animation)
             {
                 
                 case Animations.Damaged:
-                    switch (direction)
+
+                    AnimatedSprite sprite = null;
+
+                    switch (actor)
                     {
-                        case Direction.North:
-                            return await GetMovingAnimation(actor, Direction.North, "damaged", new() { 120, 80, 80, 80, 80, 80 }, new() { 0, 1, 2, 1, 2, 0 }, 0, 16, 520, 0);
-                        case Direction.East:
-                            return await GetMovingAnimation(actor, Direction.East, "damaged", new() { 120, 80, 80, 80, 80, 80 }, new() { 0, 1, 2, 1, 2, 0 }, -16, 0, 520, 0);
-                        case Direction.South:
-                            return await GetMovingAnimation(actor, Direction.South, "damaged", new() { 120, 80, 80, 80, 80, 80 }, new() { 0, 1, 2, 1, 2, 0 }, 0, -16, 520, 0);
-                        case Direction.West:
-                            result = await GetMovingAnimation(actor, Direction.East, "damaged", new() { 120, 80, 80, 80, 80, 80 }, new() { 0, 1, 2, 1, 2, 0 }, 16, 0, 520, 0);
-                            if (result == null) { return null; }
-                            result.Sprite.ScaleX = -1f;
-                            return result;
+                        case Actors.Chest:
+                            sprite = await GetDirectionSprite(actor, Direction.None, "idle", new() { 100 }, new() { 0 });
+
+                            break;
+                        default:
+                            sprite = await GetDirectionSprite(actor, direction == Direction.West ? Direction.East : direction, "damaged", new() { 120, 80, 80, 80, 80, 80 }, new() { 0, 1, 2, 1, 2, 0 });
+                            if (direction == Direction.West)
+                                sprite.ScaleX = -1;
+                            break;
                     }
-                    break;                   
+
+                    result = await GetMovingAnimation(sprite, -xDirection, -yDirection, 520, 0);
+                    return result;
+                    
+
                 case Animations.Move:
-                    switch (direction)
+                    result = await GetMovingAnimation(actor, direction == Direction.West ? Direction.East : direction, "move", new() { 100, 100, 100, 100 }, new() { 0, 1, 2, 3 }, xDirection, yDirection, 250, 250);
+                    if (result == null)
+                        return null;
+                    if (direction == Direction.West)
                     {
-                        case Direction.North:
-                            return await GetMovingAnimation(actor, Direction.North, "move", new() { 100, 100, 100, 100 }, new() { 0, 1, 2, 3 }, 0, -16,     250, 250);
-                        case Direction.East:
-                            return await GetMovingAnimation(actor, Direction.East, "move", new() { 100, 100, 100, 100 }, new() { 0, 1, 2, 3 }, 16, 0,       250, 250);
-                        case Direction.South:
-                            return await GetMovingAnimation(actor, Direction.South, "move", new() { 100, 100, 100, 100 }, new() { 0, 1, 2, 3 }, 0, 16,      250, 250);
-                        case Direction.West:
-                            result = await GetMovingAnimation(actor, Direction.East, "move", new() { 100, 100, 100, 100 }, new() { 0, 1, 2, 3 }, -16, 0,    250, 250);
-                            if (result == null) { return null; }
-                            result.Sprite.ScaleX = -1;
-                            return result;
+                        result.Sprite.ScaleX = -1;
                     }
-                    break;                   
+                    return result;                  
             }
 
             return null;
-        }
-
-        private async Task<Animation> GetIdleAnimation(Actors actor)
-        {
-            var name = actor.ToString().ToLower();
-            
-            var spritesheet = await this.JavascriptHelper.GetJavascriptProperty<IJSObjectReference>(new string[] { "PIXI", "Loader", "shared", "resources", "sprites", "spritesheet" });
-
-            var textureNames = new List<string>() {
-                name + "_idle_0.png",
-                name + "_idle_1.png",
-                name + "_idle_2.png",
-                name + "_idle_1.png",
-            };
-
-            var times = new List<int>()
-            {
-                640,
-                80,
-                640,
-                80
-            };
-
-            var textures = new List<IJSObjectReference>();
-
-            foreach (var textureName in textureNames)
-                textures.Add(await this.JavascriptHelper.GetJavascriptProperty<IJSObjectReference>(new String[] { "textures", textureName }, spritesheet));
-
-            if (textures.Contains(null))
-                throw new Exception("Cannot find textures for idle animation of " + actor.ToString());
-
-            var sprite = new AnimatedSprite(this.JSRuntime, textures, times);
-            await sprite.Initialize();
-            await sprite.SetVisibility(false);
-            await sprite.SetAnchor(0.5f);
-            foreach (var texture in textures)
-                await texture.DisposeAsync();
-
-            return new Animation(sprite);
         }
 
         public async Task<AnimatedSprite> GetDirectionSprite(Actors actor, Direction direction, string animationName, List<int> times, List<int> frames)
@@ -233,15 +212,21 @@ namespace LupusBlazor.Pixi.LupusPixi
             return animation;
         }
 
+
+        public async Task<MovingAnimation> GetMovingAnimation(AnimatedSprite sprite, int xDistance, int yDistance, int duration, int queueDuration = -1)
+        {
+            if (sprite == null)
+                return null;
+            await sprite.SetLoop(true);
+            var movingAnimation = new MovingAnimation(this.Application, sprite, xDistance, yDistance, duration, queueDuration);
+            return movingAnimation;
+        }
         public async Task<MovingAnimation> GetMovingAnimation(Actors actor, Direction direction, string animationName, List<int> times, List<int> frames, int xDistance, int yDistance, int duration, int queueDuration = - 1)
         {
             var sprite = await GetDirectionSprite(actor, direction, animationName, times, frames);
             if (sprite == null)
                 return null;
-
-            await sprite.SetLoop(true);
-            var movingAnimation = new MovingAnimation(this.Application, sprite, xDistance, yDistance, duration, queueDuration);
-            return movingAnimation;
+            return await GetMovingAnimation(sprite, xDistance, yDistance, duration, queueDuration);
         }
 
         private string DirectionToString(Direction direction)

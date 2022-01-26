@@ -20,9 +20,9 @@ namespace LupusBlazor.WinConditions.GatherChests
             this.BlazorGame = game;
         }
 
-        protected override async Task StartTurn(List<Player> activePlayers)
+        protected override async Task EndTurn(List<Player> activePlayers)
         {
-            await base.StartTurn(activePlayers);
+            await base.EndTurn(activePlayers);
 
 
 
@@ -36,7 +36,7 @@ namespace LupusBlazor.WinConditions.GatherChests
             {
                 foreach (var zone in Zones)
                 {
-                    if (chest.Tile == zone.Tile)
+                    if (chest.Tile == zone.Tile && activePlayers.Contains(zone.Owner))
                     {
                         var blazorUnit = chest as BlazorUnit;
                         await blazorUnit.PixiUnit.QueueAnimation(Animation.Animations.Open);

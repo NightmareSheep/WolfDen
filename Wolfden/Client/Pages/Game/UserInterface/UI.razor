@@ -1,4 +1,5 @@
-﻿@using LupusBlazor.UI;
+﻿@using LupusBlazor
+@using LupusBlazor.UI;
 @using Lupus;
 @using Wolfden.Client.Pages.Game.UserInterface.WinConditions;
 @using Wolfden.Client.Shared;
@@ -17,23 +18,37 @@
 
     
     <div id="menu-panel">
-        <button class="btn btn-secondary" @onclick="ClickEndTurn">
-           <i class="fas fa-hourglass"></i>
-        </button>
-        <button class="btn btn-secondary" @onclick="OpenWinCondition">
-            <i class="fas fa-trophy "></i>
-        </button>
-        <button class="btn btn-secondary" @onclick="OpenPlayers">
-            <i class="fas fa-users "></i>
-        </button>
-        <button class="btn btn-secondary" @onclick="ToggleFullscreen">
-            <i class="fas fa-expand "></i>
-        </button>
-        <button class="btn btn-secondary" @onclick="OpenOptions">
-            <i class="fas fa-cog "></i>
-        </button>
+        <div class="buttons">
+            
+            <button class="btn btn-secondary" @onclick="OpenWinCondition">
+                <i class="fas fa-trophy "></i>
+            </button>
+            <button class="btn btn-secondary" @onclick="OpenPlayers">
+                <i class="fas fa-users "></i>
+            </button>
+            <button class="btn btn-secondary" @onclick="ToggleFullscreen">
+                <i class="fas fa-expand "></i>
+            </button>
+            <button class="btn btn-secondary" @onclick="OpenOptions">
+                <i class="fas fa-cog "></i>
+            </button>
+            <button class="btn @(EndTurnButtonClass)" @onclick="ClickEndTurn">
+               <i class="fas fa-forward"></i>
+            </button>
+        </div>
+        <div id="current-player" style="background-color:@(BlazorGame?.CurrentPlayer?.Color.ToString())"></div>
     </div>
+    
+
+
     <div id="skill-panel">
+        <div id="active-players">
+            @foreach (var player in BlazorGame?.TurnResolver?.ActivePlayers ?? new ())
+            {
+                <div style="background-color:@(player.Color)">  </div>
+            }
+        </div>
+
         <UnitUI @ref="UnitUI"></UnitUI>
         @*<div id="endTurn"><button class="btn btn-secondary" id="endTurnButton" @onclick="ClickEndTurn"><h3>End turn</h3></button></div>*@
     </div>
@@ -42,6 +57,21 @@
 </div>
 
 @code {
+    private BlazorGame? blazorGame;
+    public BlazorGame? BlazorGame { 
+        get { return this.blazorGame; }
+        set { 
+            this.blazorGame = value;
+            if (blazorGame != null)
+            {
+                blazorGame.BlazorTurnResolver.StartTurnEvent += StartTurn;
+                blazorGame.ActionTracker.ActionUsedEvent += async () => { await UpdateEndTurnButton(); };
+            }
+        } 
+    }
+
+    private string EndTurnButtonClass = "btn-secondary";
+
     private List<Player> Players { get; set; } = new List<Player>();
     private List<Player> ActivePlayers { get; set; } = new List<Player>();
     private Player CurrentPlayer { get; set; }
@@ -144,6 +174,30 @@
     private async Task ToggleFullscreen()
     {
         await JS.InvokeVoidAsync("toggleFullScreen");
+    }
+
+    private async Task StartTurn(List<Player> players)
+    {
+        await UpdateEndTurnButton(true);
+        this.StateHasChanged();
+    }
+
+    public async Task UpdateEndTurnButton(bool startTurn = false)
+    {
+        var previous = this.EndTurnButtonClass;
+
+        if (!this?.blazorGame?.BlazorTurnResolver?.ActivePlayers?.Contains(this.blazorGame.CurrentPlayer) ?? true)
+            this.EndTurnButtonClass = "btn-secondary";
+        else
+        {
+            if (this.blazorGame.ActionTracker.GetAvailableActions() > 0 || startTurn)
+                this.EndTurnButtonClass = "btn-warning";
+            else
+                this.EndTurnButtonClass = "btn-success";
+        }
+
+        if (previous != this.EndTurnButtonClass)
+            this.StateHasChanged();
     }
 
 }

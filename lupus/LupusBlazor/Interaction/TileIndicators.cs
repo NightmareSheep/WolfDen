@@ -17,7 +17,7 @@ namespace LupusBlazor.Interaction
         public Map Map { get; }
         private IJSRuntime JSRuntime { get; }
         public KnownColor Tint { get; }
-        private List<TileIndicator> Indicators { get; set; }
+        public List<TileIndicator> Indicators { get; set; }
         public Guid Id { get; set; } = Guid.NewGuid();
         public event Func<int, Task> TileClickEvent;
 

@@ -20,7 +20,7 @@ namespace Lupus.Units
 
         public Slime(Game game, Player owner, string id, Tile tile) : base(game, owner, id, tile)
         {
-            Health = new Health(this, 10);
+            Health = new Health(this, 5);
 
             SkillPoints = new SkillPoints(game, this, 1);
             Move = new Move(game, game.Map, this, 3, SkillPoints);

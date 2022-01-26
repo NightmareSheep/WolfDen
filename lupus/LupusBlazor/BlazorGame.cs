@@ -30,6 +30,7 @@ namespace LupusBlazor
         public BlazorTurnResolver BlazorTurnResolver { get; }
         public LupusPixiApplication LupusPixiApplication { get; set; }
 
+
         public async Task RaiseClickEvent(object sender)
         {
             if (ClickEvent != null)
@@ -46,11 +47,12 @@ namespace LupusBlazor
             Hub = hub;
             JSRuntime = jSRuntime;
             Map = BlazorMap = new BlazorMap(this);
-            AnimationPlayer = new AnimationPlayer(jSRuntime, this);
-            UI = ui;
-            AudioPlayer = audioPlayer;
-            TurnResolver = BlazorTurnResolver = new BlazorTurnResolver(this, players, CurrentPlayer);
+            AnimationPlayer = new AnimationPlayer(jSRuntime, this);            
+            AudioPlayer = audioPlayer;            
             this.ActionQueue = new ActionQueue();
+            UI = ui;
+            TurnResolver = BlazorTurnResolver = new BlazorTurnResolver(this, players, CurrentPlayer);
+            UI.BlazorGame = this;
         }
 
         public async Task Draw()

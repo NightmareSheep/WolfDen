@@ -48,7 +48,7 @@ namespace LupusBlazor.Behaviours.Movement
             sprite = new Sprite(JSRuntime, texture);
             await sprite.Initialize();
             sprite.Interactive = true;
-            await sprite.On("click", ObjRef, "RaisClickEvent");
+            await sprite.OnClick(ObjRef, "RaisClickEvent");
             sprite.Width = 16;
             sprite.Height = 16;
             sprite.X = Tile.XCoord();

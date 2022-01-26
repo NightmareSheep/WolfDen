@@ -11212,22 +11212,36 @@ html, body {
 }
 #UI #skill-panel {
   display: grid;
-  grid-template-areas: "skills" "end-turn-button";
+  grid-template-areas: "active-players" "skills" "end-turn-button";
   grid-area: bottom-right;
   background-color: #343a40;
-  padding: 10px;
+}
+#UI #skill-panel #active-players {
+  display: flex;
+  flex-direction: row;
+  grid-area: active-players;
+}
+#UI #skill-panel #active-players > div {
+  flex: 1;
+  height: 5px;
 }
 #UI #menu-panel {
   pointer-events: all;
   font-size: 20px;
-  padding: 10px;
   grid-area: top-right;
+}
+#UI #menu-panel .buttons {
+  padding: 10px;
   background-color: #343a40;
   display: grid;
   grid-template-columns: repeat(5, 42px);
   grid-template-rows: 42px;
   gap: 10px;
   justify-content: center;
+}
+#UI #menu-panel #current-player {
+  grid-area: top-right;
+  height: 5px;
 }
 #UI #endTurn {
   grid-area: end-turn-button;
@@ -11244,6 +11258,7 @@ html, body {
   }
 }
 #unit-UI {
+  margin: 10px;
   pointer-events: all;
   justify-content: center;
   display: grid;
@@ -11280,6 +11295,7 @@ html, body {
   position: absolute;
   right: 2px;
   bottom: 0px;
+  font-size: small;
 }
 #unit-UI .skill-2 {
   grid-area: skill-2;
@@ -11343,6 +11359,7 @@ html, body {
 }
 
 #UI .message {
+  max-width: 100vw;
   width: 800px;
   height: 100px;
   top: calc(50vh - (100px / 2));

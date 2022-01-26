@@ -12,25 +12,47 @@
     grid-template-rows: max-content 1fr max-content;
 
     #skill-panel {
+
+        #active-players {
+            display: flex;
+            flex-direction: row;
+            grid-area: active-players;
+
+             > div{
+                 flex:1;
+                 height:5px;
+             }
+        }
+
         display: grid;
-        grid-template-areas: 'skills' 'end-turn-button';
+        grid-template-areas: 'active-players' 'skills' 'end-turn-button';
         grid-area: bottom-right;
         background-color: $color_dark;
-        padding: $UI_padding_1;
+
     }
 
     #menu-panel {
         pointer-events: all;
         font-size: 20px;
-        padding: $spacing-small;
         grid-area: top-right;
-        background-color: $color_dark;
-        display: grid;
-        grid-template-columns: repeat(5, 42px);
-        grid-template-rows: 42px;
-        gap: $spacing-small;
-        justify-content: center;
+
+        .buttons {
+            padding: $spacing-small;
+            background-color: $color_dark;
+            display: grid;
+            grid-template-columns: repeat(5, 42px);
+            grid-template-rows: 42px;
+            gap: $spacing-small;
+            justify-content: center;
+        }
+
+        #current-player {
+            grid-area: top-right;
+            height: 5px;
+        }
     }
+
+
 
     #endTurn {
         grid-area: end-turn-button;

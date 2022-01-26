@@ -106,6 +106,11 @@ namespace LupusBlazor.Pixi
             await this.PixiApplicationModule.On(this, id, csObject, functionName);
         }
 
+        public async Task OnClick<T>(DotNetObjectReference<T> csObject, string functionName) where T : class
+        {
+            await this.PixiApplicationModule.SetOnClick(this, csObject, functionName);
+        }
+
         public DisplayObject(IJSRuntime jSRuntime, IJSObjectReference instance = null, JavascriptHelperModule javascriptHelper = null)
         {
             JSRuntime = jSRuntime;

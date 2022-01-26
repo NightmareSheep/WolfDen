@@ -8,10 +8,11 @@ using Lupus.Units;
 using System.Numerics;
 using Lupus.Other.Vector;
 using System.Threading.Tasks;
+using Lupus.Actions;
 
 namespace Lupus.Behaviours.Attack
 {
-    public class DamageAndPush : IDestroy
+    public class DamageAndPush : IDestroy, IAction
     {
         public int Strength { get; }
         public SkillPoints SkillPoints { get; }
@@ -20,6 +21,8 @@ namespace Lupus.Behaviours.Attack
         protected readonly Unit unit;
         protected string Id { get; set; }
         public string Name { get; } = "DamageAndPush";
+
+        public ActionAgent Agent { get; }
 
         public DamageAndPush(Game game, Unit unit, int strength, SkillPoints skillPoints)
         {
@@ -30,6 +33,7 @@ namespace Lupus.Behaviours.Attack
             Id = unit.Id + " DamageAndPush";
             game.GameObjects.Add(Id, this);
             unit.Owner.GameObjects.Add(Id, this);
+            Agent = new ActionAgent(game, this);
         }        
 
         public virtual async Task DamageAndPushUnit(Direction direction)
@@ -46,6 +50,7 @@ namespace Lupus.Behaviours.Attack
                 await targetUnit.Health?.Damage(Strength);
 
             game.History.AddMove(new DamageAndPushHistory(Id, direction));
+            await Agent.ActionUsed();
         }
 
         protected Tile GetTarget(Direction direction)
@@ -60,6 +65,13 @@ namespace Lupus.Behaviours.Attack
         {
             game.RemoveObject(Id);
             return Task.CompletedTask;
+        }
+
+        public int GetAvailableActions()
+        {
+            if (this.SkillPoints.CurrentPoints >= 1)
+                return 1;
+            return 0;
         }
     }
 }

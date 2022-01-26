@@ -18,7 +18,8 @@ namespace Lupus.Behaviours
 
         public SkillPoints(Game game, Unit unit, int points)
         {
-            MaxPoints = CurrentPoints = points;
+            MaxPoints = points;
+            CurrentPoints = 0;
             Game = game;
             Unit = unit;
             game.TurnResolver.StartTurnEvent += StartTurn;

@@ -11,7 +11,8 @@ namespace Lupus
         private Game Game { get; set; }
         private List<Player> Players { get; set; }
         public List<Player> ActivePlayers { get; set; } = new List<Player>();
-        private List<List<Player>> TurnOrder { get; set; } = new List<List<Player>>();
+        public List<List<Player>> TurnOrder { get; set; } = new List<List<Player>>();
+        public event Func<List<Player>, Task> EndTurnEvent;
         public event Func<List<Player>, Task> StartTurnEvent;
         public int ActiveGroupIndex { get; set; }
 
@@ -33,6 +34,7 @@ namespace Lupus
             ActivePlayers.Remove(player);
             if (ActivePlayers.Count == 0)
             {
+                await RaiseEndTurnEvent(this.TurnOrder[this.ActiveGroupIndex]);
                 ActiveGroupIndex = (ActiveGroupIndex + 1) % TurnOrder.Count;
                 await StartTurn();
             }
@@ -49,6 +51,12 @@ namespace Lupus
         {
             if (StartTurnEvent != null)
                 await StartTurnEvent.Invoke(ActivePlayers);
+        }
+
+        protected virtual async Task RaiseEndTurnEvent(List<Player> players)
+        {
+            if (EndTurnEvent != null)
+                await EndTurnEvent.Invoke(players);
         }
     }
 }

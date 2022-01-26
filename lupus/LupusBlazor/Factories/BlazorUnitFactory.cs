@@ -75,7 +75,7 @@ namespace LupusBlazor.Factories
         {
             var chests = Game.GameObjects.Values.OfType<BlazorChest>().ToList();
             var zones = Game.GameObjects.Values.OfType<Zone>().ToList();
-            var winCondition = new BlazorGatherChestsWinCondition(Game, Game.Players, zones, 20, chests.Cast<Unit>().ToList());
+            var winCondition = new BlazorGatherChestsWinCondition(Game, Game.Players, zones, 10, chests.Cast<Unit>().ToList());
             Game.GameObjects.Add("WinCondition", winCondition);
         }
     }

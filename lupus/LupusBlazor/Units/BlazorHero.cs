@@ -46,7 +46,7 @@ namespace LupusBlazor.Units
                 { "ShortDamagedFromWest",  new string[] {   "units", "hero", "shortDamagedFromWest" } },
             })
         {
-            Health = BlazorHealth = new BlazorHealth(game, jSRuntime, this, 20);
+            Health = BlazorHealth = new BlazorHealth(game, jSRuntime, this, 10);
             SkillPoints = new BlazorSkillPoints(game, this, 1);
             DamageAndPush = new BlazorDamageAndPush(game, this, 1, SkillPoints, jSRuntime);
             BlazorMove = new BlazorMove(game, game.BlazorMap, this, 3, jSRuntime, SkillPoints);

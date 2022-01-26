@@ -70,7 +70,7 @@ namespace Lupus.Factories
         {
             var chests = Game.GameObjects.Values.OfType<Chest>().ToList();
             var zones = Game.GameObjects.Values.OfType<Zone>().ToList();
-            var winCondition = new GatherChestsWinCondition(Game, Game.Players, zones, 20, chests.Cast<Unit>().ToList());
+            var winCondition = new GatherChestsWinCondition(Game, Game.Players, zones, 10, chests.Cast<Unit>().ToList());
             Game.GameObjects.Add("WinCondition", winCondition);
         }
     }
