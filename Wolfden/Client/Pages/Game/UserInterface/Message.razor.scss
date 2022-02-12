@@ -1,6 +1,6 @@
 ﻿/// <reference path = "UI.scss">
 
-$message-width: 800px;
+$message-width: min(800px, 100vw);
 $message-height: 100px;
 $message-top: calc(50vh - (#{$message-height} / 2));
 $message-left: calc(50vw - (#{$message-width} / 2));
