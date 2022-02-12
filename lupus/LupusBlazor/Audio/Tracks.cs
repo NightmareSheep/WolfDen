@@ -18,6 +18,7 @@ namespace LupusBlazor.Audio
         ExploringTheUnkown,
         MysteriousDungeon,
         DecisiveBattle,
-        TheFinalOfTheFantasy
+        TheFinalOfTheFantasy,
+        WolfDen
     }
 }

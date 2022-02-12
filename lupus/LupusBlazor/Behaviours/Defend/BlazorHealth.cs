@@ -68,7 +68,8 @@ namespace LupusBlazor.Behaviours.Defend
 
         public async Task Dispose()
         {
-            await this.text.Dispose();
+            if (text != null)
+                await this?.text?.Dispose();
         }
 
         

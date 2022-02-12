@@ -2,6 +2,8 @@
 declare var Howler: any;
 
 var sounds = {};
+
+
 window["sounds"] = sounds;
 
 function addSound(name, src, loop = true, duration: number = 0, intro: number = 0, outro: number = 0) {
@@ -65,4 +67,15 @@ function stopSound(name, volume: number) {
         sound.fade(0.2, 0, 500);
         console.log("stop sound: " + name);
     }
+}
+
+var soundEffects;
+$.getJSON("mygameaudio.json", function (data) {
+    soundEffects = new Howl(data);
+});
+
+
+function playSoundEffect(name: string, volume: number) {
+    soundEffects.volume(volume);
+    soundEffects.play(name);
 }

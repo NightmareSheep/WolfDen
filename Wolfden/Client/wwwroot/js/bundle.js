@@ -52,6 +52,14 @@ function stopSound(name, volume) {
         console.log("stop sound: " + name);
     }
 }
+var soundEffects;
+$.getJSON("mygameaudio.json", function (data) {
+    soundEffects = new Howl(data);
+});
+function playSoundEffect(name, volume) {
+    soundEffects.volume(volume);
+    soundEffects.play(name);
+}
 class BlazorPixiHelper {
     Initialize() {
         Sprites = {};

@@ -96,7 +96,7 @@ namespace Lobbies
             if (positionSlot?.LobbyPlayer == null) return false;
             positionSlot.LobbyPlayer.Ready = ready;
 
-            if (Slots.All(slot => slot.LobbyPlayer == null || slot.LobbyPlayer.Ready) && Slots.Where(slot => slot.LobbyPlayer != null).Select(slot => slot.Team).Distinct().Count() > 1)
+            if (Slots.All(slot => slot?.LobbyPlayer?.Ready ?? false) && Slots.Where(slot => slot.LobbyPlayer != null).Select(slot => slot.Team).Distinct().Count() > 1)
             {
                 await StartGame();
                 return true;

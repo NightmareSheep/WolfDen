@@ -128,8 +128,11 @@ namespace LupusBlazor.Pixi
         public virtual Task InstantiateJSInstance() { return Task.CompletedTask; }
 
 
+
+        public bool Visible { get; private set; }
         public async Task SetVisibility(bool value)
         {
+            Visible = value;
             await JavascriptHelper.SetJavascriptProperty(new string[] { "visible" }, value, this.JSInstance);
         }
 

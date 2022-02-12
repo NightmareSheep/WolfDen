@@ -53,7 +53,7 @@ namespace LupusBlazor.Pixi
         [JSInvokable]
         public async Task RaiseOnFrameChangeEvent(int frame)
         {
-            if (OnCompleteEvent != null)
+            if (OnFrameChangeEvent != null && Visible)
             {
                 var invocationList = OnFrameChangeEvent.GetInvocationList().Cast<Func<int, Task>>();
                 foreach (var subscriber in invocationList)

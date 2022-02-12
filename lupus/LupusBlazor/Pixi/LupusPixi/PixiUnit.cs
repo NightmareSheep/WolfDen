@@ -114,6 +114,13 @@ namespace LupusBlazor.Pixi.LupusPixi
 
         public async Task QueueAnimation(Animations name, Direction direction)
         {
+            var id = new AnimationAndDirection(name, direction);
+            this.UnitAnimations.TryGetValue(id, out var instance);
+
+            if (instance == null)
+                return;
+
+
             var action = async () =>
             {
                 await this.PlayAnimation(name, direction);
@@ -136,7 +143,10 @@ namespace LupusBlazor.Pixi.LupusPixi
             this.UnitAnimations.TryGetValue(id, out var instance);
 
             if (instance == null)
+            {
+                await ActionQueue.ContinueQueue();
                 return;
+            }
             
             if (this.CurrentAnimation != null && this.CurrentAnimation != instance)
                 await this.CurrentAnimation.End();
@@ -162,6 +172,7 @@ namespace LupusBlazor.Pixi.LupusPixi
 
             Clickable.Dispose();
             await this.Container.Dispose();
+            await ActionQueue.ContinueQueue();
         }
     }
 }

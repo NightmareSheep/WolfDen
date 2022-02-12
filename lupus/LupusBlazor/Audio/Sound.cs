@@ -28,9 +28,10 @@ namespace LupusBlazor.Audio
             Outro = outro;
         }
 
-        public async Task Initialize()
+        public async Task<Sound> Initialize()
         {
             await this.IJSRuntime.InvokeVoidAsync("addSound", this.Name, this.AssetPath, Loop, Duration, Intro, Outro);
+            return this;
         }
 
         public async Task Play(int volume)

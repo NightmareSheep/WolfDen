@@ -47,15 +47,26 @@ namespace LupusBlazor.Pixi.LupusPixi
 
 
         public virtual async Task Play()
-        {
-            await this.Sprite.Play();
-            await this.Sprite.SetVisibility(true);
+        {                
+            
+            if (!this.Sprite.Loop)
+            {
+                await this.Sprite.GotoAndPlay(0);
+                await this.Sprite.SetVisibility(true);
+                await Sprite.RaiseOnFrameChangeEvent(0);
+            }
+            else
+            {
+                await this.Sprite.SetVisibility(true);
+                await Sprite.Play();
+            }
+            
         }
 
         public virtual async Task End()
         {
             if (!Sprite.Loop)
-                await this.Sprite.GotoAndStop(0);
+                await this.Sprite.Stop();
             await this.Sprite.SetVisibility(false);
         }
 

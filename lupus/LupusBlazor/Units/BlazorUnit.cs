@@ -68,6 +68,7 @@ namespace LupusBlazor.Units
         public async Task ClickUnit()
         {
             await Game.AudioPlayer.PlaySound(Audio.Effects.CoolInterfaceClickTone);
+            await PixiUnit.QueueAnimation(Animations.Cheer);
             await Game.RaiseClickEvent(this);
             await this.PixiUnit.AnimationContainer.AddFilter(PixiFilters.Filters[PixiFilter.GlowFilter]);
             await Game.UI.UnitUI.ResetCharacterUI();
@@ -115,11 +116,14 @@ namespace LupusBlazor.Units
         public async override Task Destroy()
         {
             await base.Destroy();
+
             Game.ClickEvent -= Click;
             Game.TurnResolver.StartTurnEvent -= this.StartTurn;
             Game.UI.MouseRightClickEvent -= RightClick;
-            await this.BlazorHealth.Dispose();
-            await this.PixiUnit.Dispose();
+            if (BlazorHealth != null)
+                await BlazorHealth.Dispose();
+            if (PixiUnit != null)
+                await PixiUnit.Dispose();
             
         }
 

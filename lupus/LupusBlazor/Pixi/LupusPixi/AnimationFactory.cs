@@ -16,6 +16,7 @@ namespace LupusBlazor.Pixi.LupusPixi
         public Application Application { get; }
         public AudioPlayer Audioplayer { get; }
         private JavascriptHelperModule JavascriptHelper { get; set; }
+        private Random random = new Random();
 
         public AnimationFactory(IJSRuntime jSRuntime, Application application, AudioPlayer audioplayer)
         {
@@ -34,6 +35,7 @@ namespace LupusBlazor.Pixi.LupusPixi
         {
             Animation result;
             var audioPlayer = this.Audioplayer;
+            List<string> sounds = new();
 
             switch (animation)
             {
@@ -65,37 +67,68 @@ namespace LupusBlazor.Pixi.LupusPixi
                     if (result == null) { return null; }
 
                     Effects soundEffect = Effects.none;
-                    if (animation == Animations.Attack)
-                        soundEffect = Effects.SwordStrikesArmor;
+                    //if (animation == Animations.Attack)
+                    //    soundEffect = Effects.SwordStrikesArmor;
                     if (animation == Animations.MissedAttack)
                         soundEffect = Effects.DaggerWoosh;
-                    if (animation == Animations.Pull)
-                        soundEffect = Effects.TakeASipOfWater;
+                    //if (animation == Animations.Pull)
+                    //    soundEffect = Effects.TakeASipOfWater;
 
-                    result.Sprite.OnFrameChangeEvent += async (int frame) => { if (frame == 1) { await audioPlayer.PlaySound(soundEffect); } };
+                    sounds = GetSounds(GetWeaponString(actor), "Hit");                    
+
+                    result.Sprite.OnFrameChangeEvent += async (int frame) => { 
+                        if (frame == 1) {
+                            if (animation == Animations.MissedAttack)
+                                await audioPlayer.PlaySound(Effects.DaggerWoosh);
+                            else
+                            {
+                                var random = this.random.Next(sounds.Count);
+                                if (sounds.Count > 0)
+                                    await audioPlayer.PlaySoundEffect(sounds[random]);
+                            }
+                        } 
+                    };
                     result.QueueFrame = 2;
                     if (direction == Direction.West)
                         result.Sprite.ScaleX = -1f;
                     return result;
                 case Animations.ShortDamaged:
-                    switch (direction)
-                    {
-                        case Direction.North:
-                            return await GetDirectionAnimation(actor, Direction.North, "damaged", new() { 120, 80, 80, 80 }, new() { 0, 1, 2, 0 });
-                        case Direction.East:
-                            return await GetDirectionAnimation(actor, Direction.East, "damaged", new() { 120, 80, 80, 80 }, new() { 0, 1, 2, 0 });
-                        case Direction.South:
-                            return await GetDirectionAnimation(actor, Direction.South, "damaged", new() { 120, 80, 80, 80 }, new() { 0, 1, 2, 0 });
-                        case Direction.West:
-                            result = await GetDirectionAnimation(actor, Direction.East, "damaged", new() { 120, 80, 80, 80 }, new() { 0, 1, 2, 0 });
-                            if (result == null) { return null; }
-                            result.Sprite.ScaleX = -1f;
-                            return result;
-                    }
-                    break;
+                    sounds = GetSounds(actor, "Hit");
+
+                    result = await GetDirectionAnimation(actor, direction == Direction.West ? Direction.East : direction, "damaged", new() { 120, 80, 80, 80 }, new() { 0, 1, 2, 0 });
+                    if (result == null)
+                        return null;
+                    if (direction == Direction.West)
+                        result.Sprite.ScaleX = -1;
+                    result.Sprite.OnFrameChangeEvent += async (int frame) => {
+                        if (frame == 0)
+                        {
+                            var random = this.random.Next(sounds.Count);
+                            if (sounds.Count > 0)
+                                await audioPlayer.PlaySoundEffect(sounds[random]);
+                        }
+                    };
+
+                    return result;
                 case Animations.Open:
                     result = await GetDirectionAnimation(actor, Direction.None, "opening", new() { 4, 80, 80, 640 }, new() { 0, 1, 2, 3 });
                     return result;
+                case Animations.Cheer:
+                    result = await GetDirectionAnimation(actor, Direction.None, "cheer", new() { 80, 80, 640, 80 }, new() { 0, 1, 2, 1 });
+                    if (result == null) { return null; }
+                    sounds = GetSounds(actor, "What");
+                    result.Sprite.OnFrameChangeEvent += async (int frame) => { 
+                        if (frame == 0) {
+                            var random = this.random.Next(sounds.Count);
+                            if (sounds.Count > 0)
+                                await audioPlayer.PlaySoundEffect(sounds[random]);
+                        }
+                    };
+                    hitArea = await JavascriptHelper.InstantiateJavascriptClass(new string[] { "PIXI", "Rectangle" }, new() { -8, -8, 16, 16 });
+                    await JavascriptHelper.SetJavascriptProperty(new string[] { "hitArea" }, hitArea, result.Sprite.JSInstance);
+                    await hitArea.DisposeAsync();
+                    return result;
+
             }
 
             return null;
@@ -108,6 +141,8 @@ namespace LupusBlazor.Pixi.LupusPixi
 
             var xDirection = 0;
             var yDirection = 0;
+            List<string> sounds = new();
+
 
             switch (direction)
             {
@@ -147,6 +182,29 @@ namespace LupusBlazor.Pixi.LupusPixi
                     }
 
                     result = await GetMovingAnimation(sprite, -xDirection, -yDirection, 520, 0);
+                    if (result == null)
+                        return null;
+
+                    await result.Sprite.SetLoop(false);
+                    var baseId = actor.ToString() + "_Hit";
+                    var i = 1;
+                    if (audioPlayer.SoundEffects.Contains(baseId))
+                        sounds.Add(baseId);
+                    while (true)
+                    {                      
+                        var id = baseId + i;
+                        if (audioPlayer.SoundEffects.Contains(id))
+                            sounds.Add(id);
+                        else
+                            break;
+                        i++;
+                    }
+
+                    result.Sprite.OnFrameChangeEvent += async (int frame) => { if (frame == 0) {
+                            var random = this.random.Next(sounds.Count);
+                            if (sounds.Count > 0)
+                                await audioPlayer.PlaySoundEffect(sounds[random]); 
+                        } };
                     return result;
                     
 
@@ -244,6 +302,49 @@ namespace LupusBlazor.Pixi.LupusPixi
                 default:
                     return "up";
             }
+        }
+
+        private List<string> GetSounds(Actors actor, string soundId)
+        {
+            return GetSounds(actor.ToString(), soundId);
+        }
+
+        private List<string> GetSounds(string actorId, string soundId)
+        {
+            var sounds = new List<string>();
+            var baseId = actorId + "_" + soundId;
+            var i = 1;
+            if (Audioplayer.SoundEffects.Contains(baseId))
+                sounds.Add(baseId);
+            while (true)
+            {
+                var id = baseId + i;
+                if (Audioplayer.SoundEffects.Contains(id))
+                    sounds.Add(id);
+                else
+                    break;
+                i++;
+            }
+            return sounds;
+        }
+
+        private string GetWeaponString(Actors actor)
+        {
+            switch (actor)
+            {
+                case Actors.Hero:
+                    return "Sword";
+                case Actors.Grunt:
+                    return "Axe";
+                case Actors.Goblin:
+                    return "Dagger";
+                case Actors.Slime:
+                    return "Slime";
+            }
+                
+
+            return "";
+
         }
 
         

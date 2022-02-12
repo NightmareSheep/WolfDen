@@ -1,4 +1,5 @@
-﻿using Microsoft.JSInterop;
+﻿using LupusBlazor.Audio.Json;
+using Microsoft.JSInterop;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,14 +24,23 @@ namespace LupusBlazor.Audio
 
         Dictionary<Tracks, Sound> MusicLibrary = new();
         Dictionary<Effects, Sound> EffectsLibrary = new();
+        public List<string> SoundEffects = new();
         Sound CurrentTrack { get; set; }
+        public AudioJson AudioJson { get; }
 
         public AudioPlayer(IJSRuntime jSRuntime, int masterVolume, int musicVolume, int effectsVolume)
         {
+            
+
             JSRuntime = jSRuntime;
             MasterVolume = masterVolume;
             MusicVolume = musicVolume;
             EffectsVolume = effectsVolume;
+        }
+
+        public AudioPlayer(IJSRuntime jSRuntime, int masterVolume, int musicVolume, int effectsVolume, AudioJson audioJson) : this(jSRuntime, masterVolume, musicVolume, effectsVolume)
+        {
+            AudioJson = audioJson;
         }
 
         public async Task Initialize()
@@ -52,6 +62,12 @@ namespace LupusBlazor.Audio
                 var sound = new Sound(effect.ToString(), "game/audio/effects/" + effect.ToString() + ".wav", this.JSRuntime, false);
                 await sound.Initialize();
                 EffectsLibrary.Add(effect, sound);
+            }
+
+            if (AudioJson != null)
+            {
+                foreach (var effect in AudioJson.Sprite.Keys)
+                    this.SoundEffects.Add(effect);
             }
         }
 
@@ -141,6 +157,13 @@ namespace LupusBlazor.Audio
             }
         }
 
+        public async Task PlaySoundEffect(string name)
+        {
+            if (!this.SoundEffects.Contains(name))
+                return;
+
+            await this.JSRuntime.InvokeVoidAsync("playSoundEffect", name, this.EffectsVolume);
+        }
 
     }
 }
