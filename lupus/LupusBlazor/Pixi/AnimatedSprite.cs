@@ -13,7 +13,7 @@ namespace LupusBlazor.Pixi
         public List<IJSObjectReference> Textures { get;}
         public List<int> Times { get; }
         public event Func<Task> OnCompleteEvent;
-        private DotNetObjectReference<AnimatedSprite> ObjRef { get; set; }
+        
 
         public AnimatedSprite(IJSRuntime jSRuntime, List<IJSObjectReference> textures, List<int> times, IJSObjectReference instance = null, JavascriptHelperModule javascriptHelper = null) : base(jSRuntime, null, instance, javascriptHelper)
         {
@@ -26,7 +26,7 @@ namespace LupusBlazor.Pixi
             await base.Initialize();            
             
 
-            this.ObjRef = DotNetObjectReference.Create(this);
+            
             await this.JavascriptHelper.SetJavascriptFunctionProperty(this.ObjRef, "RaiseOnCompleteEvent", new string[] { "onComplete" }, this.JSInstance);
             await this.JavascriptHelper.SetJavascriptFunctionProperty(this.ObjRef, "RaiseOnFrameChangeEvent", new string[] { "onFrameChange" }, this.JSInstance);
 
@@ -89,7 +89,7 @@ namespace LupusBlazor.Pixi
         public override async Task Dispose()
         {
             await base.Dispose();
-            this.ObjRef.Dispose();
+            
         }
     }
 

@@ -91,9 +91,9 @@ app.UseEndpoints(endpoints =>
 
 
 var gameFactory = new GameFactory(new List<Player>() { new Player() { Id = "Guest_Test", Color = KnownColor.Red, Name = "TestPlayer" } });
-var mapString = File.ReadAllText(app.Environment.WebRootPath + "/game/maps/Level1/Level1.json");
+var mapString = File.ReadAllText(app.Environment.WebRootPath + "/game/maps/Duel 2/Duel 2.json");
 var jsonMap = JsonConvert.DeserializeObject<JsonMap>(mapString);
-var game = gameFactory.GetGame(jsonMap, "Level1").Result;
+var game = gameFactory.GetGame(jsonMap, "Duel 2").Result;
 game.Id = new Guid("4e0f20d6-3cc2-456c-9a04-e400d7f5a634");
 ConcurrencyObjects.AddObject(game.Id, game);
 

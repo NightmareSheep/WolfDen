@@ -100,6 +100,20 @@ namespace LupusBlazor.Pixi
         public IJSRuntime JSRuntime { get; }
         protected JavascriptHelperModule JavascriptHelper { get; set; }
         public PixiApplicationModule PixiApplicationModule { get; set; }
+        protected DotNetObjectReference<DisplayObject> ObjRef { get; set; }
+
+        public event Func<Task> ClickEvent;
+
+        [JSInvokable]
+        public async Task RaiseClickEvent()
+        {
+            if (ClickEvent != null)
+            {
+                var invocationList = ClickEvent.GetInvocationList().Cast<Func<Task>>();
+                foreach (var subscriber in invocationList)
+                    await subscriber();
+            }
+        }
 
         public async Task On<T>(string id, DotNetObjectReference<T> csObject, string functionName) where T : class
         {
@@ -122,7 +136,9 @@ namespace LupusBlazor.Pixi
         {
             JavascriptHelper = await JavascriptHelperModule.GetInstance(JSRuntime);
             PixiApplicationModule = await PixiApplicationModule.GetInstance(JSRuntime);
+            this.ObjRef = DotNetObjectReference.Create(this);
             await InstantiateJSInstance();
+            await OnClick(this.ObjRef, "RaiseClickEvent");
         }
 
         public virtual Task InstantiateJSInstance() { return Task.CompletedTask; }
@@ -140,6 +156,7 @@ namespace LupusBlazor.Pixi
         {
             await this.JSInstance.InvokeVoidAsync("destroy");
             await this._JSInstance.DisposeAsync();
+            this.ObjRef.Dispose();
         }
 
         public async Task AddFilter(IJSObjectReference filter)

@@ -67,7 +67,6 @@ namespace LupusBlazor.Behaviours.Movement
             for (int i = 0; i < dist.Length; i++)
                 if (dist[i] > 0 && dist[i] <= Speed)
                     indices.Add(i);
-
             for (var i = indices.Count - 1; i >= 0; i--)
             {
                 var index = indices[i];
@@ -75,7 +74,6 @@ namespace LupusBlazor.Behaviours.Movement
                 if (tile.Unit != null)
                     indices.Remove(index);
             }
-
             await MovementIndicators.Spawn(indices.ToArray());
             Prev = prev;
             Dist = dist;

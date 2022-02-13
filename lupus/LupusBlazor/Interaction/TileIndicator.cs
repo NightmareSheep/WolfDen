@@ -13,6 +13,7 @@ namespace LupusBlazor.Behaviours.Movement
 {
     public class TileIndicator
     {
+
         private Clickable Clickable { get; set; }
         private DotNetObjectReference<Clickable> ObjRef { get; }
         public BlazorGame Game { get; }
@@ -21,9 +22,9 @@ namespace LupusBlazor.Behaviours.Movement
         public KnownColor Tint { get; }
         private IJSRuntime JSRuntime { get; }
         private Guid Id { get; set; } = Guid.NewGuid();
-        private Sprite sprite;
+        public Sprite Sprite { get; set; }
 
-        public TileIndicator(BlazorGame game, TileIndicators tileIndicators, Tile tile, KnownColor tint, IJSRuntime jSRuntime)
+        public TileIndicator(BlazorGame game, TileIndicators tileIndicators, Tile tile, Sprite sprite, KnownColor tint, IJSRuntime jSRuntime)
         {
             Clickable = new Clickable();
             Game = game;
@@ -33,6 +34,7 @@ namespace LupusBlazor.Behaviours.Movement
             JSRuntime = jSRuntime;
             ObjRef = DotNetObjectReference.Create(Clickable);
             Clickable.ClickEvent += Click;
+            this.Sprite = sprite;
         }
 
         public async Task Click()
@@ -42,27 +44,17 @@ namespace LupusBlazor.Behaviours.Movement
 
         public async Task Draw()
         {
-
-            var jsHelper = await JavascriptHelperModule.GetInstance(JSRuntime);
-            var texture = await jsHelper.GetJavascriptProperty<IJSObjectReference>(new string[] { "PIXI", "Texture", "WHITE" });
-            sprite = new Sprite(JSRuntime, texture);
-            await sprite.Initialize();
-            sprite.Interactive = true;
-            await sprite.OnClick(ObjRef, "RaisClickEvent");
-            sprite.Width = 16;
-            sprite.Height = 16;
-            sprite.X = Tile.XCoord();
-            sprite.Y = Tile.YCoord();
-            sprite.Alpha = 0.5f;
-            sprite.Tint = this.Tint;
-            await this.Game.LupusPixiApplication.ViewPort.AddChild(sprite);
-            await texture.DisposeAsync();
+            Sprite.X = Tile.XCoord();
+            Sprite.Y = Tile.YCoord();
+            Sprite.Tint = this.Tint;
+            Sprite.ClickEvent += Click;
+            await this.Game.LupusPixiApplication.ViewPort.AddChild(Sprite);
         }
 
         public async Task Destroy()
         {
-            await this.Game.LupusPixiApplication.ViewPort.RemoveChild(sprite);
-            await (sprite?.Dispose() ?? Task.CompletedTask);
+            this.Sprite.ClickEvent -= Click;
+            await this.Game.LupusPixiApplication.ViewPort.RemoveChild(Sprite);
         }
     }
 }

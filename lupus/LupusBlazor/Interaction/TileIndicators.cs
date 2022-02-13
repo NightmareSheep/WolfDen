@@ -1,5 +1,6 @@
 ﻿using Lupus;
 using LupusBlazor.Behaviours.Movement;
+using LupusBlazor.Pixi;
 using LupusBlazor.Units;
 using Microsoft.JSInterop;
 using System;
@@ -13,6 +14,7 @@ namespace LupusBlazor.Interaction
 {
     public class TileIndicators
     {
+        private static List<Sprite> IndicatorSprites;
         private BlazorGame Game { get; }
         public Map Map { get; }
         private IJSRuntime JSRuntime { get; }
@@ -30,6 +32,7 @@ namespace LupusBlazor.Interaction
             Tint = tint;
             game.TurnResolver.StartTurnEvent += StartTurn;
             game.UI.MouseRightClickEvent += this.RemoveIndicators;
+            game.DrawEvent += InitializeIndicatorSprites;
         }
 
         public async Task StartTurn(List<Player> activePlayers)
@@ -39,16 +42,19 @@ namespace LupusBlazor.Interaction
 
         public async Task Spawn(IEnumerable<int> indices)
         {
+            var indicesList = indices.ToList();
             await RemoveIndicators();
 
-            foreach (var index in indices)
+            for (var i = 0; i < indicesList.Count(); i++)
             {
+                var index = indicesList[i];
                 var tile = Map.GetTile(index);
-                var indicator = new TileIndicator(this.Game, this, tile, this.Tint, JSRuntime);
+                var indicator = new TileIndicator(this.Game, this, tile, IndicatorSprites[i], this.Tint, JSRuntime);
                 Indicators.Add(indicator);
                 await indicator.Draw();
             }
 
+            
         }
 
         public async Task ClickTile(int index)
@@ -75,6 +81,31 @@ namespace LupusBlazor.Interaction
         {
             if (TileClickEvent != null)
                 await TileClickEvent?.Invoke(index);
+        }
+
+        private async Task InitializeIndicatorSprites()
+        {
+            if (TileIndicators.IndicatorSprites != null)
+                return;
+
+
+            var jsHelper = await JavascriptHelperModule.GetInstance(JSRuntime);
+            var texture = await jsHelper.GetJavascriptProperty<IJSObjectReference>(new string[] { "PIXI", "Texture", "WHITE" });
+
+            TileIndicators.IndicatorSprites = new List<Sprite>();
+            for (int i = 0; i < 100; i++)
+            {
+                
+                var sprite = new Sprite(JSRuntime, texture);
+                await sprite.Initialize();
+                sprite.Interactive = true;
+                sprite.Width = 16;
+                sprite.Height = 16;
+                sprite.Alpha = 0.5f;
+                IndicatorSprites.Add(sprite);
+            }
+
+            await texture.DisposeAsync();
         }
     }
 }

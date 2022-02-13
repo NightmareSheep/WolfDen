@@ -30,6 +30,17 @@ namespace LupusBlazor
         public BlazorTurnResolver BlazorTurnResolver { get; }
         public LupusPixiApplication LupusPixiApplication { get; set; }
 
+        public event Func<Task> DrawEvent;
+
+        private async Task RaiseDrawEvent()
+        {
+            if (DrawEvent != null)
+            {
+                var invocationList = DrawEvent.GetInvocationList().Cast<Func<Task>>();
+                foreach (var subscriber in invocationList)
+                    await subscriber();
+            }
+        }
 
         public async Task RaiseClickEvent(object sender)
         {
@@ -66,6 +77,8 @@ namespace LupusBlazor
             {
                 await drawable.Draw();
             }
+
+            await RaiseDrawEvent();
         }
     }
 }
