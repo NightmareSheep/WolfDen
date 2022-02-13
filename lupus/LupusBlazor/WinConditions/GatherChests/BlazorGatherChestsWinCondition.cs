@@ -20,17 +20,25 @@ namespace LupusBlazor.WinConditions.GatherChests
             this.BlazorGame = game;
         }
 
+        protected override async Task StartTurn(List<Player> activePlayers)
+        {
+            
+            await base.StartTurn(activePlayers);
+            UpdateUI();
+
+        }
+
+        private void UpdateUI()
+        {
+            BlazorGame.UI.GatherChestsWinConditionUI.SetScores(this.Teams, this.Scores);
+            BlazorGame.UI.GatherChestsWinConditionUI.SetTurn((CurrentTurn / Teams.Count) + 1, Turns);
+        }
+
         protected override async Task EndTurn(List<Player> activePlayers)
         {
             await base.EndTurn(activePlayers);
 
-
-
-            BlazorGame.UI.GatherChestsWinConditionUI.SetScores(this.Teams, this.Scores);
-            BlazorGame.UI.GatherChestsWinConditionUI.SetTurnsRemaining(Turns - (Math.Abs(CurrentTurn - 1) / Teams.Count));
-
-            if (CurrentTurn == 1)
-                return;
+            
 
             foreach (var chest in Chests)
             {
@@ -39,7 +47,8 @@ namespace LupusBlazor.WinConditions.GatherChests
                     if (chest.Tile == zone.Tile && activePlayers.Contains(zone.Owner))
                     {
                         var blazorUnit = chest as BlazorUnit;
-                        await blazorUnit.PixiUnit.QueueAnimation(Animation.Animations.Open);
+                        if (blazorUnit.PixiUnit != null)
+                            await blazorUnit.PixiUnit.QueueAnimation(Animation.Animations.Open);
                     }
                 }
             }

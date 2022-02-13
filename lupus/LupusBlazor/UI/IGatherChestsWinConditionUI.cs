@@ -11,7 +11,7 @@ namespace LupusBlazor.UI
     {
         public void SetScores(List<List<Player>> players, int[] scores);
 
-        public void SetTurnsRemaining(int turnsRemaining);
+        public void SetTurn(int currentTurn, int maxTurn);
 
         public void AnnounceVictor(string name);
     }

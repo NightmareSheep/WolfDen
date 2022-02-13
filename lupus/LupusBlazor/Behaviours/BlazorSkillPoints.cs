@@ -26,14 +26,18 @@ namespace LupusBlazor.Behaviours
         public override async Task UseSkillPoints(int amount, object spender)
         {
             await base.UseSkillPoints(amount, spender);
+            var pixiUnit = BlazorUnit.PixiUnit;
 
-            if (this.CurrentPoints == 0)
-                await (BlazorUnit?.PixiUnit?.AnimationContainer?.AddFilter(PixiFilters.Filters[PixiFilter.Desaturate]) ?? Task.CompletedTask);
+            if (pixiUnit != null && this.CurrentPoints == 0 && pixiUnit.UnitAnimations.TryGetValue(pixiUnit.BaseAnimation, out var baseAnimation) && baseAnimation?.Sprite != null)           
+                await baseAnimation.Sprite.AddFilter(PixiFilters.Filters[PixiFilter.Desaturate]);
         }
 
         public override async Task StartTurn(List<Player> activePlayers)
         {
-            await (BlazorUnit?.PixiUnit?.AnimationContainer?.RemoveFilter(PixiFilters.Filters[PixiFilter.Desaturate]) ?? Task.CompletedTask);
+            var pixiUnit = BlazorUnit.PixiUnit;
+
+            if (pixiUnit != null && pixiUnit.UnitAnimations.TryGetValue(pixiUnit.BaseAnimation, out var baseAnimation) && baseAnimation?.Sprite != null)
+                await baseAnimation.Sprite.RemoveFilter(PixiFilters.Filters[PixiFilter.Desaturate]);
             await base.StartTurn(activePlayers);
             
         }

@@ -14,7 +14,7 @@ namespace Lupus.WinConditions.GatherChests
         protected List<Zone> Zones { get; set; }
         protected int Turns { get; }
         protected List<Unit> Chests { get; }
-        protected int CurrentTurn { get; set; }
+        protected int CurrentTurn { get; set; } = -1;
         protected int[] Scores { get; set; }
 
         public GatherChestsWinCondition(Game game, List<Player> players, List<Zone> zones, int turns, List<Unit> Chests)
@@ -27,11 +27,14 @@ namespace Lupus.WinConditions.GatherChests
             Scores = new int[Teams.Count];
 
             game.TurnResolver.EndTurnEvent += EndTurn;
-            game.TurnResolver.StartTurnEvent += async (players) => { 
-                CurrentTurn++;
-                if (CurrentTurn > Turns * Teams.Count)
-                    await AnnounceVictor();
-            };
+            game.TurnResolver.StartTurnEvent += StartTurn;
+        }
+
+        protected virtual async Task StartTurn(List<Player> activePlayers)
+        {
+            CurrentTurn++;
+            if (CurrentTurn >= Turns * Teams.Count)
+                await AnnounceVictor();
         }
 
         protected virtual async Task EndTurn(List<Player> activePlayers)
