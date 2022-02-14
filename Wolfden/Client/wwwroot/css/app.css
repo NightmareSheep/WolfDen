@@ -10649,7 +10649,7 @@ textarea.form-control-lg {
   }
 }
 html, body {
-  height: 100%;
+  color: black;
 }
 
 .valid.modified:not([type=checkbox]) {
