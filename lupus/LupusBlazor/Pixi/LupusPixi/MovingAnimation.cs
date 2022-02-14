@@ -79,6 +79,7 @@ namespace LupusBlazor.Pixi.LupusPixi
 
             if (elapsed == 1)
             {
+                Console.WriteLine("Raise onComplete event");
                 await this.RaiseOnCompleteEvent();
                 Application.TickEvent -= Tick;
             }
@@ -88,6 +89,12 @@ namespace LupusBlazor.Pixi.LupusPixi
                 queueDurationExpired = true;
                 await RaiseOnQueueCompleteEvent(this.QueueFrame);
             }
+        }
+
+        public override async Task Dispose()
+        {
+            await base.Dispose();
+            Application.TickEvent -= Tick;
         }
     }
 }

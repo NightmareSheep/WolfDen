@@ -70,7 +70,7 @@ namespace LupusBlazor.Pixi.LupusPixi
             await this.Sprite.SetVisibility(false);
         }
 
-        public async Task Dispose()
+        public virtual async Task Dispose()
         {
             this.Sprite.OnCompleteEvent -= this.RaiseOnCompleteEvent;
             this.Sprite.OnFrameChangeEvent -= this.RaiseOnQueueCompleteEvent;
