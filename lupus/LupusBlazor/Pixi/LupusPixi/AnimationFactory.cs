@@ -266,7 +266,6 @@ namespace LupusBlazor.Pixi.LupusPixi
             if (sprite == null)
                 return null;
             var animation = new Animation(sprite);
-            animation.QueueFrame = 1;
             return animation;
         }
 

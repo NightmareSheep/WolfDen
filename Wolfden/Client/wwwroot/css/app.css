@@ -10649,7 +10649,8 @@ textarea.form-control-lg {
   }
 }
 html, body {
-  color: black;
+  color: white;
+  background-color: darkgray;
 }
 
 .valid.modified:not([type=checkbox]) {
@@ -11181,8 +11182,10 @@ html, body {
 
 #game {
   width: 100%;
-  height: 100%;
   position: relative;
+}
+#game canvas {
+  display: block;
 }
 
 #UI h1, #UI .h1 {

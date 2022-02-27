@@ -61,7 +61,6 @@
 
     public async Task ClickSkill(int index)
     {
-        Console.WriteLine("skill is clicked");
         if (SkillOnClicks.Length > index && SkillOnClicks[index] != null)
             await SkillOnClicks[index]();
     }

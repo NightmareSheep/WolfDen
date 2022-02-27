@@ -12,9 +12,12 @@ namespace LupusBlazor.Pixi.LupusPixi
         public event Func<Task> OnCompleteEvent;
         public event Func<Task> OnQueueCompleteEvent;
         public int QueueFrame = 0;
+        public bool QueueCompleteEventFired = true;
 
         protected async Task RaiseOnCompleteEvent()
         {
+            await RaiseOnQueueCompleteEvent();
+
             if (OnCompleteEvent != null)
             {
                 var invocationList = OnCompleteEvent.GetInvocationList().Cast<Func<Task>>();
@@ -23,16 +26,31 @@ namespace LupusBlazor.Pixi.LupusPixi
             }
         }
 
-        protected async Task RaiseOnQueueCompleteEvent(int currentFrame)
+
+
+        protected async Task CheckQueueFrame(int currentFrame)
         {
-            if (currentFrame != QueueFrame)
+            if (QueueFrame == -1)
                 return;
 
-            if (OnQueueCompleteEvent != null)
+            if (currentFrame >= QueueFrame && !QueueCompleteEventFired)
             {
-                var invocationList = OnQueueCompleteEvent.GetInvocationList().Cast<Func<Task>>();
-                foreach (var subscriber in invocationList)
-                    await subscriber();
+                await RaiseOnQueueCompleteEvent();
+            }
+        }
+
+        protected async Task RaiseOnQueueCompleteEvent()
+        {
+            if (!QueueCompleteEventFired)
+            {
+                QueueCompleteEventFired = true;
+
+                if (OnQueueCompleteEvent != null)
+                {
+                    var invocationList = OnQueueCompleteEvent.GetInvocationList().Cast<Func<Task>>();
+                    foreach (var subscriber in invocationList)
+                        await subscriber();
+                }
             }
         }
 
@@ -40,15 +58,16 @@ namespace LupusBlazor.Pixi.LupusPixi
         {
             this.Sprite = sprite;
             this.Sprite.OnCompleteEvent += this.RaiseOnCompleteEvent;
-            this.Sprite.OnFrameChangeEvent += this.RaiseOnQueueCompleteEvent;
+            this.Sprite.OnFrameChangeEvent += this.CheckQueueFrame;
             if (sprite.Loop)
                 this.QueueFrame = -1;
         }
 
 
         public virtual async Task Play()
-        {                
-            
+        {
+
+            QueueCompleteEventFired = false;
             if (!this.Sprite.Loop)
             {
                 await this.Sprite.GotoAndPlay(0);
@@ -73,7 +92,7 @@ namespace LupusBlazor.Pixi.LupusPixi
         public virtual async Task Dispose()
         {
             this.Sprite.OnCompleteEvent -= this.RaiseOnCompleteEvent;
-            this.Sprite.OnFrameChangeEvent -= this.RaiseOnQueueCompleteEvent;
+            this.Sprite.OnFrameChangeEvent -= this.CheckQueueFrame;
             await this.Sprite.Dispose();
         }
     }
