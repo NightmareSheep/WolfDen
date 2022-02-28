@@ -114,7 +114,7 @@ namespace LupusBlazor.Pixi.LupusPixi
                     result = await GetDirectionAnimation(actor, Direction.None, "opening", new() { 4, 80, 80, 640 }, new() { 0, 1, 2, 3 });
                     return result;
                 case Animations.Cheer:
-                    result = await GetDirectionAnimation(actor, Direction.None, "cheer", new() { 80, 80, 640, 80 }, new() { 0, 1, 2, 1 });
+                    result = await GetDirectionAnimation(actor, Direction.None, "cheer", new() { 80, 80, 220, 80 }, new() { 0, 1, 2, 1 });
                     if (result == null) { return null; }
                     sounds = GetSounds(actor, "What");
                     result.Sprite.OnFrameChangeEvent += async (int frame) => { 

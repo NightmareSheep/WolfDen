@@ -121,7 +121,6 @@ namespace LupusBlazor.Behaviours.Movement
                 await (this.BlazorUnit?.PixiUnit?.QueueAnimation(Animations.Move, direction) ?? Task.CompletedTask);
                 previousTile = tile;
             }
-            await (this.BlazorUnit?.PixiUnit?.QueueAnimation(BlazorUnit.PixiUnit.BaseAnimation) ?? Task.CompletedTask);
 
             await base.MoveOverPath(path);            
         }

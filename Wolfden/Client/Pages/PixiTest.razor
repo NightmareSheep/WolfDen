@@ -36,9 +36,9 @@
     public async Task LoadSprite()
     {
         this.Viewport = await new ViewPort(JSRuntime, this.Application, 3000, 3000).Initialize();
-        this.Unit = new PixiUnit(JSRuntime, this.Application, Statics.AudioPlayer, Actors.Goblin, this.ActionQueue);
+        this.Unit = new PixiUnit(JSRuntime, this.Application, Statics.AudioPlayer, Actors.Goblin);
         await this.Unit.Initialize();
-        this.Unit2 = new PixiUnit(JSRuntime, this.Application, Statics.AudioPlayer, Actors.Goblin, this.ActionQueue);
+        this.Unit2 = new PixiUnit(JSRuntime, this.Application, Statics.AudioPlayer, Actors.Goblin);
         await this.Unit2.Initialize();
 
         this.Unit2.Container.Y = 16;

@@ -102,7 +102,7 @@ namespace LupusBlazor.Units
 
         public async Task Draw()
         {
-            this.PixiUnit = new PixiUnit(this.JSRuntime, this.Game.LupusPixiApplication.Application, this.Game.AudioPlayer, this.Actor, this.Game.ActionQueue, this.ObjRef);
+            this.PixiUnit = new PixiUnit(this.JSRuntime, this.Game.LupusPixiApplication.Application, this.Game.AudioPlayer, this.Actor, this.ObjRef);
             await this.PixiUnit.Initialize();
             this.PixiUnit.Container.X = this.Tile.X * 16 + 8;
             this.PixiUnit.Container.Y = this.Tile.Y * 16 + 8;

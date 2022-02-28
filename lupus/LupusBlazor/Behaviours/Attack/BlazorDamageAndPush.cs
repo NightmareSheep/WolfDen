@@ -71,9 +71,13 @@ namespace LupusBlazor.Behaviours.Attack
 
         public override async Task DamageAndPushUnit(Direction direction)
         {
-            var target = this.GetTarget(direction);
-            var animation = target.Unit != null ? Animations.Attack : Animations.MissedAttack;
-            await (this.Unit?.PixiUnit?.QueueAnimation(animation, direction) ?? Task.CompletedTask);
+            var target = this.unit?.Tile?.GetNeigbour(direction)?.Unit as BlazorUnit;
+            var targetPixiUnit = target?.PixiUnit;
+
+            if (targetPixiUnit == null)
+                await (this.Unit?.PixiUnit?.QueueAnimation(Animations.MissedAttack, direction) ?? Task.CompletedTask);
+            else
+                await (this.Unit?.PixiUnit?.QueueInteraction(Animations.Attack, direction, new List<PixiUnit>() { targetPixiUnit }) ?? Task.CompletedTask);        
             
             await base.DamageAndPushUnit(direction);
         }

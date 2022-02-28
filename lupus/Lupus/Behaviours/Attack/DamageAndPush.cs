@@ -42,7 +42,7 @@ namespace Lupus.Behaviours.Attack
                 return;
 
             await SkillPoints.UseSkillPoints(1, this);
-            var target = GetTarget(direction);
+            var target = this.unit?.Tile?.GetNeigbour(direction);
 
             var targetUnit = target?.Unit;
             await target?.Pushing?.Push(direction);
@@ -51,14 +51,6 @@ namespace Lupus.Behaviours.Attack
 
             game.History.AddMove(new DamageAndPushHistory(Id, direction));
             await Agent.ActionUsed();
-        }
-
-        protected Tile GetTarget(Direction direction)
-        {
-            var directionVector = VectorHelper.GetDirectionVector(direction);
-            var positionVector = new Vector2(unit.Tile.X, unit.Tile.Y);
-            var targetVector = positionVector + directionVector;
-            return Helper.ReturnObjectAtIndexOrDefault(game.Map.Tiles, (int)targetVector.X, (int)targetVector.Y);
         }
 
         public virtual Task Destroy()
