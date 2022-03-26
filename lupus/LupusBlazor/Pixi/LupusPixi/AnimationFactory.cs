@@ -128,6 +128,19 @@ namespace LupusBlazor.Pixi.LupusPixi
                     await JavascriptHelper.SetJavascriptProperty(new string[] { "hitArea" }, hitArea, result.Sprite.JSInstance);
                     await hitArea.DisposeAsync();
                     return result;
+                case Animations.Death:
+                    result = await GetDirectionAnimation(actor, Direction.None, "death", new() { 100, 100, 220, 2000 }, new() { 0, 1, 2, 3 });
+                    if (result == null) { return null; }
+                    sounds = GetSounds(actor, "Death");
+                    result.Sprite.OnFrameChangeEvent += async (int frame) => {
+                        if (frame == 0)
+                        {
+                            var random = this.random.Next(sounds.Count);
+                            if (sounds.Count > 0)
+                                await audioPlayer.PlaySoundEffect(sounds[random]);
+                        }
+                    };
+                    return result;
 
             }
 

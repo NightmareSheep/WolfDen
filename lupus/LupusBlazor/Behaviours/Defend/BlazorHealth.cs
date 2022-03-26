@@ -66,6 +66,12 @@ namespace LupusBlazor.Behaviours.Defend
             await this.Draw();
         }
 
+        protected override async Task Death()
+        {
+            await (BlazorUnit?.PixiUnit?.QueueAnimation(Animations.Death) ?? Task.CompletedTask);
+            await base.Death();
+        }
+
         public async Task Dispose()
         {
             if (text != null)

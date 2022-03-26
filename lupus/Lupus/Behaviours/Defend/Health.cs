@@ -19,10 +19,16 @@ namespace Lupus.Behaviours.Defend
             CurrentHealth -= damage;
             if (CurrentHealth <= 0)
             {
-                await Unit.Destroy();
+                
+                await Death();
             }
 
 
+        }
+
+        protected virtual async Task Death()
+        {
+            await Unit.Destroy();
         }
 
         public Health(Unit unit, int health)

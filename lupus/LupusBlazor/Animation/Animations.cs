@@ -17,6 +17,7 @@ namespace LupusBlazor.Animation
         ShortDamaged,
         Cheer,
         Pull,
-        Open
+        Open,
+        Death
     }
 }
