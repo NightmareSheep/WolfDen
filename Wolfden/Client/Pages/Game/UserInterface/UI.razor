@@ -19,7 +19,9 @@
     
     <div id="menu-panel">
         <div class="buttons">
-            
+            <button class="btn btn-alert" @onclick="Undo">
+                <i class="fa-solid fa-rotate-left"></i>
+            </button>
             <button class="btn btn-secondary" @onclick="OpenWinCondition">
                 <i class="fas fa-trophy "></i>
             </button>
@@ -152,6 +154,11 @@
     private void OpenWinCondition()
     {
         Overlay?.Open(typeof(GatherChestsWinConditionDescription));
+    }
+
+    private async Task Undo()
+    {
+        await blazorGame.Undo.Execute();
     }
 
     private void OpenPlayers()

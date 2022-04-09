@@ -58,5 +58,10 @@ namespace Lupus
             if (EndTurnEvent != null)
                 await EndTurnEvent.Invoke(players);
         }
+
+        public virtual void Reset()
+        {
+            ActiveGroupIndex = 0;
+        }
     }
 }

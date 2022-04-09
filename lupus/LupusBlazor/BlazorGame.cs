@@ -16,6 +16,17 @@ namespace LupusBlazor
 {
     public class BlazorGame : Game
     {
+        public BlazorGame(List<Player> players, Player CurrentPlayer, HubConnection hub, IJSRuntime jSRuntime, IUI ui, AudioPlayer audioPlayer) : base(players)
+        {
+            this.CurrentPlayer = CurrentPlayer;
+            Hub = hub;
+            JSRuntime = jSRuntime;
+            Map = BlazorMap = new BlazorMap(this);
+            AudioPlayer = audioPlayer;
+            UI = ui;
+            UI.BlazorGame = this;
+        }
+
         public event Func<object ,Task> ClickEvent;
 
         public Player CurrentPlayer { get; }
@@ -24,10 +35,7 @@ namespace LupusBlazor
         public BlazorMap BlazorMap { get; }
         public IUI UI { get; }
         public AudioPlayer AudioPlayer { get; }
-
-        public AnimationPlayer AnimationPlayer;
-        public ActionQueue ActionQueue { get; set; }
-        public BlazorTurnResolver BlazorTurnResolver { get; }
+        public BlazorTurnResolver BlazorTurnResolver { get; set; }
         public LupusPixiApplication LupusPixiApplication { get; set; }
 
         public event Func<Task> DrawEvent;
@@ -52,24 +60,19 @@ namespace LupusBlazor
             }
         }
 
-        public BlazorGame(List<Player> players, Player CurrentPlayer, HubConnection hub, IJSRuntime jSRuntime, IUI ui, AudioPlayer audioPlayer) : base(players)
-        {            
-            this.CurrentPlayer = CurrentPlayer;
-            Hub = hub;
-            JSRuntime = jSRuntime;
-            Map = BlazorMap = new BlazorMap(this);
-            AnimationPlayer = new AnimationPlayer(jSRuntime, this);            
-            AudioPlayer = audioPlayer;            
-            this.ActionQueue = new ActionQueue();
-            UI = ui;
-            TurnResolver = BlazorTurnResolver = new BlazorTurnResolver(this, players, CurrentPlayer);
-            UI.BlazorGame = this;
-        }
+        
 
         public async Task Draw()
         {
-            this.LupusPixiApplication = new LupusPixiApplication(this.JSRuntime, this.Map.Width * 16, this.Map.Height * 16);
-            await this.LupusPixiApplication.Initialize();
+            if (this.LupusPixiApplication == null)
+            {
+                this.LupusPixiApplication = new LupusPixiApplication(this.JSRuntime, this.Map.Width * 16, this.Map.Height * 16);
+                await this.LupusPixiApplication.Initialize();
+            }
+            else
+            {
+                await LupusPixiApplication.ViewPort.RemoveChildren();
+            }
 
             await BlazorMap.Draw(JSRuntime);
             var drawables = GameObjects.Values.OfType<IDrawable>();

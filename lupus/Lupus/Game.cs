@@ -12,21 +12,24 @@ namespace Lupus
     {
         public Guid Id { get; set; }
         public Map Map { get; set; }
-        public Dictionary<string, object> GameObjects = new Dictionary<string, object>();
+        public Dictionary<string, object> GameObjects;
         public List<Player> Players { get; set; }
         public History History { get; set; }
         public TurnResolver TurnResolver { get; set; }
-        public ActionTracker ActionTracker { get; }
+        public ActionTracker ActionTracker { get; set; }
+        public GameInitializer GameInitializer { get; }
+        public List<PlayerInfo> PlayerInfos { get; set; }
 
-        public Game(List<Player> players)
+        public Game(List<PlayerInfo> playersInfos)
         {
             Id = Guid.NewGuid();
-            History = new History(this);
+            History = new History(this);            
+            PlayerInfos = playersInfos;
             Map = new Map();
-            Players = players;
-            TurnResolver = new TurnResolver(this, players);
-            ActionTracker = new ActionTracker();
+            GameInitializer = new GameInitializer(this, null);            
         }
+
+        public async Task Initialize() => await GameInitializer.Initialize();
 
         public T GetGameObject<T>(string playerId, string objectId) where T : class
         {
@@ -64,12 +67,6 @@ namespace Lupus
                 var obj = allObjects[i];
                 await obj.Destroy();
             }
-
-            this.GameObjects = null;
-            this.TurnResolver = null;
-            this.History = null;
-            this.Map = null;
-            this.Players = null;
         }
     }
 }
