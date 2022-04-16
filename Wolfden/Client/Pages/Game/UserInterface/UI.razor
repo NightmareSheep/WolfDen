@@ -19,7 +19,7 @@
     
     <div id="menu-panel">
         <div class="buttons">
-            <button class="btn btn-alert" @onclick="Undo">
+            <button class="btn btn-danger" @onclick="ClickUndo">
                 <i class="fa-solid fa-rotate-left"></i>
             </button>
             <button class="btn btn-secondary" @onclick="OpenWinCondition">
@@ -59,18 +59,7 @@
 </div>
 
 @code {
-    private BlazorGame? blazorGame;
-    public BlazorGame? BlazorGame { 
-        get { return this.blazorGame; }
-        set { 
-            this.blazorGame = value;
-            if (blazorGame != null)
-            {
-                blazorGame.BlazorTurnResolver.StartTurnEvent += StartTurn;
-                blazorGame.ActionTracker.ActionUsedEvent += async () => { await UpdateEndTurnButton(); };
-            }
-        } 
-    }
+    public BlazorGame? BlazorGame { get; set; }
 
     private string EndTurnButtonClass = "btn-secondary";
 
@@ -92,6 +81,7 @@
     public event Func<MouseEventArgs, Task> MouseClickEvent;
     public event Func<Task> MouseRightClickEvent;
     public event Func<KeyboardEventArgs, Task> KeyboardPressEvent;
+    public event Func<Task> UndoClickEvent;
 
     public async Task MouseClick(MouseEventArgs e)
     {
@@ -151,14 +141,19 @@
         }
     }
 
+    public async Task ClickUndo()
+    {
+        if (UndoClickEvent != null)
+        {
+            var invocationList = UndoClickEvent.GetInvocationList().Cast<Func<Task>>();
+            foreach (var subscriber in invocationList)
+                await subscriber();
+        }
+    }
+
     private void OpenWinCondition()
     {
         Overlay?.Open(typeof(GatherChestsWinConditionDescription));
-    }
-
-    private async Task Undo()
-    {
-        await blazorGame.Undo.Execute();
     }
 
     private void OpenPlayers()
@@ -183,21 +178,26 @@
         await JS.InvokeVoidAsync("toggleFullScreen");
     }
 
-    private async Task StartTurn(List<Player> players)
+    public async Task StartTurn(List<Player> players)
     {
         await UpdateEndTurnButton(true);
         this.StateHasChanged();
+    }
+
+    public async Task UpdateEndTurnButton()
+    {
+        await UpdateEndTurnButton(false);
     }
 
     public async Task UpdateEndTurnButton(bool startTurn = false)
     {
         var previous = this.EndTurnButtonClass;
 
-        if (!this?.blazorGame?.BlazorTurnResolver?.ActivePlayers?.Contains(this.blazorGame.CurrentPlayer) ?? true)
+        if (!this?.BlazorGame?.BlazorTurnResolver?.ActivePlayers?.Contains(this.BlazorGame.CurrentPlayer) ?? true)
             this.EndTurnButtonClass = "btn-secondary";
         else
         {
-            if (this.blazorGame.ActionTracker.GetAvailableActions() > 0 || startTurn)
+            if (this.BlazorGame.ActionTracker.GetAvailableActions() > 0 || startTurn)
                 this.EndTurnButtonClass = "btn-warning";
             else
                 this.EndTurnButtonClass = "btn-success";

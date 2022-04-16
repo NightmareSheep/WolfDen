@@ -8,6 +8,8 @@ namespace Lupus
 {
     public class Player
     {
+        public Player() { }
+
         public Player(Game game, PlayerInfo playerInfo)
         {
             Id = playerInfo.Id;
@@ -15,8 +17,7 @@ namespace Lupus
             Team = playerInfo.Team;
             Color = playerInfo.Color;
             this.game = game;
-            var undo = new Undo(game);
-            GameObjects["player " + Id + " undo"] = undo;
+            
         }
 
         public string Id { get; set; }

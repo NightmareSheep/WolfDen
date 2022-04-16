@@ -30,14 +30,14 @@ namespace LupusLobbies
             return slot.Color.ChangeColor(color);            
         }
 
-        protected List<Player> GetPlayers()
+        protected List<PlayerInfo> GetPlayers()
         {
-            var players = new List<Player>();
+            var players = new List<PlayerInfo>();
 
             foreach (var slot in this.Slots)
             {
                 var lupusSlot = slot as LupusLobbySlot;
-                var player = new Player();
+                var player = new PlayerInfo();
                 player.Id = lupusSlot.LobbyPlayer.Id;
                 player.Color = lupusSlot.Color.Color;
                 player.Name = lupusSlot.LobbyPlayer.Name;

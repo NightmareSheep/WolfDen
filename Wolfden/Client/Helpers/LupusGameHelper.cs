@@ -35,7 +35,6 @@ namespace WolfDen.Client.Helpers
         public IJSRuntime JSRuntime { get; }
         public string GameId { get; }
         public string MapName { get; set; }
-        private BlazorGameFactory GameFactory { get; set; }
         private DotNetObjectReference<LupusGameHelper> objRef;
 
         public LupusGameHelper(HttpClient httpClient, IJSRuntime jSRuntime, NavigationManager navigationManager, ILoggerProvider loggerProvider, string gameId, IUI UI, string currentPlayerId)
@@ -91,14 +90,12 @@ namespace WolfDen.Client.Helpers
                 Wolfden.Client.Other.Statics.AudioPlayer.SoundEnabled = false;
                 var colorHelper = new ColorHelper();
                 var settings = new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.Auto };
-                var players = JsonConvert.DeserializeObject<List<Player>>(serializedPlayers, settings);
-                GameFactory = new BlazorGameFactory(HttpClient, JSRuntime, HubConnection, UI, players, currentPlayerId, Wolfden.Client.Other.Statics.AudioPlayer);
-
+                var players = JsonConvert.DeserializeObject<List<PlayerInfo>>(serializedPlayers, settings);
                 var mapString = await HttpClient.GetStringAsync("/api/map/" + mapId);
                 var jsonMap = JsonConvert.DeserializeObject<JsonMap>(mapString);
-                Game = await GameFactory.GetBlazorGame(jsonMap, mapId);
-                Game.Id = new Guid(GameId);
-                
+                var playerId = players?.FirstOrDefault(p => p.Id == currentPlayerId) != null ? currentPlayerId : "Guest_Test";
+                Game = new BlazorGame(new Guid(GameId), players, playerId, HubConnection, jSRuntime, UI, Wolfden.Client.Other.Statics.AudioPlayer, jsonMap);
+                await Game.Initialize();
                 var moveHistory = JsonConvert.DeserializeObject<List<IHistoryMove>>(serializedHistory, settings);
                 Game.History.Moves = moveHistory;
                 await Game.History.PlayHistory();

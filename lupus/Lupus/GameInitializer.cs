@@ -13,12 +13,12 @@ namespace Lupus
     {    
         public GameInitializer(Game game, JsonMap jsonMap)
         {
-            mapFactory = new MapFactory(game);
+            mapFactory = new MapLoader(game);
             this.jsonMap = jsonMap;
             this.game = game;
         }
 
-        protected MapFactory mapFactory;
+        protected MapLoader mapFactory;
         protected readonly JsonMap jsonMap;
         protected readonly Game game;
 
@@ -36,8 +36,14 @@ namespace Lupus
 
             game.TurnResolver = new TurnResolver(game, game.Players);
             
+            foreach (var player in game.Players)
+            {
+                var undo = new Undo(game, player);
+                player.GameObjects.Add("player " + player.Id + " undo", undo);
+            }
 
             mapFactory.LoadMap(game, jsonMap, jsonMap.Name);
+            await game.TurnResolver.StartTurn();
             await game.History.PlayHistory();
         }
     }

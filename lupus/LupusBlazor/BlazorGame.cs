@@ -11,29 +11,32 @@ using LupusBlazor.Animation;
 using LupusBlazor.Audio;
 using LupusBlazor.Pixi;
 using LupusBlazor.Pixi.LupusPixi;
+using Lupus.Other.MapLoading;
 
 namespace LupusBlazor
 {
     public class BlazorGame : Game
     {
-        public BlazorGame(List<Player> players, Player CurrentPlayer, HubConnection hub, IJSRuntime jSRuntime, IUI ui, AudioPlayer audioPlayer) : base(players)
+        public BlazorGame(Guid id, List<PlayerInfo> players, string CurrentPlayerId, HubConnection hub, IJSRuntime jSRuntime, IUI ui, AudioPlayer audioPlayer, JsonMap map) : base(id, players, map)
         {
-            this.CurrentPlayer = CurrentPlayer;
+            _currentPlayerId = CurrentPlayerId;
             Hub = hub;
             JSRuntime = jSRuntime;
             Map = BlazorMap = new BlazorMap(this);
             AudioPlayer = audioPlayer;
             UI = ui;
-            UI.BlazorGame = this;
+            GameInitializer = new BlazorGameInitializer(this, map);
         }
 
         public event Func<object ,Task> ClickEvent;
 
-        public Player CurrentPlayer { get; }
+        private string _currentPlayerId;
+        public Player CurrentPlayer { get { return Players.FirstOrDefault(p => p.Id == _currentPlayerId); } }
         public HubConnection Hub { get; }
         public IJSRuntime JSRuntime { get; }
         public BlazorMap BlazorMap { get; }
         public IUI UI { get; }
+        public BlazorUI BlazorUI { get; set; }
         public AudioPlayer AudioPlayer { get; }
         public BlazorTurnResolver BlazorTurnResolver { get; set; }
         public LupusPixiApplication LupusPixiApplication { get; set; }

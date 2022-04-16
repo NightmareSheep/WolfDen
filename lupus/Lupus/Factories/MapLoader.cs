@@ -9,15 +9,14 @@ using System.Threading.Tasks;
 
 namespace Lupus.Factories
 {
-    public class MapFactory
+    public class MapLoader
     {
         protected IUnitFactory UnitFactory { get; set; }
         protected TileFactory TileFactory { get; set; }
         private int Counter { get; set; }
-        private Player Neutral { get; set; }
         private Player NeutralPlayer = new Player() { Id = "Neutral", Name = "Neutral", Team = -100, Color = KnownColor.Gray };
 
-        public MapFactory(Game game)
+        public MapLoader(Game game)
         {
             UnitFactory = new UnitFactory(game);
             TileFactory = new();
@@ -25,6 +24,7 @@ namespace Lupus.Factories
 
         public void LoadMap(Game game, JsonMap jsonMap, string mapName)
         {
+            Counter = 0;
             var map = game.Map;
             map.Tiles = new Tile[jsonMap.Width, jsonMap.Height];
             for (var x = 0; x < map.Tiles.GetLength(0); x++)

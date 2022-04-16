@@ -1,5 +1,6 @@
 ﻿using Lupus.Actions;
 using Lupus.Other;
+using Lupus.Other.MapLoading;
 using Lupus.Units;
 using System;
 using System.Collections.Generic;
@@ -17,16 +18,16 @@ namespace Lupus
         public History History { get; set; }
         public TurnResolver TurnResolver { get; set; }
         public ActionTracker ActionTracker { get; set; }
-        public GameInitializer GameInitializer { get; }
+        public GameInitializer GameInitializer { get; set; }
         public List<PlayerInfo> PlayerInfos { get; set; }
 
-        public Game(List<PlayerInfo> playersInfos)
+        public Game(Guid id, List<PlayerInfo> playersInfos, JsonMap map)
         {
-            Id = Guid.NewGuid();
+            Id = id;
             History = new History(this);            
             PlayerInfos = playersInfos;
             Map = new Map();
-            GameInitializer = new GameInitializer(this, null);            
+            GameInitializer = new GameInitializer(this, map);            
         }
 
         public async Task Initialize() => await GameInitializer.Initialize();
@@ -60,13 +61,29 @@ namespace Lupus
 
         public async Task EndGame()
         {
-            var allObjects = this.GameObjects.Values.OfType<IDestroy>().ToList();
+            var allObjects = this.GameObjects?.Values?.OfType<IDestroy>()?.ToList() ?? new List<IDestroy>();
             for (var i = allObjects.Count - 1; i >= 0; i--)
             {
-                i = Math.Min(i, allObjects.Count - 1);
-                var obj = allObjects[i];
-                await obj.Destroy();
+                var index = Math.Min(i, allObjects.Count - 1);
+                var obj = allObjects[index];
+                try
+                {
+                    await obj.Destroy();
+                }
+                catch (Exception ex)
+                {
+
+                }
             }
+
+            var disposableObjects = this.GameObjects?.Values?.OfType<IDisposable>()?.ToList() ?? new List<IDisposable>();
+            for (var i = disposableObjects.Count - 1; i >= 0; i--)
+            {
+                var index = Math.Min(i, disposableObjects.Count - 1);
+                var obj = disposableObjects[index];
+                obj.Dispose();
+            }
+            
         }
     }
 }

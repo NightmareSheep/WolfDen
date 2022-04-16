@@ -16,9 +16,12 @@ namespace LupusBlazor.UI
         Task SetPlayers(List<Player> players, List<Player> activePlayers, Player currentPlayer);
         Task DoneLoading();
         Task ShowMessage(string text);
+        Task UpdateEndTurnButton();
+        Task StartTurn(List<Player> players);
 
         event Func<Task> EndTurnButtonClickedEvent;
         event Func<MouseEventArgs, Task> MouseClickEvent;
         event Func<Task> MouseRightClickEvent;
+        event Func<Task> UndoClickEvent;
     }
 }

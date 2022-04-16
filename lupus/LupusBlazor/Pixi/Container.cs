@@ -38,7 +38,7 @@ namespace LupusBlazor.Pixi
         public async Task RemoveChildren()
         {
             if (JSInstance != null)
-                await this.JSInstance.InvokeVoidAsync("removeChilden");
+                await this.JSInstance.InvokeVoidAsync("removeChildren");
         }
 
 

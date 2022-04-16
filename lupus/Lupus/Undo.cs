@@ -10,10 +10,15 @@ namespace Lupus
     {
         private readonly Game game;
 
-        public Undo(Game game)
+        public Undo(Game game, Player owner)
         {
             this.game = game;
+            Owner = owner;
+            Id = "player " + owner.Id + " undo";
         }
+
+        public Player Owner { get; }
+        public string Id { get; }
 
         public async Task Execute()
         {

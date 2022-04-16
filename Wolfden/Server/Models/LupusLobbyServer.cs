@@ -9,6 +9,7 @@ using Wolfden.Server.Other;
 using System.IO;
 using Newtonsoft.Json;
 using Lupus.Other.MapLoading;
+using Lupus;
 
 namespace Wolfden.Server.Models
 {
@@ -24,11 +25,9 @@ namespace Wolfden.Server.Models
         public override async Task StartGame()
         {
             ConcurrencyObjects.RemoveObjectWithoutLocking(Id);
-            var gameFactory = new GameFactory(this.GetPlayers());
             var mapString = File.ReadAllText(WebRootPath + "/game/maps/" + this.MapId + "/" + this.MapId + ".json");
             var jsonMap = JsonConvert.DeserializeObject<JsonMap>(mapString);
-            var game = await gameFactory.GetGame(jsonMap, this.MapId);
-            game.Id = Id;
+            var game = new Game(Id, this.GetPlayers(), jsonMap);
             ConcurrencyObjects.AddObject(Id, game);
         }
     }

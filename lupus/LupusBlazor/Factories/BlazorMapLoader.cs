@@ -9,9 +9,9 @@ using System.Threading.Tasks;
 
 namespace LupusBlazor.Factories
 {
-    public class BlazorMapFactory : MapFactory
+    public class BlazorMapLoader : MapLoader
     {
-        public BlazorMapFactory(BlazorGame game, IJSRuntime jSRuntime) : base(game)
+        public BlazorMapLoader(BlazorGame game, IJSRuntime jSRuntime) : base(game)
         {
             this.UnitFactory = new BlazorUnitFactory(game, jSRuntime);
         }

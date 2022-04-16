@@ -11,8 +11,6 @@ namespace LupusBlazor
     {
         public BlazorPlayer(BlazorGame game, PlayerInfo playerInfo) : base(game, playerInfo)
         {
-            var undo = new BlazorUndo(game);
-            GameObjects["player " + Id + " undo"] = undo;
         }
     }
 }
