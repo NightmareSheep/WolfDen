@@ -36,7 +36,7 @@ namespace LupusBlazor
             foreach (var player in game.Players)
             {
                 var undo = new BlazorUndo(blazorGame, blazorGame.BlazorUI, player as BlazorPlayer);
-                player.GameObjects.Add("player " + player.Id + " undo", undo);
+                player.AddGameObject("player " + player.Id + " undo", undo);
             }
 
             mapFactory.LoadMap(game, jsonMap, jsonMap.Name);

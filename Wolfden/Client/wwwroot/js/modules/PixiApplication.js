@@ -87,3 +87,7 @@ export function SetOnClick(displayObject, csObject, functionName) {
         csObject.invokeMethodAsync(functionName);
     });
 }
+
+export function RemoveOnClick(displayObject, csObject, functionName) {
+    displayObject.removeEventListener("pointertap", myFunction);
+}

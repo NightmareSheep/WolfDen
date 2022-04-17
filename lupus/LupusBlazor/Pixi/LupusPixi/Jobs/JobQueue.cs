@@ -47,8 +47,8 @@ namespace LupusBlazor.Pixi.LupusPixi.Jobs
 
         private async Task RaiseQueueEmptyEvent()
         {
-            var invocationList = QueueEmptyEvent.GetInvocationList().Cast<Func<Task>>();
-            foreach (var subscriber in invocationList ?? Enumerable.Empty<Func<Task>>())
+            var invocationList = QueueEmptyEvent?.GetInvocationList()?.Cast<Func<Task>>() ?? Enumerable.Empty<Func<Task>>();
+            foreach (var subscriber in invocationList)
                 await subscriber();
         }
     }

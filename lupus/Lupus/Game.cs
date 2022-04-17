@@ -52,28 +52,25 @@ namespace Lupus
 
         public void RemoveObject(string id)
         {
+
             GameObjects.Remove(id);
             foreach (var player in Players)
             {
-                player.GameObjects.Remove(id);
+                player.RemoveGameObject(id);
             }
         }
 
         public async Task EndGame()
         {
+            TurnResolver?.Dispose();
+
             var allObjects = this.GameObjects?.Values?.OfType<IDestroy>()?.ToList() ?? new List<IDestroy>();
             for (var i = allObjects.Count - 1; i >= 0; i--)
             {
                 var index = Math.Min(i, allObjects.Count - 1);
                 var obj = allObjects[index];
-                try
-                {
-                    await obj.Destroy();
-                }
-                catch (Exception ex)
-                {
+                await obj.Destroy();
 
-                }
             }
 
             var disposableObjects = this.GameObjects?.Values?.OfType<IDisposable>()?.ToList() ?? new List<IDisposable>();

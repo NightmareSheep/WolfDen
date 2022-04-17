@@ -66,8 +66,6 @@
         await this.Unit2.Container.AddFilter(PixiFilters.Filters[PixiFilter.GlowFilter]);
 
         await this.Unit2.Container.AddChild(text);
-        Unit2.UnitAnimations[Unit2.BaseAnimation].Sprite.Tint = System.Drawing.KnownColor.Red;
-        Unit2.UnitAnimations[Unit2.BaseAnimation].Sprite.Alpha = 0.5f;
 
         var attack = async () => {
             await Task.Delay(2000);

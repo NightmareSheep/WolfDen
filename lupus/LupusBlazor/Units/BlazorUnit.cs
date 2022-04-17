@@ -22,7 +22,6 @@ namespace LupusBlazor.Units
     {
         public BlazorGame Game { get; }
         private IJSRuntime JSRuntime { get; }
-        public Clickable Clickable { get; }
         public DotNetObjectReference<Clickable> ObjRef { get; }
         public Dictionary<string, string[]> Assets { get; set; }
         protected List<ISkill> Skills { get; set; } = new List<ISkill>();
@@ -40,10 +39,7 @@ namespace LupusBlazor.Units
         {
             Game = game;
             JSRuntime = jSRuntime;
-            Clickable = new Clickable();
-            ObjRef = DotNetObjectReference.Create(Clickable);
             Assets = assets;
-            Clickable.ClickEvent += ClickUnit;
             game.ClickEvent += Click;
             Game.TurnResolver.StartTurnEvent += this.StartTurn;
             Game.UI.MouseRightClickEvent += RightClick;
@@ -102,7 +98,8 @@ namespace LupusBlazor.Units
 
         public async Task Draw()
         {
-            this.PixiUnit = new PixiUnit(this.JSRuntime, this.Game.LupusPixiApplication.Application, this.Game.AudioPlayer, this.Actor, this.ObjRef);
+            this.PixiUnit = new PixiUnit(this.JSRuntime, this.Game.LupusPixiApplication.Application, this.Game.AudioPlayer, this.Actor);
+            PixiUnit.ClickEvent += ClickUnit;
             await this.PixiUnit.Initialize();
             this.PixiUnit.Container.X = this.Tile.X * 16 + 8;
             this.PixiUnit.Container.Y = this.Tile.Y * 16 + 8;
@@ -116,7 +113,7 @@ namespace LupusBlazor.Units
         public async override Task Destroy()
         {
             await base.Destroy();
-
+            PixiUnit.ClickEvent -= ClickUnit;
             Game.ClickEvent -= Click;
             Game.TurnResolver.StartTurnEvent -= this.StartTurn;
             Game.UI.MouseRightClickEvent -= RightClick;
@@ -124,6 +121,7 @@ namespace LupusBlazor.Units
                 await BlazorHealth.Dispose();
             if (PixiUnit != null)
                 await PixiUnit.Dispose();
+            ObjRef?.Dispose();
             
         }
 

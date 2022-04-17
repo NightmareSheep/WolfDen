@@ -39,7 +39,7 @@ namespace Lupus
             foreach (var player in game.Players)
             {
                 var undo = new Undo(game, player);
-                player.GameObjects.Add("player " + player.Id + " undo", undo);
+                player.AddGameObject("player " + player.Id + " undo", undo);
             }
 
             mapFactory.LoadMap(game, jsonMap, jsonMap.Name);

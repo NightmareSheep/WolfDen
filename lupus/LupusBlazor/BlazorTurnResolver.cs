@@ -37,5 +37,10 @@ namespace LupusBlazor
 
             await this.BlazorGame.AudioPlayer.PlaySound(Audio.Effects.TurnEnd);
         }
+
+        public override void Dispose()
+        {
+            BlazorGame.UI.EndTurnButtonClickedEvent -= this.EndTurnButtonClicked;
+        }
     }
 }

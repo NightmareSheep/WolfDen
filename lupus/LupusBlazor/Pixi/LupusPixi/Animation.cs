@@ -8,7 +8,22 @@ namespace LupusBlazor.Pixi.LupusPixi
 {
     public class Animation
     {
+        public Animation(AnimatedSprite sprite, AnimationConfiguration animationConfiguration, AnimationFactory animationFactory)
+        {
+            this.Sprite = sprite;
+            AnimationConfiguration = animationConfiguration;
+            AnimationFactory = animationFactory;
+            this.Sprite.OnCompleteEvent += this.RaiseOnCompleteEvent;
+            this.Sprite.OnFrameChangeEvent += this.CheckQueueFrame;
+            if (sprite.Loop)
+                this.QueueFrame = -1;
+        }
+
+
         public AnimatedSprite Sprite { get; set; }
+        public AnimationConfiguration AnimationConfiguration { get; }
+        public AnimationFactory AnimationFactory { get; }
+
         public event Func<Task> OnCompleteEvent;
         public event Func<Task> OnQueueCompleteEvent;
         public int QueueFrame = 0;
@@ -54,14 +69,7 @@ namespace LupusBlazor.Pixi.LupusPixi
             }
         }
 
-        public Animation(AnimatedSprite sprite)
-        {
-            this.Sprite = sprite;
-            this.Sprite.OnCompleteEvent += this.RaiseOnCompleteEvent;
-            this.Sprite.OnFrameChangeEvent += this.CheckQueueFrame;
-            if (sprite.Loop)
-                this.QueueFrame = -1;
-        }
+        
 
 
         public virtual async Task Play()
@@ -91,9 +99,10 @@ namespace LupusBlazor.Pixi.LupusPixi
 
         public virtual async Task Dispose()
         {
-            this.Sprite.OnCompleteEvent -= this.RaiseOnCompleteEvent;
-            this.Sprite.OnFrameChangeEvent -= this.CheckQueueFrame;
-            await this.Sprite.Dispose();
+            //this.Sprite.OnCompleteEvent -= this.RaiseOnCompleteEvent;
+            //this.Sprite.OnFrameChangeEvent -= this.CheckQueueFrame;
+            //await this.Sprite.Dispose();
+            AnimationFactory.Recycle(AnimationConfiguration, this);
         }
     }
 }

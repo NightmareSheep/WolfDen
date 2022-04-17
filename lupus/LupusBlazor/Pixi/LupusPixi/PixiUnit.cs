@@ -18,63 +18,25 @@ namespace LupusBlazor.Pixi.LupusPixi
         public Application Application { get; }
         public AudioPlayer AudioPlayer { get; }
         public Actors Actor { get; }
-        public DotNetObjectReference<Clickable> Clickable { get; }
         public Container Container { get; private set; }
         public Container AnimationContainer { get; private set; }
         public Container TextContainer { get; private set; }
-        public Dictionary<AnimationAndDirection, Animation> UnitAnimations { get; set; } = new();
+        private Dictionary<AnimationAndDirection, Animation> UnitAnimations { get; set; } = new();
         public JobQueue JobQueue { get; } = new();
+        public event Func<Task> ClickEvent;
 
         public AnimationAndDirection BaseAnimation { get; set; } = new (Animations.Idle, Direction.None);
 
         private Animation CurrentAnimation { get; set; }
 
-        public PixiUnit(IJSRuntime jSRuntime, Application application, AudioPlayer audioPlayer, Actors actor, DotNetObjectReference<Clickable> clickable = null)
+        public PixiUnit(IJSRuntime jSRuntime, Application application, AudioPlayer audioPlayer, Actors actor)
         {
             JSRuntime = jSRuntime;
             Application = application;
             AudioPlayer = audioPlayer;
             Actor = actor;
-            Clickable = clickable;
             JobQueue.QueueEmptyEvent += PlayBaseAnimation;
-        }
-
-        public async Task AddAllAnimations()
-        {
-            var animationFactory = await new AnimationFactory(this.JSRuntime, this.Application, this.AudioPlayer).Initialize();
-
-
-            foreach (var name in (Animations[])Enum.GetValues(typeof(Animations)))
-            {
-                foreach (var direction in (Direction[])Enum.GetValues(typeof(Direction)))
-                {
-                    var animation = await animationFactory.GetAnimation(this.Actor, name, direction);
-                    if (animation != null)
-                        await this.AddAnimation(name, direction, animation);
-
-                    var movingAnimation = await animationFactory.GetMovingAnimation(this.Actor, name, direction);
-                    if (movingAnimation != null)
-                    {
-                        movingAnimation.ContainerToMove = this.Container;
-                        await this.AddAnimation(name, direction, movingAnimation);
-                    }
-                }
-            }
-                    
-        }
-
-        public async Task AddAnimation(Animations name, Animation animation)
-        {
-            await AddAnimation(name, Direction.None, animation);
-        }
-
-        public async Task AddAnimation(Animations name, Direction direction, Animation animation)
-        {
-            var id = new AnimationAndDirection(name, direction);
-            UnitAnimations.Add(id, animation);
-            await this.AnimationContainer.AddChild(animation.Sprite);
-        }
-        
+        }        
 
         public async Task Initialize()
         {
@@ -89,12 +51,21 @@ namespace LupusBlazor.Pixi.LupusPixi
             await this.Container.AddChild(AnimationContainer);
             await this.Container.AddChild(TextContainer);
 
-            await AddAllAnimations();
-
-            if (Clickable != null && this.UnitAnimations.TryGetValue(BaseAnimation, out var animation))
+            var animation = await GetAnimation(BaseAnimation);
+            if (animation != null)
             {
                 animation.Sprite.Interactive = true;
-                await animation.Sprite.OnClick(Clickable, "RaisClickEvent");
+                animation.Sprite.ClickEvent += RaiseClickEvent;
+            }
+        }
+
+        public async Task RaiseClickEvent()
+        {
+            if (ClickEvent != null)
+            {
+                var invocationList = ClickEvent.GetInvocationList().Cast<Func<Task>>();
+                foreach (var subscriber in invocationList)
+                    await subscriber();
             }
         }
 
@@ -108,10 +79,27 @@ namespace LupusBlazor.Pixi.LupusPixi
             await QueueAnimation(animationAndDirection.Animation, animationAndDirection.Direction);
         }
 
+        public async Task<Animation> GetAnimation(AnimationAndDirection animationAndDirection)
+        {
+            Animation animation;
+
+            if (UnitAnimations.TryGetValue(animationAndDirection, out animation))
+                return animation;
+
+            var animationFactory = await AnimationFactory.GetInstance(this.JSRuntime, this.Application, this.AudioPlayer);
+            animation = await animationFactory.GetAnimation(this.Actor, animationAndDirection.Animation, animationAndDirection.Direction);
+            animation ??= await animationFactory.GetMovingAnimation(this.Actor, animationAndDirection.Animation, animationAndDirection.Direction);
+            if (animation is MovingAnimation movingAnimation)
+                movingAnimation.ContainerToMove = this.Container;
+
+            UnitAnimations.Add(animationAndDirection, animation);
+            return animation;
+        }
+
         public async Task QueueAnimation(Animations name, Direction direction)
         {
             var id = new AnimationAndDirection(name, direction);
-            this.UnitAnimations.TryGetValue(id, out var instance);
+            var instance = await GetAnimation(id);
 
             if (instance == null)
                 return;
@@ -124,7 +112,7 @@ namespace LupusBlazor.Pixi.LupusPixi
         public async Task QueueInteraction(Animations name, Direction direction, IEnumerable<PixiUnit> targets)
         {
             var id = new AnimationAndDirection(name, direction);
-            this.UnitAnimations.TryGetValue(id, out var instance);
+            var instance = await GetAnimation(id);
 
             if (instance == null)
                 return;
@@ -152,7 +140,7 @@ namespace LupusBlazor.Pixi.LupusPixi
         public async Task PlayAnimation(Animations name, Direction direction)
         {
             var id = new AnimationAndDirection(name, direction);
-            this.UnitAnimations.TryGetValue(id, out var instance);
+            var instance = await GetAnimation(id);
 
             if (instance != null)
                 await PlayAnimation(instance);
@@ -161,10 +149,14 @@ namespace LupusBlazor.Pixi.LupusPixi
         public async Task PlayAnimation(Animation animation)
         {
             if (this.CurrentAnimation != null && this.CurrentAnimation != animation)
+            {
                 await this.CurrentAnimation.End();
+                await this.AnimationContainer.RemoveChild(CurrentAnimation.Sprite);
+            }
 
             this.CurrentAnimation = animation;
             await animation.Play();
+            await AnimationContainer.AddChild(animation.Sprite);
         }
 
         public async Task PlayBaseAnimation() => await this.PlayAnimation(this.BaseAnimation.Animation, this.BaseAnimation.Direction);
@@ -178,10 +170,13 @@ namespace LupusBlazor.Pixi.LupusPixi
 
         private async Task DisposeAction()
         {
+            var baseAnimation = await GetAnimation(BaseAnimation);
+            if (baseAnimation != null)
+                baseAnimation.Sprite.ClickEvent -= RaiseClickEvent;
+
             foreach (var animation in this.UnitAnimations.Values)
                 await animation.Dispose();
 
-            Clickable.Dispose();
             await this.Container.Dispose();
             JobQueue.QueueEmptyEvent -= PlayBaseAnimation;
         }

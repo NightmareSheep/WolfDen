@@ -14,7 +14,7 @@ namespace Lupus.Factories
         protected IUnitFactory UnitFactory { get; set; }
         protected TileFactory TileFactory { get; set; }
         private int Counter { get; set; }
-        private Player NeutralPlayer = new Player() { Id = "Neutral", Name = "Neutral", Team = -100, Color = KnownColor.Gray };
+        private Player NeutralPlayer;
 
         public MapLoader(Game game)
         {
@@ -25,6 +25,7 @@ namespace Lupus.Factories
         public void LoadMap(Game game, JsonMap jsonMap, string mapName)
         {
             Counter = 0;
+            NeutralPlayer = new Player(game, new PlayerInfo() { Id = "Neutral", Name = "Neutral", Team = -100, Color = KnownColor.Gray });
             var map = game.Map;
             map.Tiles = new Tile[jsonMap.Width, jsonMap.Height];
             for (var x = 0; x < map.Tiles.GetLength(0); x++)

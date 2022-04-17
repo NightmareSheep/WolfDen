@@ -25,7 +25,7 @@ namespace LupusBlazor.Pixi.LupusPixi
         private long startingTime;
         private long queueEndingTime;
 
-        public MovingAnimation(Application application, AnimatedSprite sprite, int xDistance, int yDistance, int duration, int queueDuration = -1, Container containerToMove = null) : base(sprite)
+        public MovingAnimation(Application application, AnimatedSprite sprite, AnimationConfiguration animationConfiguration, AnimationFactory animationFactory, int xDistance, int yDistance, int duration, int queueDuration = -1, Container containerToMove = null) : base(sprite, animationConfiguration, animationFactory)
         {
             QueueFrame = -1;
 
@@ -75,6 +75,8 @@ namespace LupusBlazor.Pixi.LupusPixi
             this.ContainerToMove.X = (int)((float)startingX * (1 - elapsed) + (float)endingX * elapsed);
             this.ContainerToMove.Y = (int)((float)startingY * (1 - elapsed) + (float)endingY * elapsed);
 
+            Console.WriteLine("Container X: " + ContainerToMove.X);
+            Console.WriteLine("Container Y: " + ContainerToMove.Y);
             
 
             if (elapsed == 1)

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Lupus
 {
-    public class TurnResolver
+    public class TurnResolver : IDisposable
     {
         private Game Game { get; set; }
         private List<Player> Players { get; set; }
@@ -62,6 +62,10 @@ namespace Lupus
         public virtual void Reset()
         {
             ActiveGroupIndex = 0;
+        }
+
+        public virtual void Dispose()
+        {
         }
     }
 }

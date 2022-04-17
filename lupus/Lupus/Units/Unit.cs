@@ -62,8 +62,7 @@ namespace Lupus.Units
         public async virtual Task Destroy()
         {
             Tile = null;
-            Game.GameObjects.Remove(Id);
-            Owner.GameObjects.Remove(Id);
+            owner.RemoveGameObject(Id);
 
             foreach(var destroyable in Destroyables)
             {

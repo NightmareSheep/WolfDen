@@ -31,8 +31,7 @@ namespace Lupus.Behaviours.Attack
             Strength = strength;
             SkillPoints = skillPoints;
             Id = unit.Id + " DamageAndPush";
-            game.GameObjects.Add(Id, this);
-            unit.Owner.GameObjects.Add(Id, this);
+            unit.Owner.AddGameObject(Id, this);
             Agent = new ActionAgent(game, this);
         }        
 

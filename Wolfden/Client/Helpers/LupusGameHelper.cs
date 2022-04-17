@@ -70,6 +70,7 @@ namespace WolfDen.Client.Helpers
 
             HubConnection.On<string, string, string, string, JsonElement[], string[]>("DoMove", async (playerId, objectId, typeName, methodName, parameters, parameterTypeNames) =>
             {
+
                 var type = Type.GetType(typeName);
                 var parameterTypes = parameterTypeNames.Select(n => Type.GetType(n)).ToArray();
                 var gameObject = Game.GetGameObject<object>(playerId, objectId);

@@ -29,8 +29,7 @@ namespace LupusBlazor.Factories
         public void AddGrunt(Player player, string id, Tile tile)
         {
             var grunt = new BlazorGrunt(Game, player, id, tile, JSRuntime);
-            Game.GameObjects.Add(grunt.Id, grunt);
-            player.GameObjects.Add(grunt.Id, grunt);
+            player.AddGameObject(grunt.Id, grunt);
         }
 
         public void AddUnit(Player player, uint typeId, string id, Tile tile)
@@ -43,30 +42,25 @@ namespace LupusBlazor.Factories
                     break;
                 case 482:
                     var hero = new BlazorHero(Game, player, id, tile, this.JSRuntime);
-                    Game.GameObjects.Add(hero.Id, hero);
-                    player.GameObjects.Add(hero.Id, hero);
+                    player.AddGameObject(hero.Id, hero);
                     break;
                 case 483:
                     var grunt = new BlazorGrunt(Game, player, id, tile, this.JSRuntime);
-                    Game.GameObjects.Add(grunt.Id, grunt);
-                    player.GameObjects.Add(grunt.Id, grunt);
+                    player.AddGameObject(grunt.Id, grunt);
                     break;
                 case 484:
                     var goblin = new BlazorGoblin(Game, player, id, tile, this.JSRuntime);
-                    Game.GameObjects.Add(goblin.Id, goblin);
-                    player.GameObjects.Add(goblin.Id, goblin);
+                    player.AddGameObject(goblin.Id, goblin);
                     break;
                 case 485:
                     var slime = new BlazorSlime(Game, player, id, tile, this.JSRuntime);
-                    Game.GameObjects.Add(slime.Id, slime);
-                    player.GameObjects.Add(slime.Id, slime);
+                    player.AddGameObject(slime.Id, slime);
                     break;
                 case (>= 491) and (<= 496):
                 case (>= 501) and (<= 506):
                 case (>= 511) and (<= 516):
                     var zone = new BlazorZone(Game, player, id, tile, JSRuntime, (int)typeId - 491);
-                    Game.GameObjects.Add(zone.Id, zone);
-                    player.GameObjects.Add(zone.Id, zone);
+                    player.AddGameObject(zone.Id, zone);
                     break;
             }
         }

@@ -33,8 +33,7 @@ namespace Lupus.Behaviours.Movement
             MovementType = movementType;
             SkillPoints = skillPoints;
             Id = unit.Id + " Move";
-            Game.GameObjects.Add(Id, this);
-            unit.Owner.GameObjects.Add(Id, this);
+            unit.Owner.AddGameObject(Id, this);
             Game.TurnResolver.StartTurnEvent += StartTurn;
             SkillPoints.SkillPointsUsedEvent += SkillPointsUsed;
             Agent = new ActionAgent(game, this);
