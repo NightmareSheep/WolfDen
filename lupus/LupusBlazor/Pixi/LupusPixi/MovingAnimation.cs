@@ -73,11 +73,7 @@ namespace LupusBlazor.Pixi.LupusPixi
             var elapsed = Math.Min(1, (float)elapsedTime / (float)Duration);
 
             this.ContainerToMove.X = (int)((float)startingX * (1 - elapsed) + (float)endingX * elapsed);
-            this.ContainerToMove.Y = (int)((float)startingY * (1 - elapsed) + (float)endingY * elapsed);
-
-            Console.WriteLine("Container X: " + ContainerToMove.X);
-            Console.WriteLine("Container Y: " + ContainerToMove.Y);
-            
+            this.ContainerToMove.Y = (int)((float)startingY * (1 - elapsed) + (float)endingY * elapsed);            
 
             if (elapsed == 1)
             {

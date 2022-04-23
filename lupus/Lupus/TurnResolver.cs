@@ -50,13 +50,21 @@ namespace Lupus
         protected virtual async Task RaiseStartTurnEvent()
         {
             if (StartTurnEvent != null)
-                await StartTurnEvent.Invoke(ActivePlayers);
+            {
+                var invocationList = StartTurnEvent.GetInvocationList().Cast<Func<List<Player>, Task>>();
+                foreach (var subscriber in invocationList)
+                    await subscriber(ActivePlayers);
+            }
         }
 
         protected virtual async Task RaiseEndTurnEvent(List<Player> players)
         {
             if (EndTurnEvent != null)
-                await EndTurnEvent.Invoke(players);
+            {
+                var invocationList = EndTurnEvent.GetInvocationList().Cast<Func<List<Player>, Task>>();
+                foreach (var subscriber in invocationList)
+                    await subscriber(players);
+            }
         }
 
         public virtual void Reset()

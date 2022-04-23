@@ -53,12 +53,13 @@ namespace LupusBlazor.Units
         public async Task Click(object sender)
         {        
             if (sender != this && sender is BlazorUnit)
-                await this.PixiUnit.AnimationContainer.RemoveFilter(PixiFilters.Filters[PixiFilter.GlowFilter]);
+                await this.PixiUnit?.AnimationContainer?.RemoveFilter(PixiFilters.Filters[PixiFilter.GlowFilter]);
         }
 
         private async Task StartTurn(List<Player> players)
         {
-            await this.PixiUnit.AnimationContainer.RemoveFilter(PixiFilters.Filters[PixiFilter.GlowFilter]);
+            if (PixiUnit != null)
+                await this.PixiUnit?.AnimationContainer?.RemoveFilter(PixiFilters.Filters[PixiFilter.GlowFilter]);
         }
 
         public async Task ClickUnit()

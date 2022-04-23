@@ -38,7 +38,7 @@ namespace LupusBlazor.Pixi
         }
 
         [JSInvokable]
-        public async void RaiseResourcesLoadedEvent()
+        public async Task RaiseResourcesLoadedEvent()
         {
             foreach (var key in this.SpriteSheets.Keys)
             {

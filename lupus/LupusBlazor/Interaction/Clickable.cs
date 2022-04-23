@@ -13,7 +13,7 @@ namespace LupusBlazor
         public event Func<Task> ClickEvent;
 
         [JSInvokable]
-        public async void RaisClickEvent() 
+        public async Task RaisClickEvent() 
         {
             if (ClickEvent != null)
             {

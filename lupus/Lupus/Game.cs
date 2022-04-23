@@ -30,7 +30,9 @@ namespace Lupus
             GameInitializer = new GameInitializer(this, map);            
         }
 
-        public async Task Initialize() => await GameInitializer.Initialize();
+        public async Task Initialize() {
+            await GameInitializer.Initialize(); 
+        }
 
         public T GetGameObject<T>(string playerId, string objectId) where T : class
         {

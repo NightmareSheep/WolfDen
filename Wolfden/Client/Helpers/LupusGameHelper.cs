@@ -88,6 +88,7 @@ namespace WolfDen.Client.Helpers
             });
 
             HubConnection.On<string, string, string>("Start", async (mapId, serializedHistory, serializedPlayers) => {
+
                 Wolfden.Client.Other.Statics.AudioPlayer.SoundEnabled = false;
                 var colorHelper = new ColorHelper();
                 var settings = new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.Auto };
