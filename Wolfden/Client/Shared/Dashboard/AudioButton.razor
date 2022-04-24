@@ -25,15 +25,15 @@
         this.SoundEnabled = await localStorage.GetItemAsync<bool>("soundEnabled");
 
         if (this.SoundEnabled && this.AutoPlay)
-            await Statics.AudioPlayer.PlayMusic(Track);
+            Statics.AudioPlayer.PlayMusic(Track);
     }
 
     private async Task EnableSound()
     {
         await localStorage.SetItemAsync("soundEnabled", true);
         this.SoundEnabled = true;
-        await Statics.AudioPlayer.EnableMusic();
-        await Statics.AudioPlayer.PlayMusic(Track);
+        Statics.AudioPlayer.EnableMusic();
+        Statics.AudioPlayer.PlayMusic(Track);
         this.StateHasChanged();
     }
 
@@ -41,7 +41,7 @@
     {
         await localStorage.SetItemAsync("soundEnabled", false);
         this.SoundEnabled = false;
-        await Statics.AudioPlayer.DisableMusic();
+        Statics.AudioPlayer.DisableMusic();
         this.StateHasChanged();
     }
 

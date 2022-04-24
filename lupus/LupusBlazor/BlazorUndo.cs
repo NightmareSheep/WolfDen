@@ -19,9 +19,9 @@ namespace LupusBlazor
             UI.UI.UndoClickEvent += CallUndo;
         }
 
-        public async Task CallUndo()
+        public void CallUndo(object sender, EventArgs e)
         {
-            await Game.Hub.InvokeAsync("DoMove", Game.Id, Owner.Id, Id, typeof(Undo).AssemblyQualifiedName, "Execute", new object[] { }, new string[] {});
+             Game.Hub.InvokeAsync("DoMove", Game.Id, Owner.Id, Id, typeof(Undo).AssemblyQualifiedName, "Execute", new object[] { }, new string[] {});
         }
 
         public void Dispose()

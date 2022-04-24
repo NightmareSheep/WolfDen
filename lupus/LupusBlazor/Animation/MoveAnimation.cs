@@ -13,17 +13,17 @@ namespace LupusBlazor.Animation
         public int EndX { get; }
         public int EndY { get; }
 
-        public MoveAnimation(BlazorGame game, IJSRuntime jSRuntime, string spriteId, int duration, int queueDuration, int x, int y, int endX, int endY, bool resetAnimation = false, Effects soundEffect = Effects.none, Func<Task> durationCallback = null, Func<Task> queueDurationCallback = null) : base(game, jSRuntime, spriteId, duration, queueDuration, x, y, resetAnimation , soundEffect, durationCallback, queueDurationCallback)
+        public MoveAnimation(BlazorGame game, IJSRuntime jSRuntime, string spriteId, int duration, int queueDuration, int x, int y, int endX, int endY, bool resetAnimation = false, Effects soundEffect = Effects.none, Action durationCallback = null, Action queueDurationCallback = null) : base(game, jSRuntime, spriteId, duration, queueDuration, x, y, resetAnimation , soundEffect, durationCallback, queueDurationCallback)
         {
             this.EndX = endX;
             this.EndY = endY;
         }
 
-        public override async Task Play(Func<Task> animationPlayerCallback)
+        public override void Play(Action animationPlayerCallback)
         {
             this.AnimationPlayerCallback = animationPlayerCallback;
-            await PixiHelper.MoveSprite(JSRuntime, objRef, SpriteId, QueueDuration, Duration, X, Y, EndX, EndY, ResetAnimation);
-            await this.Game.AudioPlayer.PlaySound(this.SoundEffect);
+            PixiHelper.MoveSprite(JSRuntime, objRef, SpriteId, QueueDuration, Duration, X, Y, EndX, EndY, ResetAnimation);
+            this.Game.AudioPlayer.PlaySound(this.SoundEffect);
         }
     }
 }

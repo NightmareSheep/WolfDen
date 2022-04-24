@@ -31,51 +31,50 @@ namespace LupusBlazor.Behaviours.Defend
             HealthDisplay = health;
         }
 
-        public virtual async Task Draw()
+        public virtual void Draw()
         {
             this.text = new Text(this.JSRuntime, this.CurrentHealth.ToString());
-            await this.text.Initialize();
             text.ScaleX = 0.2f;
             text.ScaleY = 0.2f;
             text.X = -7;
             text.Y = -7;
             text.StrokeThickNess = 5f;
-            await text.SetAnchor(0.5f);
+             text.SetAnchor(0.5f);
             text.Color = this.Unit.Owner.Color;
-            await this.BlazorUnit.PixiUnit.Container.AddChild(text);
+             this.BlazorUnit.PixiUnit.Container.AddChild(text);
         }
 
-        public override async Task Damage(int damage)
+        public override void Damage(int damage)
         {
-            await base.Damage(damage);
+             base.Damage(damage);
             DelayedDisplayId = Guid.NewGuid();
             if (text != null)
                 this.text.SpriteText = CurrentHealth.ToString();
             
         }
 
-        public async Task DelayedHealthDisplay(Guid delayedDisplayId)
+        public void DelayedHealthDisplay(Guid delayedDisplayId)
         {
-            await Task.Delay(3000);
+             Task.Delay(3000);
 
             if (this.CurrentHealth <= 0 || this.DelayedDisplayId != delayedDisplayId)
                 return;
 
             DamageDisplay = 0;
             HealthDisplay = this.CurrentHealth;
-            await this.Draw();
+             this.Draw();
         }
 
-        protected override async Task Death()
+        protected override void Death()
         {
-            await (BlazorUnit?.PixiUnit?.QueueAnimation(Animations.Death) ?? Task.CompletedTask);
-            await base.Death();
+             BlazorUnit?.PixiUnit?.QueueAnimation(Animations.Death);
+             base.Death();
         }
 
-        public async Task Dispose()
+        public void Dispose()
         {
             if (text != null)
-                await this?.text?.Dispose();
+                 this?.text?.Dispose();
         }
 
         

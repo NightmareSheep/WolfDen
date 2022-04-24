@@ -9,60 +9,52 @@ namespace LupusBlazor.Pixi
 {
     public class PixiApplicationModule
     {
-        private IJSObjectReference module;
+        private IJSInProcessObjectReference module;
         private IJSRuntime JSRuntime { get; }
 
-        private static PixiApplicationModule instance;
-        public static async Task<PixiApplicationModule> GetInstance(IJSRuntime jSRuntime)
+        public static PixiApplicationModule Instance { get; private set; }
+
+        public static async Task<PixiApplicationModule> Initialize(IJSRuntime jsRuntime)
         {
-            instance ??= await new PixiApplicationModule(jSRuntime).Initialize();
-            return instance;
+            Instance = new PixiApplicationModule();
+            Instance.module = await jsRuntime.InvokeAsync<IJSInProcessObjectReference>("import", "./js/modules/PixiApplication.js");
+            return Instance;
         }
 
-        private PixiApplicationModule(IJSRuntime jSRuntime)
+        public IJSInProcessObjectReference InitializePixiApp(DotNetObjectReference<Application> application, string elementId)
         {
-            JSRuntime = jSRuntime;
-        }
-
-        public async Task<PixiApplicationModule> Initialize()
-        {
-            this.module = await JSRuntime.InvokeAsync<IJSObjectReference>("import", "./js/modules/PixiApplication.js");
-            return this;
-        }
-
-        public async Task<IJSObjectReference> InitializePixiApp(DotNetObjectReference<Application> application, string elementId)
-        {
-            return await module.InvokeAsync<IJSObjectReference>("InitializePixiApp", application, elementId);
+            return module.Invoke<IJSInProcessObjectReference>("InitializePixiApp", application, elementId);
         }
 
         public async Task LoadResources()
         {
-            await module.InvokeVoidAsync("LoadResources");
+             await module.InvokeVoidAsync("LoadResources");
         }
 
-        public async Task<IJSObjectReference> ConstructAnimatedSprite(List<IJSObjectReference> textures, List<int> times)
+        public IJSInProcessObjectReference ConstructAnimatedSprite(List<IJSInProcessObjectReference> textures, List<int> times)
         {
-            return await module.InvokeAsync<IJSObjectReference>("ConstructAnimatedSprite", textures, times);
+            var texturesCast = textures.Cast<IJSObjectReference>().ToList();
+            return module.Invoke<IJSInProcessObjectReference>("ConstructAnimatedSprite", texturesCast, times);
         }
 
-        public async Task AddFilter(DisplayObject obj, IJSObjectReference filter)
+        public void AddFilter(DisplayObject obj, IJSInProcessObjectReference filter)
         {
-            await module.InvokeVoidAsync("AddFilter", obj.JSInstance, filter);
+             module.InvokeVoid("AddFilter", obj.JSInstance, filter);
         }
 
-        public async Task RemoveFilter(DisplayObject obj, IJSObjectReference filter)
+        public void RemoveFilter(DisplayObject obj, IJSInProcessObjectReference filter)
         {
-            await module.InvokeVoidAsync("RemoveFilter", obj.JSInstance, filter);
+             module.InvokeVoid("RemoveFilter", obj.JSInstance, filter);
         }
 
-        public async Task On<T>(DisplayObject obj, string eventName, DotNetObjectReference<T> csObject, string functionName) where T : class
+        public void On<T>(DisplayObject obj, string eventName, DotNetObjectReference<T> csObject, string functionName) where T : class
         {
-            await module.InvokeVoidAsync("On", obj.JSInstance, eventName, csObject, functionName);
+             module.InvokeVoid("On", obj.JSInstance, eventName, csObject, functionName);
         }
 
-        public async Task SetOnClick<T>(DisplayObject obj, DotNetObjectReference<T> csObject, string functionName) where T : class
+        public void SetOnClick<T>(DisplayObject obj, DotNetObjectReference<T> csObject, string functionName) where T : class
         {
-            await module.InvokeVoidAsync("SetOnClick", obj.JSInstance, csObject, functionName);
+             module.InvokeVoid("SetOnClick", obj.JSInstance, csObject, functionName);
         }
     }
 }

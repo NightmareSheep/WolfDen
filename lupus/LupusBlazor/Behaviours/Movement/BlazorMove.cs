@@ -40,23 +40,23 @@ namespace LupusBlazor.Behaviours.Movement
             Game.ClickEvent += Click;
         }
 
-        public async Task Click(object sender)
+        public void Click(object sender, EventArgs e)
         {
             if (sender == this.Unit)
                 return;
 
-            await MovementIndicators.RemoveIndicators();
+             MovementIndicators.RemoveIndicators();
         }
 
-        public async Task ClickUnit()
+        public void ClickUnit(object sender, EventArgs e)
         {
             if (this.MovementIndicators.Indicators.Count > 0)
-                await MovementIndicators.RemoveIndicators();
+                 MovementIndicators.RemoveIndicators();
             else
-                await this.SpawnMovementIndicators();
+                 this.SpawnMovementIndicators();
         }
 
-        public async Task SpawnMovementIndicators()
+        public void SpawnMovementIndicators()
         {
 
             if (!CanMove)
@@ -74,7 +74,7 @@ namespace LupusBlazor.Behaviours.Movement
                 if (tile.Unit != null)
                     indices.Remove(index);
             }
-            await MovementIndicators.Spawn(indices.ToArray());
+             MovementIndicators.Spawn(indices.ToArray());
             Prev = prev;
             Dist = dist;
         }
@@ -84,9 +84,9 @@ namespace LupusBlazor.Behaviours.Movement
         /// </summary>
         /// <param name="index"></param>
         /// <returns></returns>
-        public async Task ClickTile(int index)
+        public void ClickTile(object sender, int index)
         {
-            await MovementIndicators.RemoveIndicators();
+             MovementIndicators.RemoveIndicators();
 
             var path = new List<int>();
             var currentIndex = index;
@@ -100,15 +100,15 @@ namespace LupusBlazor.Behaviours.Movement
                     break;
             }
             path.Reverse();
-            //await Game.Hub.InvokeAsync("Move", Game.Id, Id, path);
+            // Game.Hub.InvokeAsync("Move", Game.Id, Id, path);
 
-            await Game.Hub.InvokeAsync("DoMove", Game.Id, this.Unit.Owner.Id, Id, typeof(Move).AssemblyQualifiedName, "MoveOverPath", new object[] { path }, new string[] { typeof(int[]).AssemblyQualifiedName });
+             Game.Hub.InvokeAsync("DoMove", Game.Id, this.Unit.Owner.Id, Id, typeof(Move).AssemblyQualifiedName, "MoveOverPath", new object[] { path }, new string[] { typeof(int[]).AssemblyQualifiedName });
 
             Dist = null;
             Prev = null;
         }
 
-        public override async Task MoveOverPath(int[] path)
+        public override void MoveOverPath(int[] path)
         {
             var previousTile = Unit.Tile;
             for (var i = 1; i < path.Length; i++)
@@ -118,17 +118,17 @@ namespace LupusBlazor.Behaviours.Movement
                 var directionVector = tile.ToVector2() - previousTile.ToVector2();
                 var direction = directionVector.GetDirectionFromVector();
 
-                await (this.BlazorUnit?.PixiUnit?.QueueAnimation(Animations.Move, direction) ?? Task.CompletedTask);
+                BlazorUnit?.PixiUnit?.QueueAnimation(Animations.Move, direction);
                 previousTile = tile;
             }
 
-            await base.MoveOverPath(path);            
+             base.MoveOverPath(path);            
         }
 
-        public override async Task Destroy()
+        public override void Destroy()
         {
-            await base.Destroy();
-            await MovementIndicators.Destroy();
+             base.Destroy();
+             MovementIndicators.Destroy();
         }
 
         

@@ -28,17 +28,16 @@ namespace LupusBlazor.WinConditions.GatherChests
         public IJSRuntime IJSRuntime { get; }
         public int ZoneId { get; }
 
-        public async Task Draw()
+        public void Draw()
         {
-            var jsHelper = await JavascriptHelperModule.GetInstance(this.IJSRuntime);
-            var texture = await jsHelper.GetJavascriptProperty<IJSObjectReference?>(new string[] { "PIXI", "Loader", "shared", "resources", "sprites", "spritesheet", "textures", "zone " + ZoneId + ".png" });
+            var jsHelper = JavascriptHelperModule.Instance;
+            var texture =  jsHelper.GetJavascriptProperty<IJSInProcessObjectReference?>(new string[] { "PIXI", "Loader", "shared", "resources", "sprites", "spritesheet", "textures", "zone " + ZoneId + ".png" });
             sprite = new Sprite(this.IJSRuntime, texture);
-            await sprite.Initialize();
             sprite.X = this.Tile.XCoord();
             sprite.Y = this.Tile.YCoord();
             sprite.Tint = this.Owner.Color;
-            await this.BlazorGame.LupusPixiApplication.ViewPort.AddChild(sprite);
-            await texture.DisposeAsync();
+            this.BlazorGame.LupusPixiApplication.ViewPort.AddChild(sprite);
+            texture.DisposeAsync();
         }
     }
 }

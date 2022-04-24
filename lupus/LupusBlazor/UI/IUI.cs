@@ -13,15 +13,15 @@ namespace LupusBlazor.UI
         BlazorGame BlazorGame { get; set; }
         IUnitUI UnitUI { get; }
         IGatherChestsWinConditionUI GatherChestsWinConditionUI { get; }
-        Task SetPlayers(List<Player> players, List<Player> activePlayers, Player currentPlayer);
-        Task DoneLoading();
-        Task ShowMessage(string text);
-        Task UpdateEndTurnButton();
-        Task StartTurn(List<Player> players);
+        void SetPlayers(List<Player> players, List<Player> activePlayers, Player currentPlayer);
+        void DoneLoading();
+        void ShowMessage(string text);
+        void UpdateEndTurnButton(object sender, EventArgs e);
+        void StartTurn(object sender, List<Player> players);
 
-        event Func<Task> EndTurnButtonClickedEvent;
-        event Func<MouseEventArgs, Task> MouseClickEvent;
-        event Func<Task> MouseRightClickEvent;
-        event Func<Task> UndoClickEvent;
+        event EventHandler EndTurnButtonClickedEvent;
+        event EventHandler<MouseEventArgs> MouseClickEvent;
+        event EventHandler MouseRightClickEvent;
+        event EventHandler UndoClickEvent;
     }
 }

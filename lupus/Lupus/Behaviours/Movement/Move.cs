@@ -39,33 +39,29 @@ namespace Lupus.Behaviours.Movement
             Agent = new ActionAgent(game, this);
         }
 
-        public Task SkillPointsUsed(int amount, object spender)
+        public void SkillPointsUsed(object sender, int amount)
         {
-            this.CanMove = false;
-
-            return Task.CompletedTask;
+            CanMove = false;
         }
 
-        public Task StartTurn(List<Player> activePlayers)
+        public void StartTurn(object sender, List<Player> activePlayers)
         {
             if (activePlayers.Contains(this.Unit.Owner))
             {
                 CanMove = true;
-                return Task.CompletedTask;
             }
             else
             {
                 CanMove = false;
             }
-            return Task.CompletedTask;
         }
 
 
-        public virtual Task MoveOverPath(int[] path) => MoveOverPath(path.Select(index => Map.GetTile(index)).ToArray());
+        public virtual void MoveOverPath(int[] path) => MoveOverPath(path.Select(index => Map.GetTile(index)).ToArray());
 
-        public  virtual Task MoveOverPath(List<Tile> path) => MoveOverPath(path.ToArray());
+        public  virtual void MoveOverPath(List<Tile> path) => MoveOverPath(path.ToArray());
 
-        public virtual async Task MoveOverPath(Tile[] path)
+        public virtual void MoveOverPath(Tile[] path)
         {
             if (path == null || path.Length < 2 || path[^1].Unit != null || !CanMove)
                 return;
@@ -85,7 +81,7 @@ namespace Lupus.Behaviours.Movement
             path[^1].Unit = Unit;
             CanMove = false;
             Game.History.AddMove(new MoveHistory(Id, path.Select(t => t.Index).ToArray()));
-            await Agent.ActionUsed();
+            Agent.ActionUsed();
         }
 
         public int DistanceFunction(Tile m, Tile n)
@@ -98,12 +94,11 @@ namespace Lupus.Behaviours.Movement
             return 9999;
         }
 
-        public virtual Task Destroy()
+        public virtual void Destroy()
         {
             Game.RemoveObject(Id);
             Game.TurnResolver.StartTurnEvent -= StartTurn;
             SkillPoints.SkillPointsUsedEvent -= SkillPointsUsed;
-            return Task.CompletedTask;
         }
 
         public int GetAvailableActions()

@@ -57,10 +57,10 @@ namespace LupusBlazor.Units
             Actor = Animation.Actors.Goblin;
         }
 
-        public async override Task Destroy()
+        public override void Destroy()
         {
-            await base.Destroy();
-            await BlazorMove.Destroy();
+             base.Destroy();
+             BlazorMove.Destroy();
         }
     }
 }

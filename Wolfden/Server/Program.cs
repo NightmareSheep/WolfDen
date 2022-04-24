@@ -95,7 +95,7 @@ var mapString = File.ReadAllText(app.Environment.WebRootPath + "/game/maps/Duel 
 var jsonMap = JsonConvert.DeserializeObject<JsonMap>(mapString);
 var id = new Guid("4e0f20d6-3cc2-456c-9a04-e400d7f5a634");
 var game = new Game(id, players, jsonMap);
-game.Initialize();
+game.GameInitializer.Initialize();
 ConcurrencyObjects.AddObject(game.Id, game);
 
 

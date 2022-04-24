@@ -21,7 +21,7 @@ namespace LupusBlazor.Interaction
         public KnownColor Tint { get; }
         public List<TileIndicator> Indicators { get; set; }
         public Guid Id { get; set; } = Guid.NewGuid();
-        public event Func<int, Task> TileClickEvent;
+        public event EventHandler<int> TileClickEvent;
 
 
         public TileIndicators(BlazorGame game, Map map, IJSRuntime jSRuntime, KnownColor tint)
@@ -35,15 +35,15 @@ namespace LupusBlazor.Interaction
             game.DrawEvent += InitializeIndicatorSprites;
         }
 
-        public async Task StartTurn(List<Player> activePlayers)
+        public void StartTurn(object sender, List<Player> activePlayers)
         {
-            await this.RemoveIndicators();
+             this.RemoveIndicators();
         }
 
-        public async Task Spawn(IEnumerable<int> indices)
+        public void Spawn(IEnumerable<int> indices)
         {
             var indicesList = indices.ToList();
-            await RemoveIndicators();
+             RemoveIndicators();
 
             for (var i = 0; i < indicesList.Count(); i++)
             {
@@ -51,53 +51,56 @@ namespace LupusBlazor.Interaction
                 var tile = Map.GetTile(index);
                 var indicator = new TileIndicator(this.Game, this, tile, IndicatorSprites[i], this.Tint, JSRuntime);
                 Indicators.Add(indicator);
-                await indicator.Draw();
+                 indicator.Draw();
             }
 
             
         }
 
-        public async Task ClickTile(int index)
+        public void ClickTile(int index)
         {
-            await Game.RaiseClickEvent(this);
-            await RaiseTileClickEvent(index);
+             Game.RaiseClickEvent(this);
+             RaiseTileClickEvent(index);
         }
 
-        public async Task RemoveIndicators()
+        public void RemoveIndicators(object sender, EventArgs e)
+        {
+            RemoveIndicators();
+        }
+
+        public void RemoveIndicators()
         {
             foreach (var indicator in Indicators ?? Enumerable.Empty<TileIndicator>())
-                await indicator.Destroy();
+                 indicator.Destroy();
             Indicators = new List<TileIndicator>();
         }
 
-        public async Task Destroy()
+        public void Destroy()
         {
             Game.UI.MouseRightClickEvent -= this.RemoveIndicators;
             Game.TurnResolver.StartTurnEvent -= StartTurn;
-            await RemoveIndicators();
+             RemoveIndicators();
         }
 
-        private async Task RaiseTileClickEvent(int index)
+        private void RaiseTileClickEvent(int index)
         {
-            if (TileClickEvent != null)
-                await TileClickEvent?.Invoke(index);
+            TileClickEvent?.Invoke(this, index);
         }
 
-        private async Task InitializeIndicatorSprites()
+        private void InitializeIndicatorSprites(object sender, EventArgs e)
         {
             if (TileIndicators.IndicatorSprites != null)
                 return;
 
 
-            var jsHelper = await JavascriptHelperModule.GetInstance(JSRuntime);
-            var texture = await jsHelper.GetJavascriptProperty<IJSObjectReference>(new string[] { "PIXI", "Texture", "WHITE" });
+            var jsHelper =  JavascriptHelperModule.Instance;
+            var texture =  jsHelper.GetJavascriptProperty<IJSInProcessObjectReference>(new string[] { "PIXI", "Texture", "WHITE" });
 
             TileIndicators.IndicatorSprites = new List<Sprite>();
             for (int i = 0; i < 100; i++)
             {
                 
                 var sprite = new Sprite(JSRuntime, texture);
-                await sprite.Initialize();
                 sprite.Interactive = true;
                 sprite.Width = 16;
                 sprite.Height = 16;
@@ -105,7 +108,7 @@ namespace LupusBlazor.Interaction
                 IndicatorSprites.Add(sprite);
             }
 
-            await texture.DisposeAsync();
+             texture.DisposeAsync();
         }
     }
 }

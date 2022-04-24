@@ -9,6 +9,6 @@ namespace LupusBlazor.Units
     public interface ISkill
     {
         string Name { get; }
-        Task ClickSkill();
+        void ClickSkill();
     }
 }

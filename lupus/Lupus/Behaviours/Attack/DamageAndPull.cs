@@ -35,17 +35,17 @@ namespace Lupus.Behaviours.Attack
             Agent = new ActionAgent(game, this);
         }
 
-        public virtual async Task DamageAndPullUnit(Direction direction)
+        public virtual void DamageAndPullUnit(Direction direction)
         {
             if (SkillPoints.CurrentPoints < 1)
                 return;
 
-            await SkillPoints.UseSkillPoints(1, this);
+            SkillPoints.UseSkillPoints(1, this);
             var target = this.unit.Tile.GetTileInDirection(this.game, direction);
             var target2 = target?.GetTileInDirection(this.game, direction);
 
             if (target2 != null)
-                await target2?.Pushing?.Push(direction.OppositeDirection());
+                target2?.Pushing?.Push(direction.OppositeDirection());
 
             game.History.AddMove(
                 new HistoryMove(
@@ -58,13 +58,12 @@ namespace Lupus.Behaviours.Attack
                 )
                 );
 
-            await Agent.ActionUsed();
+            Agent.ActionUsed();
         }
 
-        public virtual Task Destroy()
+        public virtual void Destroy()
         {
             game.RemoveObject(Id);
-            return Task.CompletedTask;
         }
 
         public int GetAvailableActions()

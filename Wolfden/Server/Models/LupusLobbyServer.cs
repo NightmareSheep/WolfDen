@@ -22,12 +22,13 @@ namespace Wolfden.Server.Models
 
         public string WebRootPath { get; }
 
-        public override async Task StartGame()
+        public override void StartGame()
         {
             ConcurrencyObjects.RemoveObjectWithoutLocking(Id);
             var mapString = File.ReadAllText(WebRootPath + "/game/maps/" + this.MapId + "/" + this.MapId + ".json");
             var jsonMap = JsonConvert.DeserializeObject<JsonMap>(mapString);
             var game = new Game(Id, this.GetPlayers(), jsonMap);
+            game.GameInitializer.Initialize();
             ConcurrencyObjects.AddObject(Id, game);
         }
     }

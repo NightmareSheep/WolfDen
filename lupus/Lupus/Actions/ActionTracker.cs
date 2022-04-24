@@ -8,17 +8,12 @@ namespace Lupus.Actions
 {
     public class ActionTracker
     {
-        public event Func<Task> ActionUsedEvent;
+        public event EventHandler ActionUsedEvent;
         public List<ActionAgent> Agents { get; set; } = new();
 
-        public async Task RaiseActionUsedEvent()
+        public void RaiseActionUsedEvent()
         {
-            if (ActionUsedEvent != null)
-            {
-                var invocationList = ActionUsedEvent.GetInvocationList().Cast<Func<Task>>();
-                foreach (var subscriber in invocationList)
-                    await subscriber();
-            }
+            ActionUsedEvent?.Invoke(this, EventArgs.Empty);
         }
 
         public int GetAvailableActions()

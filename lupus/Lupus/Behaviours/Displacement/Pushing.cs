@@ -12,17 +12,16 @@ namespace Lupus.Behaviours.Displacement
     {
         public Tile Tile { get; }
 
-        public event Func<Push, Task> PushEvent;
+        public event EventHandler<Push> PushEvent;
 
         public Pushing(Tile tile)
         {
             Tile = tile;
         }
 
-        public async Task Push(Direction direction)
+        public void Push(Direction direction)
         {
-            if (PushEvent != null)
-                await PushEvent?.Invoke(new Push(direction, 1, Tile));
+            PushEvent?.Invoke(this, new Push(direction, 1, Tile));
         }
     }
 }

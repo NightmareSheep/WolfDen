@@ -21,63 +21,56 @@
     {
         this.ActionQueue = new ActionQueue();
         await base.OnAfterRenderAsync(firstRender);
-        this.Application = new Application(JSRuntime);
+        this.Application = new Application(JSRuntime, "test-game");
         this.Application.ResourcesLoadedEvent += LoadSprite;
-        await this.Application.Initialize("test-game");
         this.Application.ScaleMode = ScaleMode.Nearest;
 
         //await this.Application.AddSpriteSheet("sprites", "/Images/sprites.json");
         //await this.Application.Load();
 
-        await LoadSprite();
 
     }
 
-    public async Task LoadSprite()
+    public void LoadSprite(object sender, EventArgs e)
     {
-        this.Viewport = await new ViewPort(JSRuntime, this.Application, 3000, 3000).Initialize();
+        this.Viewport = new ViewPort(JSRuntime, this.Application, 3000, 3000);
         this.Unit = new PixiUnit(JSRuntime, this.Application, Statics.AudioPlayer, Actors.Goblin);
-        await this.Unit.Initialize();
+
         this.Unit2 = new PixiUnit(JSRuntime, this.Application, Statics.AudioPlayer, Actors.Goblin);
-        await this.Unit2.Initialize();
 
         this.Unit2.Container.Y = 16;
 
-        await this.Application.Stage.AddChild(this.Viewport);
-        await this.Viewport.AddChild(this.Unit.Container);
-        await this.Viewport.AddChild(this.Unit2.Container);
+        this.Application.Stage.AddChild(this.Viewport);
+        this.Viewport.AddChild(this.Unit.Container);
+        this.Viewport.AddChild(this.Unit2.Container);
 
-        await this.Unit.PlayAnimation(LupusBlazor.Animation.Animations.Idle);
-        await this.Unit2.PlayAnimation(LupusBlazor.Animation.Animations.Idle);
+        this.Unit.PlayAnimation(LupusBlazor.Animation.Animations.Idle);
+        this.Unit2.PlayAnimation(LupusBlazor.Animation.Animations.Idle);
 
         var text = new LupusBlazor.Pixi.Text(this.JSRuntime, "0");
 
-        await text.Initialize();
 
         text.ScaleX = 0.3f;
         text.ScaleY = 0.3f;
         text.X = -8;
         text.Y = -8;
-        await text.SetAnchor(0.5f);
         text.Color = System.Drawing.KnownColor.Red;
-        var filter = await PixiFilters.GetTeamFilter(System.Drawing.KnownColor.Red);
-        await this.Unit.Container.AddFilter(filter);
+        var filter = PixiFilters.GetTeamFilter(System.Drawing.KnownColor.Red);
 
-        await this.Unit2.Container.AddFilter(PixiFilters.Filters[PixiFilter.GlowFilter]);
+        this.Unit2.Container.AddFilter(PixiFilters.Filters[PixiFilter.GlowFilter]);
 
-        await this.Unit2.Container.AddChild(text);
+        this.Unit2.Container.AddChild(text);
 
-        var attack = async () => {
-            await Task.Delay(2000);
-            await this.Unit.QueueAnimation(Animations.Attack, Direction.North); 
-            await this.Unit.QueueAnimation(Animations.Attack, Direction.South);
-            await this.Unit2.QueueAnimation(Animations.Move, Direction.South);
-            await this.Unit2.QueueAnimation(Animations.Move, Direction.South);
-            await this.Unit2.QueueAnimation(Animations.Move, Direction.East);
-            await this.Unit2.QueueAnimation(Animations.Move, Direction.East);
-            await this.Unit2.QueueAnimation(Animations.Move, Direction.North);
-            await this.Unit2.QueueAnimation(Animations.Move, Direction.West);
-            await this.Unit2.QueueAnimation(Animations.Move, Direction.West);
+        var attack = () => {
+            this.Unit.QueueAnimation(Animations.Attack, Direction.North); 
+            this.Unit.QueueAnimation(Animations.Attack, Direction.South);
+            this.Unit2.QueueAnimation(Animations.Move, Direction.South);
+            this.Unit2.QueueAnimation(Animations.Move, Direction.South);
+            this.Unit2.QueueAnimation(Animations.Move, Direction.East);
+            this.Unit2.QueueAnimation(Animations.Move, Direction.East);
+            this.Unit2.QueueAnimation(Animations.Move, Direction.North);
+            this.Unit2.QueueAnimation(Animations.Move, Direction.West);
+            this.Unit2.QueueAnimation(Animations.Move, Direction.West);
         };
 
         attack();
@@ -87,7 +80,7 @@
     async ValueTask IAsyncDisposable.DisposeAsync()
     {
         if (this.Application != null)
-            await this.Application.Dispose();
+            this.Application.Dispose();
     }
 
 }

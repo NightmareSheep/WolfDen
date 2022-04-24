@@ -57,10 +57,10 @@ namespace LupusBlazor.Units.Orcs
             Actor = Animation.Actors.Grunt;
         }
 
-        public async override Task Destroy()
+        public override void Destroy()
         {
-            await base.Destroy();
-            await BlazorMove.Destroy();
+             base.Destroy();
+             BlazorMove.Destroy();
         }
     }
 }

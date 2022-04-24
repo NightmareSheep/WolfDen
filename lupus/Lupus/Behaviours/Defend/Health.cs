@@ -14,21 +14,21 @@ namespace Lupus.Behaviours.Defend
 
         public Unit Unit { get; }
 
-        public virtual async Task Damage(int damage)
+        public virtual void Damage(int damage)
         {
             CurrentHealth -= damage;
             if (CurrentHealth <= 0)
             {
                 
-                await Death();
+                Death();
             }
 
 
         }
 
-        protected virtual async Task Death()
+        protected virtual void Death()
         {
-            await Unit.Destroy();
+            Unit.Destroy();
         }
 
         public Health(Unit unit, int health)

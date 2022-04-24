@@ -13,9 +13,8 @@ namespace Lupus.Behaviours.Defend
         {
         }
 
-        public override Task Damage(int damage)
+        public override void Damage(int damage)
         {
-            return Task.CompletedTask;
         }
     }
 }

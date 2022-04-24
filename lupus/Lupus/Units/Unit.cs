@@ -59,14 +59,14 @@ namespace Lupus.Units
             }
         }
 
-        public async virtual Task Destroy()
+        public virtual void Destroy()
         {
             Tile = null;
             owner.RemoveGameObject(Id);
 
             foreach(var destroyable in Destroyables)
             {
-                await destroyable.Destroy();
+                destroyable.Destroy();
             }
         }
     }

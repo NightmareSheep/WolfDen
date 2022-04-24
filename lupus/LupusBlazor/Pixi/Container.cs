@@ -10,35 +10,27 @@ namespace LupusBlazor.Pixi
     public class Container : DisplayObject
     {
 
-        public Container(IJSRuntime jSRuntime, IJSObjectReference instance = null, JavascriptHelperModule javascriptHelper = null) : base(jSRuntime, instance, javascriptHelper)
+        public Container(IJSRuntime jSRuntime, IJSInProcessObjectReference instance = null, JavascriptHelperModule javascriptHelper = null, bool instantiateJSInstance = true) : base(jSRuntime, instance, javascriptHelper)
         {
+            if (instance == null && instantiateJSInstance)
+                this.JSInstance = JavascriptHelper.InstantiateJavascriptClass(new string[] { "PIXI", "Container" }, null);
         }
 
-        public override async Task Initialize()
+        public void AddChild(Container child)
         {
-            await base.Initialize();                
+             this.JSInstance.InvokeVoid("addChild", child.JSInstance);
         }
 
-        public override async Task InstantiateJSInstance()
-        {
-            this.JSInstance = await JavascriptHelper.InstantiateJavascriptClass(new string[] { "PIXI", "Container" }, null);
-        }
-
-        public async Task AddChild(Container child)
-        {
-            await this.JSInstance.InvokeVoidAsync("addChild", child.JSInstance);
-        }
-
-        public async Task RemoveChild(Container child)
+        public void RemoveChild(Container child)
         {
             if (JSInstance != null && child?.JSInstance != null)
-                await this.JSInstance.InvokeVoidAsync("removeChild", child.JSInstance);
+                 this.JSInstance.InvokeVoid("removeChild", child.JSInstance);
         }
 
-        public async Task RemoveChildren()
+        public void RemoveChildren()
         {
             if (JSInstance != null)
-                await this.JSInstance.InvokeVoidAsync("removeChildren");
+                 this.JSInstance.InvokeVoid("removeChildren");
         }
 
 

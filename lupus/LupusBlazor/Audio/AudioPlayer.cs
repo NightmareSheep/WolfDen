@@ -18,9 +18,9 @@ namespace LupusBlazor.Audio
         public int MusicVolume { get; private set; }
         public int EffectsVolume { get; private set; }
 
-        public event Func<int, Task> ChangeMasterVolumeEvent;
-        public event Func<int, Task> ChangeMusicVolumeEvent;
-        public event Func<int, Task> ChangeEffectsVolumeEvent;
+        public event EventHandler<int> ChangeMasterVolumeEvent;
+        public event EventHandler<int> ChangeMusicVolumeEvent;
+        public event EventHandler<int> ChangeEffectsVolumeEvent;
 
         Dictionary<Tracks, Sound> MusicLibrary = new();
         Dictionary<Effects, Sound> EffectsLibrary = new();
@@ -43,15 +43,13 @@ namespace LupusBlazor.Audio
             AudioJson = audioJson;
         }
 
-        public async Task Initialize()
+        public void Initialize()
         {
             // Music
             var TitleTheme = new Sound(Tracks.TitleTheme.ToString(), "game/audio/music/xDeviruchi - 8-bit Fantasy  & Adventure Music (2021)/xDeviruchi - Title Theme.wav", this.JSRuntime, false, 120600, 0, 120600);
-            await TitleTheme.Initialize();
             MusicLibrary.Add(Tracks.TitleTheme, TitleTheme);
 
             var ExploringTheUnkownTheme = new Sound(Tracks.ExploringTheUnkown.ToString(), "game/audio/music/xDeviruchi - 8-bit Fantasy  & Adventure Music (2021)/xDeviruchi - Exploring The Unknown.wav", this.JSRuntime, false, 128000, 8733, 120767);
-            await ExploringTheUnkownTheme.Initialize();
             MusicLibrary.Add(Tracks.ExploringTheUnkown, ExploringTheUnkownTheme);
 
             foreach (Effects effect in Enum.GetValues(typeof(Effects)))
@@ -60,7 +58,6 @@ namespace LupusBlazor.Audio
                     continue;
 
                 var sound = new Sound(effect.ToString(), "game/audio/effects/" + effect.ToString() + ".wav", this.JSRuntime, false);
-                await sound.Initialize();
                 EffectsLibrary.Add(effect, sound);
             }
 
@@ -71,98 +68,81 @@ namespace LupusBlazor.Audio
             }
         }
 
-        public async Task ChangeMasterVolume(int value)
+        public void ChangeMasterVolume(int value)
         {
-            if (ChangeMasterVolumeEvent != null)
-            {
-                var invocationList = ChangeMasterVolumeEvent.GetInvocationList().Cast<Func<int, Task>>();
-                foreach (var subscriber in invocationList)
-                    await subscriber(value);
-            }
-
+            ChangeMasterVolumeEvent?.Invoke(this, value);
             this.MasterVolume = value;
-            await this.JSRuntime.InvokeVoidAsync("setMasterVolume", value);
+            this.JSRuntime.InvokeVoidAsync("setMasterVolume", value);
         }
 
-        public async Task ChangeMusicVolume(int value)
+        public void ChangeMusicVolume(int value)
         {
-            if (ChangeMusicVolumeEvent != null)
-            {
-                var invocationList = ChangeMusicVolumeEvent.GetInvocationList().Cast<Func<int, Task>>();
-                foreach (var subscriber in invocationList)
-                    await subscriber(value);
-            }
+            ChangeMusicVolumeEvent?.Invoke(this, value);
 
             this.MusicVolume = value;
             if (CurrentTrack != null)
-                await CurrentTrack.PlayMusic(this.MusicVolume);
+                 CurrentTrack.PlayMusic(this.MusicVolume);
         }
 
-        public async Task ChangeEffectsVolume(int value)
+        public void ChangeEffectsVolume(int value)
         {
-            if (ChangeEffectsVolumeEvent != null)
-            {
-                var invocationList = ChangeEffectsVolumeEvent.GetInvocationList().Cast<Func<int, Task>>();
-                foreach (var subscriber in invocationList)
-                    await subscriber(value);
-            }
-
+            ChangeEffectsVolumeEvent?.Invoke(this, value);
             this.EffectsVolume = value;
         }
 
-        public async Task PlayMusic(Tracks track)
+        public void PlayMusic(Tracks track)
         {
             if (track == Tracks.Empty)
                 return;
 
             if (CurrentTrack != null && CurrentTrack.Name != track.ToString())
-                await CurrentTrack.Stop();
+                 CurrentTrack.Stop();
 
             if (this.MusicLibrary.TryGetValue(track, out var music))
             {
                 CurrentTrack = music;
 
                 if (this.MusicEnabled)
-                    await music.PlayMusic(this.MusicVolume);
+                     music.PlayMusic(this.MusicVolume);
             }
         }
 
-        public async Task StopMusic()
+        public void StopMusic()
         {
             if (CurrentTrack != null)
-                await CurrentTrack.Stop();
+                 CurrentTrack.Stop();
         }
 
-        public async Task EnableMusic()
+        public void EnableMusic()
         {
             this.MusicEnabled = true;
             if (this.CurrentTrack != null)
-                await CurrentTrack.PlayMusic(this.MusicVolume);
+                 CurrentTrack.PlayMusic(this.MusicVolume);
         }
 
-        public async Task DisableMusic()
+        public void DisableMusic()
         {
             this.MusicEnabled = false;
-            await this.StopMusic();
+             this.StopMusic();
         }
 
-        public async Task PlaySound(Effects effect)
+        public void PlaySound(Effects effect)
         {
             if (!SoundEnabled)
                 return;
 
             if (this.EffectsLibrary.TryGetValue(effect, out var sound))
             {
-                await sound.Play(this.EffectsVolume);
+                sound.Play(this.EffectsVolume);
             }
         }
 
-        public async Task PlaySoundEffect(string name)
+        public void PlaySoundEffect(string name)
         {
             if (!this.SoundEffects.Contains(name))
                 return;
 
-            await this.JSRuntime.InvokeVoidAsync("playSoundEffect", name, this.EffectsVolume);
+             this.JSRuntime.InvokeVoidAsync("playSoundEffect", name, this.EffectsVolume);
         }
 
     }

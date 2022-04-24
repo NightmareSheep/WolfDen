@@ -13,6 +13,7 @@
         });
     }
 
+    window.pixiApp = pixiApp;
     return pixiApp;
 }
 

@@ -98,7 +98,7 @@ namespace Lobbies
 
             if (Slots.All(slot => slot?.LobbyPlayer?.Ready ?? false) && Slots.Where(slot => slot.LobbyPlayer != null).Select(slot => slot.Team).Distinct().Count() > 1)
             {
-                await StartGame();
+                StartGame();
                 return true;
             }
             return false;
@@ -117,6 +117,6 @@ namespace Lobbies
             return false;
         }
 
-        public abstract Task StartGame();
+        public abstract void StartGame();
     }
 }

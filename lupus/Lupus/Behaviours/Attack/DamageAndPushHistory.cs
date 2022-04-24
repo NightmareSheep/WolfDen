@@ -21,10 +21,10 @@ namespace Lupus.Behaviours.Attack
             Direction = direction;
         }
 
-        public async Task Execute(Game game)
+        public void Execute(Game game)
         {
             DamageAndPush skill = game.GameObjects[Id] as DamageAndPush;
-            await skill.DamageAndPushUnit(Direction);
+            skill.DamageAndPushUnit(Direction);
         }
     }
 }

@@ -18,12 +18,12 @@ namespace LupusBlazor
 
         public BlazorGame Game { get; }
 
-        public async Task Draw(IJSRuntime jSRuntime)
+        public void Draw(IJSRuntime jSRuntime)
         {
-            var mapSprite = await jSRuntime.InvokeAsync<IJSObjectReference>("PIXI.Sprite.from", "/game/maps/" + Name + "/" + Name + ".png");
+            var mapSprite =  ((IJSInProcessRuntime)jSRuntime).Invoke<IJSInProcessObjectReference>("PIXI.Sprite.from", "/game/maps/" + Name + "/" + Name + ".png");
             var sprite = new Sprite(jSRuntime, null, mapSprite);
-            await this.Game.LupusPixiApplication.ViewPort.AddChild(sprite);
-            await mapSprite.DisposeAsync();
+            this.Game.LupusPixiApplication.ViewPort.AddChild(sprite);
+            mapSprite.DisposeAsync();
         }
     }
 }

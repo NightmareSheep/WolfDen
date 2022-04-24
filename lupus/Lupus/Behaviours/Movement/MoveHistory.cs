@@ -19,10 +19,10 @@ namespace Lupus.Behaviours.Movement
             Path = path;
         }
 
-        public async Task Execute(Game game)
+        public void Execute(Game game)
         {
             Move move = game.GameObjects[Id] as Move;
-            await move.MoveOverPath(Path);
+            move.MoveOverPath(Path);
         }
     }
 }

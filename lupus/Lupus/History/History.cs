@@ -24,12 +24,12 @@ namespace Lupus
             Moves.Add(move);
         }
 
-        public async Task PlayHistory()
+        public void PlayHistory()
         {
             stopMoveUpdates = true;
-            foreach (var move in Moves)
+            foreach (var move in Moves ?? new())
             {
-                await move.Execute(Game);
+                move.Execute(Game);
             }
             stopMoveUpdates = false;
         }

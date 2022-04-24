@@ -8,19 +8,13 @@ using System.Linq;
 namespace LupusBlazor
 {
     public class Clickable
-    {
-        
-        public event Func<Task> ClickEvent;
+    {        
+        public event EventHandler ClickEvent;
 
         [JSInvokable]
-        public async Task RaisClickEvent() 
+        public void RaisClickEvent() 
         {
-            if (ClickEvent != null)
-            {
-                var invocationList = ClickEvent.GetInvocationList().Cast<Func<Task>>();
-                foreach (var subscriber in invocationList)
-                    await subscriber();
-            }
+            ClickEvent?.Invoke(this, EventArgs.Empty);
         }
     }
 }

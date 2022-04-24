@@ -15,14 +15,12 @@ namespace LupusBlazor.Behaviours.Defend
         {
         }
 
-        public override Task Draw()
+        public override void Draw()
         {
-            return Task.CompletedTask;
         }
 
-        public override Task Damage(int damage)
+        public override void Damage(int damage)
         {
-            return Task.CompletedTask;
         }
     }
 }

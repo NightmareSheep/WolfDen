@@ -30,27 +30,27 @@ namespace LupusBlazor.Behaviours.Displacement
         public BlazorGame Game { get; }
         public BlazorUnit BlazorUnit { get; }
 
-        protected override async Task PushIntoTile(Tile from, Direction direction, Tile destination)
+        protected override void PushIntoTile(Tile from, Direction direction, Tile destination)
         {
-            await (this.BlazorUnit?.PixiUnit?.QueueAnimation(Animations.Damaged, direction.OppositeDirection()) ?? Task.CompletedTask);
-            await base.PushIntoTile(from, direction, destination);
+             BlazorUnit?.PixiUnit?.QueueAnimation(Animations.Damaged, direction.OppositeDirection());
+             base.PushIntoTile(from, direction, destination);
         }
 
-        protected override  async Task PushAgainstWall(Tile from, Direction direction)
+        protected override  void PushAgainstWall(Tile from, Direction direction)
         {
-            await (this.BlazorUnit?.PixiUnit?.QueueAnimation(Animations.ShortDamaged, direction.OppositeDirection()) ?? Task.CompletedTask);
-            await base.PushAgainstWall(from, direction);
+             BlazorUnit?.PixiUnit?.QueueAnimation(Animations.ShortDamaged, direction.OppositeDirection());
+             base.PushAgainstWall(from, direction);
         }
 
-        protected override async Task PushAgainstUnit(Tile from, Direction direction, Tile destination)
+        protected override void PushAgainstUnit(Tile from, Direction direction, Tile destination)
         {
             var bumpedUnit = destination.Unit as BlazorUnit;
-            await (BlazorUnit?.PixiUnit?.QueueAnimation(Animations.ShortDamaged, direction.OppositeDirection()) ?? Task.CompletedTask);
-            await (bumpedUnit?.PixiUnit?.QueueAnimation(Animations.ShortDamaged, direction.OppositeDirection()) ?? Task.CompletedTask);
+            BlazorUnit?.PixiUnit?.QueueAnimation(Animations.ShortDamaged, direction.OppositeDirection());
+            bumpedUnit?.PixiUnit?.QueueAnimation(Animations.ShortDamaged, direction.OppositeDirection());
 
              
 
-            await base.PushAgainstUnit(from, direction, destination);
+             base.PushAgainstUnit(from, direction, destination);
         }
     }
 }

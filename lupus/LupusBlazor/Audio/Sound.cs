@@ -26,27 +26,22 @@ namespace LupusBlazor.Audio
             Duration = duration;
             Intro = intro;
             Outro = outro;
+            ((IJSInProcessRuntime)IJSRuntime).InvokeVoidAsync("addSound", this.Name, this.AssetPath, Loop, Duration, Intro, Outro);
         }
 
-        public async Task<Sound> Initialize()
+        public void Play(int volume)
         {
-            await this.IJSRuntime.InvokeVoidAsync("addSound", this.Name, this.AssetPath, Loop, Duration, Intro, Outro);
-            return this;
+            ((IJSInProcessRuntime)IJSRuntime).InvokeVoidAsync("playSound", this.Name, volume);
         }
 
-        public async Task Play(int volume)
+        public void PlayMusic(int volume)
         {
-            await this.IJSRuntime.InvokeVoidAsync("playSound", this.Name, volume);
+            ((IJSInProcessRuntime)IJSRuntime).InvokeVoidAsync("playMusic", this.Name, volume);
         }
 
-        public async Task PlayMusic(int volume)
+        public void Stop()
         {
-            await this.IJSRuntime.InvokeVoidAsync("playMusic", this.Name, volume);
-        }
-
-        public async Task Stop()
-        {
-            await this.IJSRuntime.InvokeVoidAsync("stopSound", this.Name);
+            ((IJSInProcessRuntime)IJSRuntime).InvokeVoidAsync("stopSound", this.Name);
         }
     }
 }

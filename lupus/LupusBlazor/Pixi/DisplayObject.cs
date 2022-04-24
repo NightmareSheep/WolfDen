@@ -83,8 +83,8 @@ namespace LupusBlazor.Pixi
             }
         }
 
-        private IJSObjectReference _JSInstance;
-        public IJSObjectReference JSInstance
+        private IJSInProcessObjectReference _JSInstance;
+        public IJSInProcessObjectReference JSInstance
         {
             get
             {
@@ -95,6 +95,8 @@ namespace LupusBlazor.Pixi
                 if (this._JSInstance != null)
                     this._JSInstance.DisposeAsync();
                 _JSInstance = value;
+                if (value != null && this.ObjRef != null)
+                    OnClick(this.ObjRef, "RaiseClickEvent");
             }
         }
         public IJSRuntime JSRuntime { get; }
@@ -102,71 +104,57 @@ namespace LupusBlazor.Pixi
         public PixiApplicationModule PixiApplicationModule { get; set; }
         protected DotNetObjectReference<DisplayObject> ObjRef { get; set; }
 
-        public event Func<Task> ClickEvent;
+        public event EventHandler ClickEvent;
 
         [JSInvokable]
-        public async Task RaiseClickEvent()
+        public void RaiseClickEvent()
         {
-            if (ClickEvent != null)
-            {
-                var invocationList = ClickEvent.GetInvocationList().Cast<Func<Task>>();
-                foreach (var subscriber in invocationList)
-                    await subscriber();
-            }
+            this.ClickEvent?.Invoke(this, EventArgs.Empty);
         }
 
-        public async Task On<T>(string id, DotNetObjectReference<T> csObject, string functionName) where T : class
+        public void On<T>(string id, DotNetObjectReference<T> csObject, string functionName) where T : class
         {
-            await this.PixiApplicationModule.On(this, id, csObject, functionName);
+             this.PixiApplicationModule.On(this, id, csObject, functionName);
         }
 
-        public async Task OnClick<T>(DotNetObjectReference<T> csObject, string functionName) where T : class
+        public void OnClick<T>(DotNetObjectReference<T> csObject, string functionName) where T : class
         {
-            await this.PixiApplicationModule.SetOnClick(this, csObject, functionName);
+             this.PixiApplicationModule.SetOnClick(this, csObject, functionName);
         }
 
-        public DisplayObject(IJSRuntime jSRuntime, IJSObjectReference instance = null, JavascriptHelperModule javascriptHelper = null)
+        public DisplayObject(IJSRuntime jSRuntime, IJSInProcessObjectReference instance = null, JavascriptHelperModule javascriptHelper = null)
         {
             JSRuntime = jSRuntime;
             this.JavascriptHelper = javascriptHelper;
             this.JSInstance = instance;
-        }
-
-        public virtual async Task Initialize()
-        {
-            JavascriptHelper = await JavascriptHelperModule.GetInstance(JSRuntime);
-            PixiApplicationModule = await PixiApplicationModule.GetInstance(JSRuntime);
             this.ObjRef = DotNetObjectReference.Create(this);
-            await InstantiateJSInstance();
-            await OnClick(this.ObjRef, "RaiseClickEvent");
+            JavascriptHelper = JavascriptHelperModule.Instance;
+            PixiApplicationModule = PixiApplicationModule.Instance;
+            
         }
-
-        public virtual Task InstantiateJSInstance() { return Task.CompletedTask; }
-
-
 
         public bool Visible { get; private set; }
-        public async Task SetVisibility(bool value)
+        public void SetVisibility(bool value)
         {
             Visible = value;
-            await JavascriptHelper.SetJavascriptProperty(new string[] { "visible" }, value, this.JSInstance);
+             JavascriptHelper.SetJavascriptProperty(new string[] { "visible" }, value, this.JSInstance);
         }
 
-        public virtual async Task Dispose()
+        public virtual void Dispose()
         {
-            await this.JSInstance.InvokeVoidAsync("destroy");
-            await this._JSInstance.DisposeAsync();
+             this.JSInstance.InvokeVoid("destroy");
+             this._JSInstance.DisposeAsync();
             this.ObjRef.Dispose();
         }
 
-        public async Task AddFilter(IJSObjectReference filter)
+        public void AddFilter(IJSInProcessObjectReference filter)
         {
-            await PixiApplicationModule.AddFilter(this, filter);
+             PixiApplicationModule.AddFilter(this, filter);
         }
 
-        public async Task RemoveFilter(IJSObjectReference filter)
+        public void RemoveFilter(IJSInProcessObjectReference filter)
         { 
-            await PixiApplicationModule.RemoveFilter(this, filter);
+             PixiApplicationModule.RemoveFilter(this, filter);
         }
     }
 }

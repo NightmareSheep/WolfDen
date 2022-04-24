@@ -8,18 +8,18 @@ namespace LupusBlazor.Pixi.LupusPixi.Jobs
 {
     public class ActionJob : JobBase
     {
-        public ActionJob(Func<Task> action)
+        public ActionJob(Action action)
         {
             Action = action;
         }
 
-        public Func<Task> Action { get; }
+        public Action Action { get; }
 
-        public override async Task Run()
+        public override void Run()
         {
-            await RaiseOnStartEvent();
-            await Action();
-            await RaiseOnCompleteEvent();
+             RaiseOnStartEvent();
+             Action();
+             RaiseOnCompleteEvent();
         }
     }
 }

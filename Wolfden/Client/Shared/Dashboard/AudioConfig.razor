@@ -19,16 +19,16 @@
 
     private async Task ChangeMasterVolume(ChangeEventArgs e)
     {
-        await this.AudioPlayer.ChangeMasterVolume(int.Parse((string)e.Value));
+        this.AudioPlayer.ChangeMasterVolume(int.Parse((string)e.Value));
     }
 
     private async Task ChangeMusicVolume(ChangeEventArgs e)
     {
-        await this.AudioPlayer.ChangeMusicVolume(int.Parse((string)e.Value));
+        this.AudioPlayer.ChangeMusicVolume(int.Parse((string)e.Value));
     }
 
     private async Task ChangeEffectsVolume(ChangeEventArgs e)
     {
-        await this.AudioPlayer.ChangeEffectsVolume(int.Parse((string)e.Value));
+        this.AudioPlayer.ChangeEffectsVolume(int.Parse((string)e.Value));
     }
 }

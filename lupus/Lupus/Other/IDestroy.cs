@@ -8,6 +8,6 @@ namespace Lupus.Other
 {
     public interface IDestroy
     {
-        Task Destroy();
+        void Destroy();
     }
 }

@@ -16,9 +16,9 @@ namespace Lupus
 
         public string PlayerId { get; }
 
-        public async Task Execute(Game game)
+        public void Execute(Game game)
         {
-            await game.TurnResolver.EndTurn(game.Players.FirstOrDefault(p => p.Id == PlayerId));
+            game.TurnResolver.EndTurn(game.Players.FirstOrDefault(p => p.Id == PlayerId));
         }
     }
 }

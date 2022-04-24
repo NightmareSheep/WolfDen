@@ -20,14 +20,14 @@ namespace Lupus
         public Player Owner { get; }
         public string Id { get; }
 
-        public async Task Execute()
+        public void Execute()
         {
             if (game.History.Moves.Count == 0)
                 return;
 
             var moves = game.History.Moves;
             moves.RemoveAt(moves.Count - 1);
-            await game.GameInitializer.Initialize();
+            game.GameInitializer.Initialize();
         }
     }
 }

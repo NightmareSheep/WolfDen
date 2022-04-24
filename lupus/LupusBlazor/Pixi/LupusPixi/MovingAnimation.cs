@@ -45,9 +45,9 @@ namespace LupusBlazor.Pixi.LupusPixi
                 QueueDuration = Math.Min(duration, queueDuration);
         }
 
-        public override async Task Play()
+        public override void Play()
         {
-            await base.Play();
+             base.Play();
             startingX = this.ContainerToMove.X;
             startingY = this.ContainerToMove.Y;
             endingX = this.ContainerToMove.X + XDistance;
@@ -58,15 +58,15 @@ namespace LupusBlazor.Pixi.LupusPixi
             Application.TickEvent += Tick;
         }
 
-        public override async Task End()
+        public override void End()
         {
-            await base.End();
+             base.End();
             this.ContainerToMove.X = endingX;
             this.ContainerToMove.Y = endingY;
             Application.TickEvent -= Tick;
         }
 
-        public async Task Tick()
+        public void Tick(object sender, EventArgs e)
         {
             var currentTime = DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond;
             var elapsedTime = currentTime - startingTime;
@@ -77,7 +77,7 @@ namespace LupusBlazor.Pixi.LupusPixi
 
             if (elapsed == 1)
             {
-                await this.RaiseOnCompleteEvent();
+                RaiseOnCompleteEvent(this, EventArgs.Empty);
                 Application.TickEvent -= Tick;
                 return;
             }
@@ -85,13 +85,13 @@ namespace LupusBlazor.Pixi.LupusPixi
             if (!queueDurationExpired && (currentTime >= queueEndingTime || elapsed == 1))
             {
                 queueDurationExpired = true;
-                await RaiseOnQueueCompleteEvent();
+                 RaiseOnQueueCompleteEvent();
             }
         }
 
-        public override async Task Dispose()
+        public override void Dispose()
         {
-            await base.Dispose();
+             base.Dispose();
             Application.TickEvent -= Tick;
         }
     }

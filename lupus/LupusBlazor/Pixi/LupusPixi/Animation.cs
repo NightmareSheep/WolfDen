@@ -24,84 +24,72 @@ namespace LupusBlazor.Pixi.LupusPixi
         public AnimationConfiguration AnimationConfiguration { get; }
         public AnimationFactory AnimationFactory { get; }
 
-        public event Func<Task> OnCompleteEvent;
-        public event Func<Task> OnQueueCompleteEvent;
+        public event EventHandler OnCompleteEvent;
+        public event EventHandler OnQueueCompleteEvent;
         public int QueueFrame = 0;
         public bool QueueCompleteEventFired = true;
 
-        protected async Task RaiseOnCompleteEvent()
+        protected void RaiseOnCompleteEvent(object sender, EventArgs e)
         {
-            await RaiseOnQueueCompleteEvent();
-
-            if (OnCompleteEvent != null)
-            {
-                var invocationList = OnCompleteEvent.GetInvocationList().Cast<Func<Task>>();
-                foreach (var subscriber in invocationList)
-                    await subscriber();
-            }
+            RaiseOnQueueCompleteEvent();
+            OnCompleteEvent?.Invoke(sender, e);
         }
 
 
 
-        protected async Task CheckQueueFrame(int currentFrame)
+        protected void CheckQueueFrame(object sender, int currentFrame)
         {
             if (QueueFrame == -1)
                 return;
 
             if (currentFrame >= QueueFrame && !QueueCompleteEventFired)
             {
-                await RaiseOnQueueCompleteEvent();
+                 RaiseOnQueueCompleteEvent();
             }
         }
 
-        protected async Task RaiseOnQueueCompleteEvent()
+        protected void RaiseOnQueueCompleteEvent()
         {
             if (!QueueCompleteEventFired)
             {
                 QueueCompleteEventFired = true;
-
-                if (OnQueueCompleteEvent != null)
-                {
-                    var invocationList = OnQueueCompleteEvent.GetInvocationList().Cast<Func<Task>>();
-                    foreach (var subscriber in invocationList)
-                        await subscriber();
-                }
+                OnQueueCompleteEvent?.Invoke(this, EventArgs.Empty);
             }
         }
 
         
 
 
-        public virtual async Task Play()
+        public virtual void Play()
         {
 
             QueueCompleteEventFired = false;
             if (!this.Sprite.Loop)
             {
-                await this.Sprite.GotoAndPlay(0);
-                await this.Sprite.SetVisibility(true);
-                await Sprite.RaiseOnFrameChangeEvent(0);
+                 this.Sprite.GotoAndPlay(0);
+                 this.Sprite.SetVisibility(true);
+                 Sprite.RaiseOnFrameChangeEvent(0);
             }
             else
             {
-                await this.Sprite.SetVisibility(true);
-                await Sprite.Play();
+                 this.Sprite.SetVisibility(true);
+                 Sprite.Play();
             }
             
         }
 
-        public virtual async Task End()
+        public virtual void End()
         {
             if (!Sprite.Loop)
-                await this.Sprite.Stop();
-            await this.Sprite.SetVisibility(false);
+                 this.Sprite.Stop();
+             this.Sprite.SetVisibility(false);
         }
 
-        public virtual async Task Dispose()
+        public virtual void Dispose()
         {
             //this.Sprite.OnCompleteEvent -= this.RaiseOnCompleteEvent;
             //this.Sprite.OnFrameChangeEvent -= this.CheckQueueFrame;
-            //await this.Sprite.Dispose();
+            // this.Sprite.Dispose();
             AnimationFactory.Recycle(AnimationConfiguration, this);
         }
     }

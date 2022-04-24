@@ -54,18 +54,18 @@ namespace WolfDen.Client.Helpers
             .Build();
 
             // Move
-            HubConnection.On<string, int[]>("Move", async (id, path) => {
+            HubConnection.On<string, int[]>("Move", (id, path) => {
                 var move = Game.GetGameObject<BlazorMove>(id);
-                await move.MoveOverPath(path);
+                move.MoveOverPath(path);
             });
 
-            HubConnection.On<string, Direction>("DamageAndPush", async (id, direction) => {
+            HubConnection.On<string, Direction>("DamageAndPush", (id, direction) => {
                 var skill = Game.GetGameObject<BlazorDamageAndPush>(id);
-                await skill.DamageAndPushUnit(direction);
+                skill.DamageAndPushUnit(direction);
             });
 
-            HubConnection.On<string>("EndTurn", async (playerId) => {
-                await Game.BlazorTurnResolver.EndTurn(Game.Players.FirstOrDefault(p => p.Id == playerId));
+            HubConnection.On<string>("EndTurn", (playerId) => {
+                Game.BlazorTurnResolver.EndTurn(Game.Players.FirstOrDefault(p => p.Id == playerId));
             });
 
             HubConnection.On<string, string, string, string, JsonElement[], string[]>("DoMove", async (playerId, objectId, typeName, methodName, parameters, parameterTypeNames) =>
@@ -96,15 +96,12 @@ namespace WolfDen.Client.Helpers
                 var mapString = await HttpClient.GetStringAsync("/api/map/" + mapId);
                 var jsonMap = JsonConvert.DeserializeObject<JsonMap>(mapString);
                 var playerId = players?.FirstOrDefault(p => p.Id == currentPlayerId) != null ? currentPlayerId : "Guest_Test";
-                Game = new BlazorGame(new Guid(GameId), players, playerId, HubConnection, jSRuntime, UI, Wolfden.Client.Other.Statics.AudioPlayer, jsonMap);
-                await Game.Initialize();
                 var moveHistory = JsonConvert.DeserializeObject<List<IHistoryMove>>(serializedHistory, settings);
-                Game.History.Moves = moveHistory;
-                await Game.History.PlayHistory();
+                Game = new BlazorGame(new Guid(GameId), players, playerId, HubConnection, jSRuntime, UI, Wolfden.Client.Other.Statics.AudioPlayer, jsonMap, moveHistory);
+                Game.GameInitializer.Initialize();                
                 this.Game.AudioPlayer.SoundEnabled = true;
-                await Game.Draw();
-                await Game.UI.DoneLoading();
-                await Wolfden.Client.Other.Statics.AudioPlayer.PlayMusic(LupusBlazor.Audio.Tracks.ExploringTheUnkown);
+                Game.UI.DoneLoading();
+                Wolfden.Client.Other.Statics.AudioPlayer.PlayMusic(LupusBlazor.Audio.Tracks.ExploringTheUnkown);
 
             });
 

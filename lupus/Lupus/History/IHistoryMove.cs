@@ -7,6 +7,6 @@ namespace Lupus
 {
     public interface IHistoryMove
     {
-        Task Execute(Game game);
+        void Execute(Game game);
     }
 }

@@ -22,9 +22,9 @@ namespace Lupus
         protected readonly JsonMap jsonMap;
         protected readonly Game game;
 
-        public virtual async Task Initialize()
+        public virtual void Initialize()
         {
-            await game.EndGame();
+            game.EndGame();
 
             game.ActionTracker = new ActionTracker();
             game.GameObjects = new Dictionary<string, object>();
@@ -43,8 +43,8 @@ namespace Lupus
             }
 
             mapFactory.LoadMap(game, jsonMap, jsonMap.Name);
-            await game.TurnResolver.StartTurn();
-            await game.History.PlayHistory();
+            game.TurnResolver.StartTurn();
+            game.History.PlayHistory();
         }
     }
 }

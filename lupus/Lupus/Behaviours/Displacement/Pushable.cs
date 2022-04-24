@@ -41,7 +41,7 @@ namespace Lupus.Behaviours.Displacement
             CurrentlySubscribedTile = tile;
         }
 
-        public async Task Pushed(Push push)
+        public void Pushed(object sender, Push push)
         {
 
             var positionVector = new Vector2(push.tile.X, push.tile.Y);
@@ -51,34 +51,33 @@ namespace Lupus.Behaviours.Displacement
 
 
             if (destination == null || destination.Type == TileType.Wall)
-                await PushAgainstWall(push.tile, push.direction);
+                PushAgainstWall(push.tile, push.direction);
             else if (destination.Unit != null)
-                await PushAgainstUnit(push.tile, push.direction, destination);
+                PushAgainstUnit(push.tile, push.direction, destination);
             else
-                await PushIntoTile(push.tile, push.direction, destination);
+                PushIntoTile(push.tile, push.direction, destination);
         }
 
-        protected virtual async Task PushAgainstWall(Tile from, Direction direction)
+        protected virtual void PushAgainstWall(Tile from, Direction direction)
         {
-            await Unit.Health.Damage(1);
+            Unit.Health.Damage(1);
         }
 
-        protected virtual async Task PushAgainstUnit(Tile from, Direction direction, Tile destination)
+        protected virtual void PushAgainstUnit(Tile from, Direction direction, Tile destination)
         {
-            await Unit.Health.Damage(1);
-            await destination.Unit.Health.Damage(1);
+            Unit.Health.Damage(1);
+            destination.Unit.Health.Damage(1);
         }
 
-        protected virtual async Task PushIntoTile(Tile from, Direction direction, Tile destination)
+        protected virtual void PushIntoTile(Tile from, Direction direction, Tile destination)
         {
            Unit.Tile = destination;
         }
 
-        public Task Destroy()
+        public void Destroy()
         {
             if (CurrentlySubscribedTile?.Pushing != null)
                 CurrentlySubscribedTile.Pushing.PushEvent -= Pushed;
-            return Task.CompletedTask;
         }
     }
 }

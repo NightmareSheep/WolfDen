@@ -8,9 +8,9 @@ namespace LupusBlazor.UI
 {
     public interface IUnitUI
     {
-        Task SetCharacterUI(string name);
-        Task SetCharacterSkill(string name, Func<Task> OnClick);
-        Task ResetCharacterUI();
-        Task ClickSkill(int i);
+        void SetCharacterUI(string name);
+        void SetCharacterSkill(string name, Action OnClick);
+        void ResetCharacterUI();
+        void ClickSkill(int i);
     }
 }

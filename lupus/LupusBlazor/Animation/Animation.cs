@@ -19,13 +19,13 @@ namespace LupusBlazor.Animation
         public int Y { get; }
         public bool ResetAnimation { get; }
         public Effects SoundEffect { get; }
-        public Func<Task> DurationCallback { get; }
-        public Func<Task> QueueDurationCallback { get; }
-        public Func<Task> AnimationPlayerCallback { get; set; }
+        public Action DurationCallback { get; }
+        public Action QueueDurationCallback { get; }
+        public Action AnimationPlayerCallback { get; set; }
         protected DotNetObjectReference<Animation> objRef;
         protected bool ReadyToDispose;
 
-        public Animation(BlazorGame game, IJSRuntime jSRuntime, string spriteId, int duration, int queueDuration, int x, int y, bool resetAnimation = false, Effects soundEffect = Effects.none, Func<Task> durationCallback = null, Func<Task> queueDurationCallback = null)
+        public Animation(BlazorGame game, IJSRuntime jSRuntime, string spriteId, int duration, int queueDuration, int x, int y, bool resetAnimation = false, Effects soundEffect = Effects.none, Action durationCallback = null, Action queueDurationCallback = null)
         {
             Game = game;
             JSRuntime = jSRuntime;
@@ -41,21 +41,21 @@ namespace LupusBlazor.Animation
             objRef = DotNetObjectReference.Create(this);
         }
 
-        public virtual async Task Play(Func<Task> animationPlayerCallback)
+        public virtual void Play(Action animationPlayerCallback)
         {
             this.AnimationPlayerCallback = animationPlayerCallback;
-            await PixiHelper.Animation(JSRuntime, objRef, SpriteId, QueueDuration, Duration, X, Y, ResetAnimation);
-            await this.Game.AudioPlayer.PlaySound(this.SoundEffect);
+            PixiHelper.Animation(JSRuntime, objRef, SpriteId, QueueDuration, Duration, X, Y, ResetAnimation);
+            Game.AudioPlayer.PlaySound(this.SoundEffect);
         }
 
         [JSInvokable]
-        public async Task QueueDurationCallBack()
+        public void QueueDurationCallBack()
         {
             if (this.QueueDurationCallback != null)
-                await QueueDurationCallback();
+                QueueDurationCallback();
 
             if (this.AnimationPlayerCallback != null)
-                await this.AnimationPlayerCallback();
+                AnimationPlayerCallback();
 
             if (ReadyToDispose)
                 objRef.Dispose();
@@ -63,10 +63,10 @@ namespace LupusBlazor.Animation
         }
 
         [JSInvokable]
-        public async Task DurationCallBack()
+        public void DurationCallBack()
         {
             if (this.DurationCallback != null)
-                await DurationCallback();
+                DurationCallback();
 
             if (ReadyToDispose)
                 objRef.Dispose();

@@ -10,90 +10,66 @@ namespace LupusBlazor.Pixi
     public class AnimatedSprite : Sprite
     {
         public bool Loop { get; private set; } = true;
-        public List<IJSObjectReference> Textures { get;}
+        public List<IJSInProcessObjectReference> Textures { get;}
         public List<int> Times { get; }
-        public event Func<Task> OnCompleteEvent;
+        public event EventHandler OnCompleteEvent;
         
 
-        public AnimatedSprite(IJSRuntime jSRuntime, List<IJSObjectReference> textures, List<int> times, IJSObjectReference instance = null, JavascriptHelperModule javascriptHelper = null) : base(jSRuntime, null, instance, javascriptHelper)
+        public AnimatedSprite(IJSRuntime jSRuntime, List<IJSInProcessObjectReference> textures, List<int> times, IJSInProcessObjectReference instance = null, JavascriptHelperModule javascriptHelper = null, bool instantiateJSInstance = true) : base(jSRuntime, null, instance, javascriptHelper, false)
         {
             this.Textures = textures;
             this.Times = times;
-        }
 
-        public async override Task Initialize()
-        {
-            await base.Initialize();            
-            
-
-            
-            await this.JavascriptHelper.SetJavascriptFunctionProperty(this.ObjRef, "RaiseOnCompleteEvent", new string[] { "onComplete" }, this.JSInstance);
-            await this.JavascriptHelper.SetJavascriptFunctionProperty(this.ObjRef, "RaiseOnFrameChangeEvent", new string[] { "onFrameChange" }, this.JSInstance);
-
-        }
-
-        public override async  Task InstantiateJSInstance()
-        {
-            this.JSInstance = await this.PixiApplicationModule.ConstructAnimatedSprite(Textures, Times);
-        }
-
-        [JSInvokable]
-        public async Task RaiseOnCompleteEvent()
-        {
-            if (OnCompleteEvent != null)
+            if (instance == null && instantiateJSInstance)
             {
-                var invocationList = OnCompleteEvent.GetInvocationList().Cast<Func<Task>>();
-                foreach (var subscriber in invocationList)
-                    await subscriber();
+                this.JSInstance = this.PixiApplicationModule.ConstructAnimatedSprite(Textures, Times);
+                this.JavascriptHelper.SetJavascriptFunctionProperty(this.ObjRef, "RaiseOnCompleteEvent", new string[] { "onComplete" }, this.JSInstance);
+                this.JavascriptHelper.SetJavascriptFunctionProperty(this.ObjRef, "RaiseOnFrameChangeEvent", new string[] { "onFrameChange" }, this.JSInstance);
             }
         }
 
-        public event Func<int, Task> OnFrameChangeEvent;
+        [JSInvokable]
+        public void RaiseOnCompleteEvent()
+        {
+            OnCompleteEvent?.Invoke(this, EventArgs.Empty);
+        }
+
+        public event EventHandler<int> OnFrameChangeEvent;
 
         [JSInvokable]
-        public async Task RaiseOnFrameChangeEvent(int frame)
+        public void RaiseOnFrameChangeEvent(int frame)
         {
-
-
-            if (OnFrameChangeEvent != null && Visible)
-            {
-
-                var invocationList = OnFrameChangeEvent.GetInvocationList().Cast<Func<int, Task>>();
-                foreach (var subscriber in invocationList)
-                {
-                    await subscriber(frame);
-                }
-            }
+            OnFrameChangeEvent?.Invoke(this, frame);
         }
 
-        public async Task Play()
+        public void Play()
         {
-            await this.JSInstance.InvokeVoidAsync("play");
+             this.JSInstance.InvokeVoid("play");
         }
 
-        public async Task GotoAndPlay(int frameNumber)
+        public void GotoAndPlay(int frameNumber)
         {
-            await this.JSInstance.InvokeVoidAsync("gotoAndPlay", frameNumber);
+             this.JSInstance.InvokeVoid("gotoAndPlay", frameNumber);
         }
 
-        public async Task GotoAndStop(int frameNumber)
+        public void GotoAndStop(int frameNumber)
         {
-            await this.JSInstance.InvokeVoidAsync("gotoAndStop", frameNumber);
+             this.JSInstance.InvokeVoid("gotoAndStop", frameNumber);
         }
 
-        public async Task Stop()
+        public void Stop()
         {
-            await this.JSInstance.InvokeVoidAsync("stop");
+             this.JSInstance.InvokeVoid("stop");
         }
 
-        public async Task SetLoop(bool value)
+        public void SetLoop(bool value)
         {
             this.Loop = value;
-            await this.JavascriptHelper.SetJavascriptProperty(new string[] { "loop" }, value, this.JSInstance);
+             this.JavascriptHelper.SetJavascriptProperty(new string[] { "loop" }, value, this.JSInstance);
         }
-        public override async Task Dispose()
+        public override void Dispose()
         {
-            await base.Dispose();
+             base.Dispose();
             
         }
     }

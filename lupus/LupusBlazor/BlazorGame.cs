@@ -17,20 +17,8 @@ namespace LupusBlazor
 {
     public class BlazorGame : Game
     {
-        public BlazorGame(Guid id, List<PlayerInfo> players, string CurrentPlayerId, HubConnection hub, IJSRuntime jSRuntime, IUI ui, AudioPlayer audioPlayer, JsonMap map) : base(id, players, map)
-        {
-            _currentPlayerId = CurrentPlayerId;
-            Hub = hub;
-            JSRuntime = jSRuntime;
-            Map = BlazorMap = new BlazorMap(this);
-            AudioPlayer = audioPlayer;
-            UI = ui;
-            GameInitializer = new BlazorGameInitializer(this, map);
-        }
-
-        public event Func<object ,Task> ClickEvent;
-
         private string _currentPlayerId;
+        private BlazorGameInitializer _initializer;
         public Player CurrentPlayer { get { return Players.FirstOrDefault(p => p.Id == _currentPlayerId); } }
         public HubConnection Hub { get; }
         public IJSRuntime JSRuntime { get; }
@@ -41,50 +29,43 @@ namespace LupusBlazor
         public BlazorTurnResolver BlazorTurnResolver { get; set; }
         public LupusPixiApplication LupusPixiApplication { get; set; }
 
-        public event Func<Task> DrawEvent;
+        public event EventHandler DrawEvent;
+        public event EventHandler ClickEvent;
 
-        private async Task RaiseDrawEvent()
+        private void RaiseDrawEvent() => DrawEvent?.Invoke(this, EventArgs.Empty);
+        public void RaiseClickEvent(object sender) => ClickEvent?.Invoke(sender, EventArgs.Empty);
+
+        public BlazorGame(Guid id, List<PlayerInfo> players, string CurrentPlayerId, HubConnection hub, IJSRuntime jSRuntime, IUI ui, AudioPlayer audioPlayer, JsonMap map, List<IHistoryMove> moveHistory = null) : base(id, players, map)
         {
-            if (DrawEvent != null)
-            {
-                var invocationList = DrawEvent.GetInvocationList().Cast<Func<Task>>();
-                foreach (var subscriber in invocationList)
-                    await subscriber();
-            }
+            _currentPlayerId = CurrentPlayerId;
+            Hub = hub;
+            JSRuntime = jSRuntime;
+            Map = BlazorMap = new BlazorMap(this);
+            AudioPlayer = audioPlayer;
+            UI = ui;
+            GameInitializer = new BlazorGameInitializer(this, map);
+            History.Moves = moveHistory;
         }
 
-        public async Task RaiseClickEvent(object sender)
-        {
-            if (ClickEvent != null)
-            {
-                var invocationList = ClickEvent.GetInvocationList().Cast<Func<object, Task>>();
-                foreach (var subscriber in invocationList)
-                    await subscriber(sender);
-            }
-        }
-
-        
-
-        public async Task Draw()
+        public void Draw()
         {
             if (this.LupusPixiApplication == null)
             {
                 this.LupusPixiApplication = new LupusPixiApplication(this.JSRuntime, this.Map.Width * 16, this.Map.Height * 16);
-                await this.LupusPixiApplication.Initialize();
             }
             else
             {
-                await LupusPixiApplication.ViewPort.RemoveChildren();
+                 LupusPixiApplication.ViewPort.RemoveChildren();
             }
 
-            await BlazorMap.Draw(JSRuntime);
+             BlazorMap.Draw(JSRuntime);
             var drawables = GameObjects.Values.OfType<IDrawable>();
             foreach (var drawable in drawables)
             {
-                await drawable.Draw();
+                 drawable.Draw();
             }
 
-            await RaiseDrawEvent();
+             RaiseDrawEvent();
         }
     }
 }

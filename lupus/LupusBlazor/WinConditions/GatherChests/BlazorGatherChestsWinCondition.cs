@@ -20,10 +20,10 @@ namespace LupusBlazor.WinConditions.GatherChests
             this.BlazorGame = game;
         }
 
-        protected override async Task StartTurn(List<Player> activePlayers)
+        protected override void StartTurn(object sender, List<Player> activePlayers)
         {
             
-            await base.StartTurn(activePlayers);
+            base.StartTurn(sender, activePlayers);
             UpdateUI();
 
         }
@@ -34,9 +34,9 @@ namespace LupusBlazor.WinConditions.GatherChests
             BlazorGame.UI.GatherChestsWinConditionUI.SetTurn((CurrentTurn / Teams.Count) + 1, Turns);
         }
 
-        protected override async Task EndTurn(List<Player> activePlayers)
+        protected override void EndTurn(object sender, List<Player> activePlayers)
         {
-            await base.EndTurn(activePlayers);
+             base.EndTurn(sender, activePlayers);
 
             
 
@@ -48,14 +48,14 @@ namespace LupusBlazor.WinConditions.GatherChests
                     {
                         var blazorUnit = chest as BlazorUnit;
                         if (blazorUnit.PixiUnit != null)
-                            await blazorUnit.PixiUnit.QueueAnimation(Animation.Animations.Open);
+                             blazorUnit.PixiUnit.QueueAnimation(Animation.Animations.Open);
                     }
                 }
             }
 
         }
 
-        protected override async Task AnnounceVictor()
+        protected override void AnnounceVictor()
         {
             var highestScore = Scores.Max();
             var indices = new List<int>();
@@ -70,7 +70,7 @@ namespace LupusBlazor.WinConditions.GatherChests
                     names += player.Name + " ";
 
             BlazorGame.UI.GatherChestsWinConditionUI.AnnounceVictor(names);
-            await base.AnnounceVictor();
+             base.AnnounceVictor();
         }
     }
 }

@@ -18,9 +18,9 @@ namespace Lupus.Actions
             Action = action;
         }
 
-        public async Task ActionUsed()
+        public void ActionUsed()
         {
-            await Tracker.RaiseActionUsedEvent();
+            Tracker.RaiseActionUsedEvent();
         }
 
         public int GetActions()

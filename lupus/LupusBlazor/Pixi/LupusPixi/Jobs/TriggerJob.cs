@@ -8,10 +8,10 @@ namespace LupusBlazor.Pixi.LupusPixi.Jobs
 {
     public class TriggerJob : JobBase
     {
-        public override async Task Run()
+        public override void Run()
         {
-            await RaiseOnStartEvent();
-            await RaiseOnCompleteEvent();
+             RaiseOnStartEvent();
+             RaiseOnCompleteEvent();
         }
     }
 }

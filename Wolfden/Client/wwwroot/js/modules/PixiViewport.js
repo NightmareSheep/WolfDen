@@ -23,7 +23,7 @@
     viewport.on("drag-end", () => {
         viewport.interactiveChildren = true;
     });
-
+    window.viewport = viewport;
 
     return viewport;
 }

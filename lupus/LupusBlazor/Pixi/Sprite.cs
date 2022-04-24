@@ -38,28 +38,19 @@ namespace LupusBlazor.Pixi
             set { this.JavascriptHelper.SetJavascriptProperty(new string[] { "height" }, value, this.JSInstance); height = value; }
         }
 
-        public Sprite(IJSRuntime jSRuntime, IJSObjectReference texture, IJSObjectReference instance = null, JavascriptHelperModule javascriptHelper = null) : base(jSRuntime, instance, javascriptHelper)
+        public Sprite(IJSRuntime jSRuntime, IJSInProcessObjectReference texture, IJSInProcessObjectReference instance = null, JavascriptHelperModule javascriptHelper = null, bool instantiateJSInstance = true) : base(jSRuntime, instance, javascriptHelper, false)
         {
             this.Texture = texture;
+            if (JSInstance == null && instance == null)
+                this.JSInstance = this.JavascriptHelper.InstantiateJavascriptClass(new string[] { "PIXI", "Sprite" }, new() { this.Texture });
         }
 
-        public override async Task Initialize()
-        {
-            await base.Initialize();          
-        }
-
-        public override async Task InstantiateJSInstance()
-        {
-            if (JSInstance == null)
-                this.JSInstance = await this.JavascriptHelper.InstantiateJavascriptClass(new string[] { "PIXI", "Sprite" }, new() { this.Texture });
-        }
-
-        public async Task SetAnchor(float x, float? y = null)
+        public void SetAnchor(float x, float? y = null)
         {
             if (y == null)
                 y = x;
 
-            await this.JSInstance.InvokeVoidAsync("anchor.set", x, y);
+             this.JSInstance.InvokeVoid("anchor.set", x, y);
         }
     }
 }

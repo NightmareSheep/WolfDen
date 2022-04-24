@@ -12,7 +12,7 @@
             <img src="/images/Character portraits/@(UnitName).png" />
         }
     </div>
-    <div id="skill-1"><button class="btn btn-secondary" @onclick="async ()=> { await ClickSkill(0); }">
+    <div id="skill-1"><button class="btn btn-secondary" @onclick="()=> { ClickSkill(0); }">
         @if (SkillNames[0] != null)
         {
             
@@ -30,9 +30,9 @@
     public int SkillSlotsUsed;
     public string[] SkillNames { get; set; } = new string[2];
 
-    public Func<Task>[] SkillOnClicks { get; set; } = new Func<Task>[2];
+    public Action[] SkillOnClicks { get; set; } = new Action[2];
 
-    public async Task SetCharacterSkill(string name, Func<Task> onclick)
+    public void SetCharacterSkill(string name, Action onclick)
     {
         if (SkillSlotsUsed >= SkillNames.Length)
             return;
@@ -42,13 +42,13 @@
         base.StateHasChanged();
     }
 
-    public async Task SetCharacterUI(string name)
+    public void SetCharacterUI(string name)
     {
         UnitName = name;
         base.StateHasChanged();
     }
 
-    public async Task ResetCharacterUI()
+    public void ResetCharacterUI()
     {
         for (var i = 0; i < SkillNames.Length; i++)
         {
@@ -59,9 +59,9 @@
         base.StateHasChanged();
     }
 
-    public async Task ClickSkill(int index)
+    public void ClickSkill(int index)
     {
         if (SkillOnClicks.Length > index && SkillOnClicks[index] != null)
-            await SkillOnClicks[index]();
+            SkillOnClicks[index]();
     }
 }

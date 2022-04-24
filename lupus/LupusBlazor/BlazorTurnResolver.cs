@@ -20,22 +20,22 @@ namespace LupusBlazor
             blazorGame.UI.EndTurnButtonClickedEvent += this.EndTurnButtonClicked;
         }
 
-        private async Task EndTurnButtonClicked()
+        private void EndTurnButtonClicked(object sender, EventArgs e)
         {
-            await BlazorGame.Hub.InvokeAsync("EndTurn", BlazorGame.Id, CurrentPlayer.Id);
+             BlazorGame.Hub.InvokeAsync("EndTurn", BlazorGame.Id, CurrentPlayer.Id);
         }
 
-        public override async Task StartTurn()
+        public override void StartTurn()
         {
-            await base.StartTurn();
-            await this.BlazorGame.UI.SetPlayers(this.BlazorGame.Players, this.ActivePlayers, this.CurrentPlayer);
+             base.StartTurn();
+             this.BlazorGame.UI.SetPlayers(this.BlazorGame.Players, this.ActivePlayers, this.CurrentPlayer);
 
             if (this.ActivePlayers.Count == 1)
-                await this.BlazorGame.UI.ShowMessage(ActivePlayers[0].Name + "'s turn!");
+                 this.BlazorGame.UI.ShowMessage(ActivePlayers[0].Name + "'s turn!");
             if (this.ActivePlayers.Count > 1)
-                await this.BlazorGame.UI.ShowMessage("Team " + ActivePlayers[0].Team + "'s turn!");
+                 this.BlazorGame.UI.ShowMessage("Team " + ActivePlayers[0].Team + "'s turn!");
 
-            await this.BlazorGame.AudioPlayer.PlaySound(Audio.Effects.TurnEnd);
+             this.BlazorGame.AudioPlayer.PlaySound(Audio.Effects.TurnEnd);
         }
 
         public override void Dispose()

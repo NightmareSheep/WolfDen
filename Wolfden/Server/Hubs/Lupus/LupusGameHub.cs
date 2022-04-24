@@ -55,7 +55,7 @@ namespace Wolfden.Server.Hubs.Lupus
         {
             var user = playerId.StartsWith(GuestPrefix) ? playerId : Context?.User?.Identity?.Name ?? GuestPrefix + playerId;
             ConcurrencyObjects.ConcurentOperation(gameId, (Game game) => {
-                if (game?.TurnResolver?.EndTurn(game.Players.FirstOrDefault(p => p.Id == user)).Result ?? false)
+                if (game?.TurnResolver?.EndTurn(game.Players.FirstOrDefault(p => p.Id == user)) ?? false)
                     Clients.Group(GamePrefix + game.Id.ToString()).EndTurn(playerId);
             });
         }

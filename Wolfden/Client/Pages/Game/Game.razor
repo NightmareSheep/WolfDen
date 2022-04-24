@@ -26,7 +26,13 @@
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        await Statics.AudioPlayer.StopMusic();
+        
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        Statics.AudioPlayer.StopMusic();
         var id = await localStorage.GetItemAsync<string>("id");
         //var http = HttpClientFactory.CreateClient("Wolfden.ServerAPI.Anonymous");
         LupusGameHelper = new LupusGameHelper(Http, JSRuntime, NavigationManager, LoggerProvider, GameId, UI, id);
@@ -40,7 +46,7 @@
 
     private async Task HandleKeyPress(KeyboardEventArgs e)
     {
-        await UI.HandleKeyPress(e);
+        UI.HandleKeyPress(e);
     }
 
     public void Dispose()

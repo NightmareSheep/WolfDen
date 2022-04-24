@@ -32,10 +32,10 @@ namespace Lupus.Units
 
 
 
-        public override async Task Destroy()
+        public override void Destroy()
         {
-            await base.Destroy();
-            await Move.Destroy();
+            base.Destroy();
+            Move.Destroy();
         }
     }
 }

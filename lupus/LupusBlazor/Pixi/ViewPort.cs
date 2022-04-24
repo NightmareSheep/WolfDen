@@ -13,37 +13,19 @@ namespace LupusBlazor.Pixi
         public Application Application { get; }
         public int WorldWidth { get; }
         public int WorldHeight { get; }
-        private IJSObjectReference ViewportModule { get; set; }
 
-        public ViewPort(IJSRuntime jSRuntime, Application application, int worldWidth, int worldHeight, JavascriptHelperModule javascriptHelper = null) : base(jSRuntime, null, javascriptHelper)
+        public ViewPort(IJSRuntime jSRuntime, Application application, int worldWidth, int worldHeight, JavascriptHelperModule javascriptHelper = null) : base(jSRuntime, null, javascriptHelper, false)
         {
             Application = application;
             WorldWidth = worldWidth;
             WorldHeight = worldHeight;
             this.JavascriptHelper = javascriptHelper;
+            var viewportModule = ViewportModule.Instance;
+            Console.WriteLine("Instantiate viewport");
+            this.JSInstance = viewportModule.InstantiateViewport(this.Application.PixiApp, this.Application.ElementId, WorldWidth, WorldHeight);
+            this.JSInstance.InvokeVoid("drag");
+            this.JSInstance.InvokeVoid("pinch");
+            this.JSInstance.InvokeVoid("wheel");
         }
-
-        public override async Task<ViewPort> Initialize()
-        {
-            await base.Initialize();
-            this.ViewportModule = await JSRuntime.InvokeAsync<IJSObjectReference>("import", "./js/modules/PixiViewport.js");
-
-            if (this.JSInstance != null)
-                await this.JSInstance.DisposeAsync();
-
-            this.JSInstance = await ViewportModule.InvokeAsync<IJSObjectReference>("InstantiateViewport", this.Application.PixiApp, this.Application.ElementId, WorldWidth, WorldHeight);
-
-            await this.JSInstance.InvokeVoidAsync("drag");
-            await this.JSInstance.InvokeVoidAsync("pinch");
-            await this.JSInstance.InvokeVoidAsync("wheel");
-            return this;
-        }
-
-        public override async Task Dispose()
-        {
-            await base.Dispose();
-            await this.ViewportModule.DisposeAsync();
-        }
-
     }
 }

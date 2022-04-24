@@ -15,23 +15,24 @@ namespace LupusBlazor.Pixi.LupusPixi.Jobs
 
         public TriggerJob TriggerJob { get; }
 
-        public override async Task Run()
+        public override void Run()
         {
-            await RaiseOnStartEvent();
+             RaiseOnStartEvent();
 
             if (TriggerJob.JobCompleted)
             {
-                await RaiseOnCompleteEvent();
+                RaiseOnCompleteEvent();
                 return;
             }
 
             TriggerJob.OnComplete += TriggerJobCompleted;
         }
 
-        public async Task TriggerJobCompleted(IJob job)
+        public void TriggerJobCompleted(object sender, EventArgs e)
         {
+            var job = sender as IJob;
             TriggerJob.OnComplete -= TriggerJobCompleted;
-            await RaiseOnCompleteEvent();
+            RaiseOnCompleteEvent();
         }
     }
 }

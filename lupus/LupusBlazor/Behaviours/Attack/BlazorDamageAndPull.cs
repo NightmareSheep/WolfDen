@@ -38,20 +38,20 @@ namespace LupusBlazor.Behaviours.Attack
 
         }
 
-        public async Task Click(object sender)
+        public void Click(object sender, EventArgs e)
         {
             if (sender == this.AttackIndicators)
                 return;
-
-            await AttackIndicators.RemoveIndicators();
+            
+            AttackIndicators.RemoveIndicators();
         }
 
-        public async Task SpawnAttackIndicators()
+        public void SpawnAttackIndicators()
         {
             if (SkillPoints.CurrentPoints < 1)
                 return;
 
-            await BlazorGame.RaiseClickEvent(this);
+             BlazorGame.RaiseClickEvent(this);
             var indices = new List<int>();
             var directions = new Direction[] { Direction.North, Direction.East, Direction.South, Direction.West };
             foreach (var direction in directions)
@@ -65,12 +65,12 @@ namespace LupusBlazor.Behaviours.Attack
                     indices.Add(tile2.Index);
             }
 
-            await AttackIndicators.Spawn(indices);
+             AttackIndicators.Spawn(indices);
         }
 
-        public async Task ClickIndicator(int index)
+        public void ClickIndicator(object sender, int index)
         {
-            await AttackIndicators.RemoveIndicators();
+             AttackIndicators.RemoveIndicators();
 
             var clickedTile = game.Map.GetTile(index);
             var clickedTileVector = new Vector2(clickedTile.X, clickedTile.Y);
@@ -79,34 +79,34 @@ namespace LupusBlazor.Behaviours.Attack
             var direction = directionVector.GetDirectionFromVector();
 
 
-            await this.BlazorGame.Hub.InvokeAsync("DoMove", BlazorGame.Id, this.Unit.Owner.Id, Id, typeof(DamageAndPull).AssemblyQualifiedName, "DamageAndPullUnit", new object[] { direction }, new string[] { typeof(Direction).AssemblyQualifiedName });
+             this.BlazorGame.Hub.InvokeAsync("DoMove", BlazorGame.Id, this.Unit.Owner.Id, Id, typeof(DamageAndPull).AssemblyQualifiedName, "DamageAndPullUnit", new object[] { direction }, new string[] { typeof(Direction).AssemblyQualifiedName });
         }
 
-        public override async Task DamageAndPullUnit(Direction direction)
+        public override void DamageAndPullUnit(Direction direction)
         {
             var target = unit?.Tile?.GetNeigbour(direction)?.GetNeigbour(direction)?.Unit as BlazorUnit;
             var targetPixiUnit = target?.PixiUnit;
 
             if (targetPixiUnit == null)
-                await (this.Unit?.PixiUnit?.QueueAnimation(Animations.Pull, direction) ?? Task.CompletedTask);
+                Unit?.PixiUnit?.QueueAnimation(Animations.Pull, direction);
             else
-                await (this.Unit?.PixiUnit?.QueueInteraction(Animations.Pull, direction, new List<PixiUnit>() { targetPixiUnit }) ?? Task.CompletedTask);
+                Unit?.PixiUnit?.QueueInteraction(Animations.Pull, direction, new List<PixiUnit>() { targetPixiUnit });
 
-            await base.DamageAndPullUnit(direction);
+             base.DamageAndPullUnit(direction);
         }
 
-        public override async Task Destroy()
+        public override void Destroy()
         {
-            await base.Destroy();
+             base.Destroy();
             AttackIndicators.TileClickEvent -= ClickIndicator;
             this.BlazorGame.ClickEvent -= Click;
-            await AttackIndicators.Destroy();
+             AttackIndicators.Destroy();
         }
 
-        public async Task ClickSkill()
+        public void ClickSkill()
         {
             if (unit.Owner == BlazorGame.CurrentPlayer)
-                await SpawnAttackIndicators();
+                 SpawnAttackIndicators();
         }
     }
 }

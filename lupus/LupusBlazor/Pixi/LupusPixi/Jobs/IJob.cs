@@ -8,9 +8,9 @@ namespace LupusBlazor.Pixi.LupusPixi.Jobs
 {
     public interface IJob
     {
-        event Func<IJob, Task> OnComplete;
-        event Func<IJob, Task> OnStart;
+        event EventHandler OnComplete;
+        event EventHandler OnStart;
 
-        Task Run();
+        void Run();
     }
 }

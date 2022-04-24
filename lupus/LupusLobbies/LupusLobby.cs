@@ -47,7 +47,7 @@ namespace LupusLobbies
             return players;
         }
 
-        public override async Task StartGame()
+        public override void StartGame()
         {
             throw new NotImplementedException();
         }

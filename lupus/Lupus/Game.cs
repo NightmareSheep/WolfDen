@@ -27,11 +27,8 @@ namespace Lupus
             History = new History(this);            
             PlayerInfos = playersInfos;
             Map = new Map();
-            GameInitializer = new GameInitializer(this, map);            
-        }
-
-        public async Task Initialize() {
-            await GameInitializer.Initialize(); 
+            GameInitializer = new GameInitializer(this, map);
+            
         }
 
         public T GetGameObject<T>(string playerId, string objectId) where T : class
@@ -62,7 +59,7 @@ namespace Lupus
             }
         }
 
-        public async Task EndGame()
+        public void EndGame()
         {
             TurnResolver?.Dispose();
 
@@ -71,7 +68,7 @@ namespace Lupus
             {
                 var index = Math.Min(i, allObjects.Count - 1);
                 var obj = allObjects[index];
-                await obj.Destroy();
+                obj.Destroy();
 
             }
 

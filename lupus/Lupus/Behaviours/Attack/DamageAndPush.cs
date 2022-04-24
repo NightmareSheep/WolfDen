@@ -35,27 +35,26 @@ namespace Lupus.Behaviours.Attack
             Agent = new ActionAgent(game, this);
         }        
 
-        public virtual async Task DamageAndPushUnit(Direction direction)
+        public virtual void DamageAndPushUnit(Direction direction)
         {
             if (SkillPoints.CurrentPoints < 1)
                 return;
 
-            await SkillPoints.UseSkillPoints(1, this);
+            SkillPoints.UseSkillPoints(1, this);
             var target = this.unit?.Tile?.GetNeigbour(direction);
 
             var targetUnit = target?.Unit;
-            await target?.Pushing?.Push(direction);
+            target?.Pushing?.Push(direction);
             if (targetUnit != null && targetUnit.Health.CurrentHealth >= 0)
-                await targetUnit.Health?.Damage(Strength);
+                targetUnit.Health?.Damage(Strength);
 
             game.History.AddMove(new DamageAndPushHistory(Id, direction));
-            await Agent.ActionUsed();
+            Agent.ActionUsed();
         }
 
-        public virtual Task Destroy()
+        public virtual void Destroy()
         {
             game.RemoveObject(Id);
-            return Task.CompletedTask;
         }
 
         public int GetAvailableActions()

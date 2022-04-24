@@ -12,24 +12,24 @@ namespace LupusBlazor.Pixi.LupusPixi
 {
     public static class PixiFilters
     {
-        public static Dictionary<PixiFilter, IJSObjectReference> Filters = new();
-        public static Dictionary<KnownColor, IJSObjectReference> TeamFilters = new();
+        public static Dictionary<PixiFilter, IJSInProcessObjectReference> Filters = new();
+        public static Dictionary<KnownColor, IJSInProcessObjectReference> TeamFilters = new();
         public static JavascriptHelperModule JavascriptHelper { get; set; }
 
-        public static async Task Initialize(IJSRuntime jSRuntime)
+        public static void Initialize(IJSRuntime jSRuntime)
         {
-            JavascriptHelper = await JavascriptHelperModule.GetInstance(jSRuntime);
+            JavascriptHelper =  JavascriptHelperModule.Instance;
 
-            var desaturateFilter = await JavascriptHelper.InstantiateJavascriptClass(new string[] { "PIXI", "filters", "ColorMatrixFilter" }, new List<object>() { });
-            await desaturateFilter.InvokeVoidAsync("desaturate");
+            var desaturateFilter =  JavascriptHelper.InstantiateJavascriptClass(new string[] { "PIXI", "filters", "ColorMatrixFilter" }, new List<object>() { });
+             desaturateFilter.InvokeVoid("desaturate");
             Filters.Add(PixiFilter.Desaturate, desaturateFilter);
 
-            var glowFilter = await JavascriptHelper.InstantiateJavascriptClass(new string[] { "PIXI", "filters", "GlowFilter" }, new List<object>() { });
-            await JavascriptHelper.SetJavascriptProperty(new string[] { "outerStrength" }, 1, glowFilter);
+            var glowFilter =  JavascriptHelper.InstantiateJavascriptClass(new string[] { "PIXI", "filters", "GlowFilter" }, new List<object>() { });
+             JavascriptHelper.SetJavascriptProperty(new string[] { "outerStrength" }, 1, glowFilter);
             Filters.Add(PixiFilter.GlowFilter, glowFilter);
         }
 
-        public static async Task<IJSObjectReference> GetTeamFilter(KnownColor knownColor)
+        public static IJSInProcessObjectReference GetTeamFilter(KnownColor knownColor)
         {
             if (TeamFilters.Keys.Contains(knownColor))
             {
@@ -63,7 +63,7 @@ namespace LupusBlazor.Pixi.LupusPixi
                 input.Add(replace);
             }
 
-            var filter = await JavascriptHelper.InstantiateJavascriptClass(new string[] { "PIXI", "filters", "MultiColorReplaceFilter" }, new List<object>() { input, 0.001f });
+            var filter =  JavascriptHelper.InstantiateJavascriptClass(new string[] { "PIXI", "filters", "MultiColorReplaceFilter" }, new List<object>() { input, 0.001f });
             TeamFilters.Add(knownColor, filter);
 
             return filter;

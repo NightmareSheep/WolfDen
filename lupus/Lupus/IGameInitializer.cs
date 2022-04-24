@@ -8,6 +8,6 @@ namespace Lupus
 {
     public interface IGameInitializer
     {
-        Task Initialize();
+        void Initialize();
     }
 }

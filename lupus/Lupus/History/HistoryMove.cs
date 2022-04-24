@@ -39,7 +39,7 @@ namespace Lupus
             
         }
 
-        public async Task Execute(Game game)
+        public void Execute(Game game)
         {
             var type = Type.GetType(TypeName);
             var parameterTypes = ParameterTypeNames.Select(n => Type.GetType(n)).ToArray();
@@ -51,8 +51,7 @@ namespace Lupus
             
 
             MethodInfo method = type.GetMethod(MethodName, parameterTypes);
-            var result = (Task)method.Invoke(gameObject, Parameters);
-            await result;
+            method.Invoke(gameObject, Parameters);
         }
     }
 }

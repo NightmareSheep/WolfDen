@@ -8,27 +8,23 @@ namespace LupusBlazor.Pixi.LupusPixi.Jobs
 {
     public abstract class JobBase : IJob
     {
-        public event Func<IJob, Task> OnComplete;
-        public event Func<IJob, Task> OnStart;
+        public event EventHandler OnComplete;
+        public event EventHandler OnStart;
         public bool JobStarted { get; private set; }
         public bool JobCompleted { get; private set; }
 
-        public abstract Task Run();
+        public abstract void Run();
 
-        protected async Task RaiseOnCompleteEvent()
+        protected void RaiseOnCompleteEvent()
         {
             JobCompleted = true;
-            var invocationList = OnComplete?.GetInvocationList()?.Cast<Func<IJob, Task>>();
-            foreach (var subscriber in invocationList ?? Enumerable.Empty<Func<IJob, Task>>())
-                await subscriber(this);
+            OnComplete?.Invoke(this, EventArgs.Empty);
         }
 
-        protected async Task RaiseOnStartEvent()
+        protected void RaiseOnStartEvent()
         {
             JobStarted = true;
-            var invocationList = OnStart?.GetInvocationList()?.Cast<Func<IJob, Task>>();
-            foreach (var subscriber in invocationList ?? Enumerable.Empty<Func<IJob, Task>>())
-                await subscriber(this);
+            OnStart?.Invoke(this, EventArgs.Empty);
         }
     }
 }

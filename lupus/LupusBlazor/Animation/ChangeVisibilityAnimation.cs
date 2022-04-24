@@ -21,10 +21,10 @@ namespace LupusBlazor.Animation
             Visibility = visibility;
         }
 
-        public async Task Play(Func<Task> callback)
+        public void Play(Action callback)
         {
-            await PixiHelper.SetSpriteVisible(IJSRuntime, SpriteId, Visibility);
-            await callback();
+             PixiHelper.SetSpriteVisible(IJSRuntime, SpriteId, Visibility);
+             callback();
         }
     }
 }

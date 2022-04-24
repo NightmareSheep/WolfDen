@@ -49,17 +49,7 @@ namespace LupusBlazor.Pixi
         public Text(IJSRuntime jSRuntime, string text, JavascriptHelperModule javascriptHelper = null) : base(jSRuntime, null, null, javascriptHelper)
         {
             SpriteText = text;
-        }
-
-        
-
-        public override async Task Initialize()
-        {
-            await base.Initialize();
-
-            this.SpriteText = this.SpriteText;
-
-            this.JSInstance = await this.JavascriptHelper.InstantiateJavascriptClass(new string[] { "PIXI", "Text" }, new() { this.SpriteText });
+            JSInstance = JavascriptHelper.InstantiateJavascriptClass(new string[] { "PIXI", "Text" }, new() { SpriteText });
         }
     }
 }

@@ -48,55 +48,5 @@
 
 @code {
 
-    public override async Task SetParametersAsync(ParameterView parameters)
-    {
-        var javascriptHelper = await JavascriptHelperModule.GetInstance(JSRuntime);
-        await javascriptHelper.SetJavascriptProperty(new string[] { "PIXI", "settings", "SCALE_MODE" }, 2);
-
-        await JSRuntime.InvokeVoidAsync("PIXI.Loader.shared.add", "sprites", "/Images/sprites.json");
-
-        var pixiModule = await PixiApplicationModule.GetInstance(JSRuntime);
-        await pixiModule.LoadResources();
-        await PixiFilters.Initialize(JSRuntime);
-
-        var name = await localStorage.GetItemAsync<string>("name");
-        var id = await localStorage.GetItemAsync<string>("id");
-
-
-
-        if (string.IsNullOrEmpty(name) || string.IsNullOrEmpty(id))
-        {
-            var random = new Random();
-            name = Statics.Names[random.Next(Statics.Names.Length)];
-            id = "Guest_" + Guid.NewGuid().ToString();
-            await localStorage.SetItemAsync("name", name);
-            await localStorage.SetItemAsync("id", id);
-        }
-
-        var checkVolume = await localStorage.ContainKeyAsync("masterVolume");
-        if (!checkVolume)
-        {
-            await localStorage.SetItemAsync("masterVolume", 100);
-            await localStorage.SetItemAsync("musicVolume", 10);
-            await localStorage.SetItemAsync("effectsVolume", 100);
-        }
-
-        var audioJson = await Http.GetFromJsonAsync<AudioJson>("mygameaudio.json");
-
-
-        var masterVolume = await localStorage.GetItemAsync<int>("masterVolume");
-        var musicVolume = await localStorage.GetItemAsync<int>("musicVolume");
-        var effectsVolume = await localStorage.GetItemAsync<int>("effectsVolume");
-
-        await localStorage.SetItemAsync("soundEnabled", false);
-        Statics.AudioPlayer = new(JSRuntime, masterVolume, musicVolume, effectsVolume, audioJson);
-        Statics.AudioPlayer.ChangeMasterVolumeEvent += async (int volume) => { await localStorage.SetItemAsync("masterVolume", volume); };
-        Statics.AudioPlayer.ChangeMusicVolumeEvent += async (int volume) => { await localStorage.SetItemAsync("musicVolume", volume); };
-        Statics.AudioPlayer.ChangeEffectsVolumeEvent += async (int volume) => { await localStorage.SetItemAsync("effectsVolume", volume); };
-
-        await Statics.AudioPlayer.Initialize();
-
-        await base.SetParametersAsync(parameters);
-    }
 
 }

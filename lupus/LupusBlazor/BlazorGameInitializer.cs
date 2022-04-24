@@ -20,9 +20,9 @@ namespace LupusBlazor
 
         BlazorGame blazorGame;
 
-        public override async Task Initialize()
+        public override void Initialize()
         {
-            await game.EndGame();
+             game.EndGame();
             blazorGame?.BlazorUI?.Dispose();
             var players = new List<Player>();
             foreach (var playerInfo in game.PlayerInfos)
@@ -40,9 +40,9 @@ namespace LupusBlazor
             }
 
             mapFactory.LoadMap(game, jsonMap, jsonMap.Name);
-            await game.TurnResolver.StartTurn();
-            await game.History.PlayHistory();
-            await blazorGame.Draw();
+            game.TurnResolver.StartTurn();
+            game.History.PlayHistory();
+            blazorGame.Draw();
         }
     }
 }

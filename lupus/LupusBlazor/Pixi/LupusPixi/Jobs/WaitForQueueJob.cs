@@ -15,13 +15,13 @@ namespace LupusBlazor.Pixi.LupusPixi.Jobs
 
         public PlayAnimationJob PlayAnimationJob { get; }
 
-        public override async Task Run()
+        public override void Run()
         {
-            await RaiseOnStartEvent();
+             RaiseOnStartEvent();
 
             if (PlayAnimationJob.JobCompleted)
             {
-                await RaiseOnCompleteEvent();
+                 RaiseOnCompleteEvent();
                 return;
             }
 
@@ -30,16 +30,16 @@ namespace LupusBlazor.Pixi.LupusPixi.Jobs
 
         }
 
-        private async Task JobComplete()
+        private void JobComplete(object sender, EventArgs e)
         {
-            await RaiseOnCompleteEvent();
+             RaiseOnCompleteEvent();
             PlayAnimationJob.OnComplete -= JobComplete;
             PlayAnimationJob.Animation.OnQueueCompleteEvent -= JobComplete;
         }
 
-        private async Task JobComplete(IJob job)
+        private void JobComplete(IJob job)
         {
-            await JobComplete(null);
+             JobComplete(null);
         }
     }
 }

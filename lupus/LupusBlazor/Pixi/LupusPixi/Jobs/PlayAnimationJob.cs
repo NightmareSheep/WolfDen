@@ -17,17 +17,17 @@ namespace LupusBlazor.Pixi.LupusPixi.Jobs
         public PixiUnit PixiUnit { get; }
         public Animation Animation { get; }
 
-        public override async Task Run()
+        public override void Run()
         {
-            await RaiseOnStartEvent();
+             RaiseOnStartEvent();
             Animation.OnCompleteEvent += OnAnimationComplete;
-            await PixiUnit.PlayAnimation(Animation);
+             PixiUnit.PlayAnimation(Animation);
         }
 
-        public async Task OnAnimationComplete()
+        public void OnAnimationComplete(object sender, EventArgs e)
         {
             Animation.OnCompleteEvent -= OnAnimationComplete;
-            await RaiseOnCompleteEvent();
+             RaiseOnCompleteEvent();
         }
 
         

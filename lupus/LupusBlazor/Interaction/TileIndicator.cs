@@ -37,24 +37,24 @@ namespace LupusBlazor.Behaviours.Movement
             this.Sprite = sprite;
         }
 
-        public async Task Click()
+        public void Click(object sender, EventArgs e)
         {
-            await TileIndicators.ClickTile(Tile.Index);
+             TileIndicators.ClickTile(Tile.Index);
         }
 
-        public async Task Draw()
+        public void Draw()
         {
             Sprite.X = Tile.XCoord();
             Sprite.Y = Tile.YCoord();
             Sprite.Tint = this.Tint;
             Sprite.ClickEvent += Click;
-            await this.Game.LupusPixiApplication.ViewPort.AddChild(Sprite);
+             this.Game.LupusPixiApplication.ViewPort.AddChild(Sprite);
         }
 
-        public async Task Destroy()
+        public void Destroy()
         {
             this.Sprite.ClickEvent -= Click;
-            await this.Game.LupusPixiApplication.ViewPort.RemoveChild(Sprite);
+             this.Game.LupusPixiApplication.ViewPort.RemoveChild(Sprite);
         }
     }
 }

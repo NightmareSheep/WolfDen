@@ -30,14 +30,14 @@ namespace Lupus.WinConditions.GatherChests
             game.TurnResolver.StartTurnEvent += StartTurn;
         }
 
-        protected virtual async Task StartTurn(List<Player> activePlayers)
+        protected virtual void StartTurn(object sender, List<Player> activePlayers)
         {
             CurrentTurn++;
             if (CurrentTurn >= Turns * Teams.Count)
-                await AnnounceVictor();
+                AnnounceVictor();
         }
 
-        protected virtual async Task EndTurn(List<Player> activePlayers)
+        protected virtual void EndTurn(object sender, List<Player> activePlayers)
         {
 
             foreach (var chest in Chests)
@@ -57,9 +57,9 @@ namespace Lupus.WinConditions.GatherChests
             
         }
 
-        protected virtual async Task AnnounceVictor()
+        protected virtual void AnnounceVictor()
         {
-            await this.Game.EndGame();
+            Game.EndGame();
         }
     }
 }

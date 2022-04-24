@@ -10,46 +10,45 @@ namespace LupusBlazor.Pixi.LupusPixi.Jobs
     {
         private bool busy;
         private Queue<IJob> Jobs { get; set; } = new();
-        public event Func<Task> QueueEmptyEvent;
+        public event EventHandler QueueEmptyEvent;
 
-        public async Task EnqueueJob(IJob job)
+        public void EnqueueJob(IJob job)
         {
             Console.WriteLine("Enqueue job");
 
             Jobs.Enqueue(job);
             if (!busy)
-                await ContinueQueue();
+                 ContinueQueue();
         }
 
-        private async Task JobComplete(IJob job)
+        private void JobComplete(object sender, EventArgs e)
         {
+            var job = sender as IJob;
             Console.WriteLine("Job complete");
             job.OnComplete -= JobComplete;
-            await ContinueQueue();
+             ContinueQueue();
         }
 
-        private async Task ContinueQueue()
+        private void ContinueQueue()
         {
             Console.WriteLine("ContinueQueue");
 
             if (Jobs.Count == 0)
             {
                 busy = false;
-                await RaiseQueueEmptyEvent();
+                 RaiseQueueEmptyEvent();
                 return;
             }
 
             busy = true;
             var j = Jobs.Dequeue();
             j.OnComplete += JobComplete;
-            await j.Run();
+             j.Run();
         }
 
-        private async Task RaiseQueueEmptyEvent()
+        private void RaiseQueueEmptyEvent()
         {
-            var invocationList = QueueEmptyEvent?.GetInvocationList()?.Cast<Func<Task>>() ?? Enumerable.Empty<Func<Task>>();
-            foreach (var subscriber in invocationList)
-                await subscriber();
+            QueueEmptyEvent?.Invoke(this, EventArgs.Empty);
         }
     }
 }

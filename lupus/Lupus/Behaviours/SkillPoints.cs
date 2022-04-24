@@ -14,7 +14,7 @@ namespace Lupus.Behaviours
         public int CurrentPoints { get; private set; }
         public Game Game { get; }
         public Unit Unit { get; }
-        public event Func<int, object, Task> SkillPointsUsedEvent;
+        public event EventHandler<int> SkillPointsUsedEvent;
 
         public SkillPoints(Game game, Unit unit, int points)
         {
@@ -25,14 +25,13 @@ namespace Lupus.Behaviours
             game.TurnResolver.StartTurnEvent += StartTurn;
         }
 
-        public virtual async Task UseSkillPoints(int amount, object spender)
+        public virtual void UseSkillPoints(int amount, object sender)
         {
             CurrentPoints -= amount;
-            if (SkillPointsUsedEvent != null)
-                await SkillPointsUsedEvent.Invoke(amount, spender);
+            SkillPointsUsedEvent?.Invoke(sender, amount);
         }
 
-        public virtual Task StartTurn(List<Player> activePlayers)
+        public virtual void StartTurn(object sender, List<Player> activePlayers)
         {
             if (activePlayers.Contains(Unit.Owner))
             {
@@ -42,13 +41,11 @@ namespace Lupus.Behaviours
             {
                 CurrentPoints = 0;
             }
-            return Task.CompletedTask;
         }
 
-        public Task Destroy()
+        public void Destroy()
         {
             Game.TurnResolver.StartTurnEvent -= StartTurn;
-            return Task.CompletedTask;
         }
     }
 }

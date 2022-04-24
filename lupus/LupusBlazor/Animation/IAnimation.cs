@@ -11,7 +11,7 @@ namespace LupusBlazor.Animation
     {
         int QueueDuration { get; }
 
-        Task Play(Func<Task> callback);
+        void Play(Action callback);
 
     }
 }

@@ -11,13 +11,13 @@ namespace LupusBlazor.Pixi.LupusPixi
         private bool busy;
         private Queue<Func<Task>> Actions { get; set; } = new Queue<Func<Task>>();
 
-        public async Task AddAction(Func<Task> action)
+        public void AddAction(Func<Task> action)
         {
 
             if (!busy)
             {
                 busy = true;
-                await action();
+                 action();
 
             }
             else
@@ -26,7 +26,7 @@ namespace LupusBlazor.Pixi.LupusPixi
             }
         }
 
-        public async Task ContinueQueue()
+        public void ContinueQueue()
         {
 
             if (Actions.Count == 0)
@@ -36,7 +36,7 @@ namespace LupusBlazor.Pixi.LupusPixi
             }
 
             var action = Actions.Dequeue();
-            await action();
+             action();
         }
     }
 }

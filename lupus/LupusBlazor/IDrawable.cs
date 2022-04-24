@@ -7,6 +7,6 @@ namespace LupusBlazor
 {
     public interface IDrawable
     {
-        Task Draw();
+        void Draw();
     }
 }

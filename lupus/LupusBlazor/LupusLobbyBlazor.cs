@@ -17,7 +17,7 @@ namespace LupusBlazor
             NavigationManager = navigationManager;
         }        
 
-        public override async Task StartGame()
+        public override void StartGame()
         {
             NavigationManager.NavigateTo("game/" + Id);
         }
