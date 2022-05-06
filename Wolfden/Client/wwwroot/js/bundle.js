@@ -25,8 +25,10 @@ function addSound(name, src, loop = true, duration = 0, intro = 0, outro = 0) {
 function setMasterVolume(volume) {
     Howler.volume(volume / 100);
 }
-function playSound(name) {
-    sounds[name].play();
+function playSound(name, volume) {
+    let sound = sounds[name];
+    sound.volume(volume / 100);
+    sound.play();
 }
 function playMusic(name, volume) {
     let sound = sounds[name];

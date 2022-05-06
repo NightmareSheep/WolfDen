@@ -20,9 +20,16 @@ namespace Lupus
         public Player Owner { get; }
         public string Id { get; }
 
-        public void Execute()
+        protected bool CanUndo()
         {
-            if (game.History.Moves.Count == 0)
+            if (game.History.Moves.Count > 0 && game.History.Moves[game.History.Moves.Count - 1] is not EndTurnHistory)
+                return true;
+            return false;
+        }
+
+        public virtual void Execute()
+        {
+            if (!CanUndo())
                 return;
 
             var moves = game.History.Moves;

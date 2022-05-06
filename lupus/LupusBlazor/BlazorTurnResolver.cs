@@ -31,9 +31,9 @@ namespace LupusBlazor
              this.BlazorGame.UI.SetPlayers(this.BlazorGame.Players, this.ActivePlayers, this.CurrentPlayer);
 
             if (this.ActivePlayers.Count == 1)
-                 this.BlazorGame.UI.ShowMessage(ActivePlayers[0].Name + "'s turn!");
+                 this.BlazorGame.UI.TextMessage.ShowMessage(ActivePlayers[0].Name + "'s turn!");
             if (this.ActivePlayers.Count > 1)
-                 this.BlazorGame.UI.ShowMessage("Team " + ActivePlayers[0].Team + "'s turn!");
+                 this.BlazorGame.UI.TextMessage.ShowMessage("Team " + ActivePlayers[0].Team + "'s turn!");
 
              this.BlazorGame.AudioPlayer.PlaySound(Audio.Effects.TurnEnd);
         }

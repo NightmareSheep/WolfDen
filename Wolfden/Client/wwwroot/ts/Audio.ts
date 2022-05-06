@@ -35,8 +35,10 @@ function setMasterVolume(volume: number) {
     Howler.volume(volume / 100);
 }
 
-function playSound(name) {
-    sounds[name].play();
+function playSound(name: string, volume: number) {
+    let sound = sounds[name];
+    sound.volume(volume / 100);
+    sound.play();
 }
 
 function playMusic(name: string, volume: number) {

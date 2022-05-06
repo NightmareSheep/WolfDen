@@ -1,0 +1,33 @@
+﻿@using Wolfden.Client.Models
+@using LupusBlazor.UI;
+@implements IDisposable
+@implements IButton
+
+<button class="btn @StateClass" @onclick="RaiseClickButtonEvent">
+    <i class="@_iconClass"></i>
+</button>
+
+@code {
+    public event EventHandler? PressButtonEvent;
+
+    private State _state;
+    private string? _iconClass;
+
+    [Parameter] public State State { get; set; }
+    [Parameter] public string? IconClass { get; set; }
+
+    private void RaiseClickButtonEvent() => PressButtonEvent?.Invoke(this, EventArgs.Empty);
+    private string StateClass => "btn-" + _state.ToString().ToLower();
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        _state = State;
+        _iconClass = IconClass;
+    }
+
+    public void Dispose()
+    {
+        PressButtonEvent = null;
+    }
+}

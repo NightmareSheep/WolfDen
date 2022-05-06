@@ -16,6 +16,8 @@ namespace LupusBlazor.Audio
 
         // Interface
         CoolInterfaceClickTone,
-        TurnEnd
+        TurnEnd,
+        Error,
+        Fail
     }
 }

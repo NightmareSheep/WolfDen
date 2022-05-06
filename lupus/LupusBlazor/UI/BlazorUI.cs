@@ -8,8 +8,6 @@ namespace LupusBlazor.UI
 {
     public class BlazorUI : IDisposable
     {
-        private bool disposedValue;
-
         public BlazorGame Game { get; }
         public BlazorTurnResolver TurnResolver { get; }
         public IUI UI { get; }
@@ -25,25 +23,11 @@ namespace LupusBlazor.UI
             game.ActionTracker.ActionUsedEvent += UI.UpdateEndTurnButton;
         }
 
-
-        protected virtual void Dispose(bool disposing)
-        {
-            if (!disposedValue)
-            {
-                if (disposing)
-                {
-                    UI.BlazorGame = null;
-                    TurnResolver.StartTurnEvent -= UI.StartTurn;
-                    Game.ActionTracker.ActionUsedEvent -= UI.UpdateEndTurnButton;
-                }
-                disposedValue = true;
-            }
-        }
-
         public void Dispose()
         {
-            Dispose(disposing: true);
-            GC.SuppressFinalize(this);
+            UI.BlazorGame = null;
+            TurnResolver.StartTurnEvent -= UI.StartTurn;
+            Game.ActionTracker.ActionUsedEvent -= UI.UpdateEndTurnButton;
         }
     }
 }

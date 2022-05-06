@@ -1,9 +1,12 @@
 ﻿@using LupusBlazor
 @using LupusBlazor.UI;
 @using Lupus;
-@using Wolfden.Client.Pages.Game.UserInterface.WinConditions;
 @using Wolfden.Client.Shared;
+@using Wolfden.Client.Shared.Dashboard.Controls;
+@using Wolfden.Client.Pages.Game.UserInterface.WinConditions;
 @using Wolfden.Client.Pages.Game.UserInterface.UnitDescriptions;
+@using Wolfden.Client.Pages.Game.UserInterface.Messages
+
 @inject IJSRuntime JS
 
 @implements IUI
@@ -13,15 +16,14 @@
     <Overlay @ref="Overlay"></Overlay>
     <PlayersUI @ref="PlayersUI"></PlayersUI>
     <GatherChestsWinConditionUI @ref="GatherChestsWinConditionUI"></GatherChestsWinConditionUI>
-    <Message @ref="Message"></Message>
+    <Message @ref="TextMessage"></Message>
+    <UndoMessage @ref="UndoMessage"></UndoMessage>
     <Loading @ref="Loading"></Loading>
 
     
     <div id="menu-panel">
         <div class="buttons">
-            <button class="btn btn-danger" @onclick="ClickUndo">
-                <i class="fa-solid fa-rotate-left"></i>
-            </button>
+            <Button @ref="UndoButton" IconClass="fa-solid fa-rotate-left" State="Models.State.Danger" />
             <button class="btn btn-secondary" @onclick="OpenWinCondition">
                 <i class="fas fa-trophy "></i>
             </button>
@@ -59,6 +61,10 @@
 </div>
 
 @code {
+    public IButton? UndoButton { get; set; }
+    public ITextMessage? TextMessage { get; set; }
+    public IMessage? UndoMessage { get; set; }
+
     public BlazorGame? BlazorGame { get; set; }
 
     private string EndTurnButtonClass = "btn-secondary";
@@ -70,7 +76,6 @@
     private Overlay? Overlay { get; set; }
     public IUnitUI UnitUI { get; set; }
     public Loading Loading { get; set; }
-    public Message Message { get; set; }
     public int SkillSlotsUsed;
     public string[] SkillImages { get; set; } = new string[2];
     public Func<Task>[] SkillOnClicks { get; set; } = new Func<Task>[2];
@@ -82,7 +87,6 @@
     public event EventHandler<MouseEventArgs> MouseClickEvent;
     public event EventHandler MouseRightClickEvent;
     public event EventHandler<KeyboardEventArgs> KeyboardPressEvent;
-    public event EventHandler UndoClickEvent;
 
     public async Task MouseClick(MouseEventArgs e)
     {
@@ -112,11 +116,6 @@
         this.StateHasChanged();
     }
 
-    public void ShowMessage(string text)
-    {
-        this.Message.ShowMessage(text);
-    }
-
     public void HandleKeyPress(KeyboardEventArgs e)
     {
         KeyboardPressEvent?.Invoke(this, e);
@@ -125,11 +124,6 @@
         {
             UnitUI.ClickSkill(0);
         }
-    }
-
-    public void ClickUndo()
-    {
-        UndoClickEvent?.Invoke(this, EventArgs.Empty);
     }
 
     private void OpenWinCondition()

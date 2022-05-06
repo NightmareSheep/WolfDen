@@ -1,0 +1,29 @@
+﻿@using LupusBlazor.UI
+@implements IMessage
+
+@if (_visible)
+{
+    <div class="undo-message"><i class="fa-solid fast-spin fa-circle-notch fa-3x fa-spin-reverse"></i></div>
+}
+
+@code {
+    public bool Enabled { get; set; } = true;
+
+    private bool _visible;
+
+    public void ShowMessage()
+    {
+        if (!Enabled)
+            return;
+
+        _visible = true;
+        StateHasChanged();
+
+        Task.Run(async () =>
+        {
+            await Task.Delay(500);
+            _visible = false;
+            StateHasChanged();
+        });
+    }
+}

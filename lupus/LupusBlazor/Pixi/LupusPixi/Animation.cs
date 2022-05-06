@@ -22,12 +22,15 @@ namespace LupusBlazor.Pixi.LupusPixi
 
         public AnimatedSprite Sprite { get; set; }
         public AnimationConfiguration AnimationConfiguration { get; }
-        public AnimationFactory AnimationFactory { get; }
-
-        public event EventHandler OnCompleteEvent;
-        public event EventHandler OnQueueCompleteEvent;
+        public AnimationFactory AnimationFactory { get; }        
         public int QueueFrame = 0;
         public bool QueueCompleteEventFired = true;
+
+        public event EventHandler PlayEvent;
+        public event EventHandler OnCompleteEvent;
+        public event EventHandler OnQueueCompleteEvent;
+
+        private void RaisePlayEvent() => PlayEvent?.Invoke(this, EventArgs.Empty);
 
         protected void RaiseOnCompleteEvent(object sender, EventArgs e)
         {
@@ -62,13 +65,12 @@ namespace LupusBlazor.Pixi.LupusPixi
 
         public virtual void Play()
         {
-
+            RaisePlayEvent();
             QueueCompleteEventFired = false;
             if (!this.Sprite.Loop)
             {
                  this.Sprite.GotoAndPlay(0);
                  this.Sprite.SetVisibility(true);
-                 Sprite.RaiseOnFrameChangeEvent(0);
             }
             else
             {

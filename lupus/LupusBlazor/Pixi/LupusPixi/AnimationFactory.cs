@@ -105,13 +105,10 @@ namespace LupusBlazor.Pixi.LupusPixi
                         return null;
                     if (direction == Direction.West)
                         result.Sprite.ScaleX = -1;
-                    result.Sprite.OnFrameChangeEvent += (object sender, int frame) => {
-                        if (frame == 0)
-                        {
-                            var random = this.random.Next(sounds.Count);
-                            if (sounds.Count > 0)
-                                 audioPlayer.PlaySoundEffect(sounds[random]);
-                        }
+                    result.PlayEvent += (object sender, EventArgs e) => {
+                        var random = this.random.Next(sounds.Count);
+                        if (sounds.Count > 0)
+                            audioPlayer.PlaySoundEffect(sounds[random]);
                     };
 
                     return result;
@@ -122,12 +119,10 @@ namespace LupusBlazor.Pixi.LupusPixi
                     result =  GetDirectionAnimation(animationConfiguration, "cheer", new() { 80, 80, 220, 80 }, new() { 0, 1, 2, 1 });
                     if (result == null) { return null; }
                     sounds = GetSounds(actor, "What");
-                    result.Sprite.OnFrameChangeEvent += (object sender, int frame) => { 
-                        if (frame == 0) {
-                            var random = this.random.Next(sounds.Count);
-                            if (sounds.Count > 0)
-                                 audioPlayer.PlaySoundEffect(sounds[random]);
-                        }
+                    result.PlayEvent += (object sender, EventArgs e) => {
+                        var random = this.random.Next(sounds.Count);
+                        if (sounds.Count > 0)
+                            audioPlayer.PlaySoundEffect(sounds[random]);
                     };
                     hitArea =  JavascriptHelper.InstantiateJavascriptClass(new string[] { "PIXI", "Rectangle" }, new() { -8, -8, 16, 16 });
                      JavascriptHelper.SetJavascriptProperty(new string[] { "hitArea" }, hitArea, result.Sprite.JSInstance);
@@ -137,13 +132,10 @@ namespace LupusBlazor.Pixi.LupusPixi
                     result =  GetDirectionAnimation(animationConfiguration, "death", new() { 100, 100, 220, 2000 }, new() { 0, 1, 2, 3 });
                     if (result == null) { return null; }
                     sounds = GetSounds(actor, "Death");
-                    result.Sprite.OnFrameChangeEvent += (object sender, int frame) => {
-                        if (frame == 0)
-                        {
-                            var random = this.random.Next(sounds.Count);
-                            if (sounds.Count > 0)
-                                 audioPlayer.PlaySoundEffect(sounds[random]);
-                        }
+                    result.PlayEvent += (object sender, EventArgs e) => {
+                        var random = this.random.Next(sounds.Count);
+                        if (sounds.Count > 0)
+                            audioPlayer.PlaySoundEffect(sounds[random]);
                     };
                     return result;
 
@@ -222,11 +214,11 @@ namespace LupusBlazor.Pixi.LupusPixi
                         i++;
                     }
 
-                    result.Sprite.OnFrameChangeEvent += (object sender, int frame) => { if (frame == 0) {
-                            var random = this.random.Next(sounds.Count);
-                            if (sounds.Count > 0)
-                                 audioPlayer.PlaySoundEffect(sounds[random]); 
-                        } };
+                    result.PlayEvent += (object sender, EventArgs e) => {
+                        var random = this.random.Next(sounds.Count);
+                        if (sounds.Count > 0)
+                            audioPlayer.PlaySoundEffect(sounds[random]);
+                    };
                     return result;
                     
 

@@ -22,8 +22,12 @@ namespace LupusBlazor
 
         public override void Initialize()
         {
-             game.EndGame();
+            game.EndGame();
             blazorGame?.BlazorUI?.Dispose();
+            blazorGame.UI.TextMessage.Enabled = false;
+            var effectsVolume = blazorGame.AudioPlayer.EffectsVolume;
+            blazorGame.AudioPlayer.ChangeEffectsVolume(0);
+
             var players = new List<Player>();
             foreach (var playerInfo in game.PlayerInfos)
                 players.Add(new BlazorPlayer(blazorGame, playerInfo));
@@ -35,7 +39,7 @@ namespace LupusBlazor
 
             foreach (var player in game.Players)
             {
-                var undo = new BlazorUndo(blazorGame, blazorGame.BlazorUI, player as BlazorPlayer);
+                var undo = new BlazorUndo(blazorGame, blazorGame.BlazorUI, blazorGame.AudioPlayer, player as BlazorPlayer);
                 player.AddGameObject("player " + player.Id + " undo", undo);
             }
 
@@ -43,6 +47,8 @@ namespace LupusBlazor
             game.TurnResolver.StartTurn();
             game.History.PlayHistory();
             blazorGame.Draw();
+            blazorGame.UI.TextMessage.Enabled = true;
+            blazorGame.AudioPlayer.ChangeEffectsVolume(effectsVolume);
         }
     }
 }

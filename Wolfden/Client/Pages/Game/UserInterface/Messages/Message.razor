@@ -1,0 +1,31 @@
+﻿@using LupusBlazor.UI
+@implements ITextMessage
+
+<div class="message @AnimationCssClass"><h1>@Text</h1></div>
+
+
+@code {
+    public bool Enabled { get; set; } = true;
+
+    private string? Text { get; set; }
+    private bool Animate { get; set; }
+    private string AnimationCssClass { get { return Animate ? "message-animate" : ""; } }
+
+    public void ShowMessage(string text)
+    {
+        if (!Enabled)
+            return;
+
+        this.Text = text;
+
+        this.Animate = false;
+        this.StateHasChanged();
+
+        Task.Run(async () =>
+        {
+            await Task.Delay(100);
+            this.Animate = true;
+            this.StateHasChanged();
+        });
+    }
+}
