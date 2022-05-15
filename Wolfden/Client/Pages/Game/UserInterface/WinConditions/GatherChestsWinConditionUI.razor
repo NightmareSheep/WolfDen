@@ -12,12 +12,13 @@
             var team = this.Teams?[i] ?? new();
             var score = Scores[i];
 
+            <div>
             @foreach (var player in team)
             {
-                <div>
-                    <i class="fas fa-square-full" style="color : @(player.Color.ToString())"></i> @score 
-                </div>
+                @player.Name <i class="fas fa-square-full" style="color : @(player.Color.ToString())"></i> <text>&nbsp; </text>
             }
+            <text> : </text> @score 
+            </div>
         }
         <div>
             Turn @CurrentTurn of @MaxTurn

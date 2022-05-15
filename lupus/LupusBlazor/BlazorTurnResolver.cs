@@ -25,6 +25,19 @@ namespace LupusBlazor
              BlazorGame.Hub.InvokeAsync("EndTurn", BlazorGame.Id, CurrentPlayer.Id);
         }
 
+        public override bool EndTurn(Player player)
+        {
+            var playerIsDone = ActivePlayers.Contains(player) && ActivePlayers.Count > 1;
+            var result = base.EndTurn(player);
+            if (playerIsDone)
+            {
+                BlazorGame.UI.TextMessage.ShowMessage(player.Name + " is done.");
+                this.BlazorGame.AudioPlayer.PlaySound(Audio.Effects.PlayerDone);
+                RaisePlayerInTeamIsDoneEvent(player);
+            }
+            return result;
+        }
+
         public override void StartTurn()
         {
              base.StartTurn();

@@ -13,6 +13,8 @@ using System.IO;
 using Wolfden.Shared.Models.Hosting;
 using Microsoft.AspNetCore.Hosting;
 using Wolfden.Shared.Models;
+using Lupus.Other.MapLoading;
+using Newtonsoft.Json;
 
 namespace Wolfden.Server.Controllers
 {
@@ -36,9 +38,14 @@ namespace Wolfden.Server.Controllers
             var map = Shared.Statics.Maps.FirstOrDefault(map => map.Name == host.MapName);
             var AvailableColors = Statics.Colors.Skip(map.NumberOfPlayers).ToList();
 
+            var mapString = System.IO.File.ReadAllText(_env.WebRootPath + "/game/maps/" + map.Name + "/" + map.Name + ".json");
+            var jsonMap = JsonConvert.DeserializeObject<JsonMap>(mapString);
+            var teams = jsonMap?.Teams;
+
             for (var i = 0; i < map.NumberOfPlayers; i++)
             {
-                slots.Add(new LupusLobbySlot(i, new SlotColor(Statics.Colors, AvailableColors, Statics.Colors[i])));
+                var team = teams?[i] ?? i;
+                slots.Add(new LupusLobbySlot(team, new SlotColor(Statics.Colors, AvailableColors, Statics.Colors[i])));
             }
 
             var lobby = new LupusLobbyServer(host.Name, slots, host.MapName, this._env.WebRootPath);

@@ -6,7 +6,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using Wolfden.Shared;
 using Wolfden.Server.Other;
-using System.IO;
 using Newtonsoft.Json;
 using Lupus.Other.MapLoading;
 using Lupus;

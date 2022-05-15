@@ -21,7 +21,8 @@ namespace LupusBlazor
             Game = game;
             this.UI = UI;
             AudioPlayer = audioPlayer;
-            UI.UI.UndoButton.PressButtonEvent += CallUndo;
+            if (game.CurrentPlayer == Owner)
+                UI.UI.UndoButton.PressButtonEvent += CallUndo;
         }
 
         public void CallUndo(object sender, EventArgs e)
@@ -39,7 +40,7 @@ namespace LupusBlazor
             }
 
             UI?.UI?.UndoMessage?.ShowMessage();
-            AudioPlayer?.PlaySound(Effects.Error);
+            AudioPlayer?.PlaySound(Effects.Undo);
             base.Execute();
         }
 

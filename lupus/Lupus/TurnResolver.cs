@@ -13,6 +13,7 @@ namespace Lupus
         public List<Player> ActivePlayers { get; set; } = new List<Player>();
         public List<List<Player>> TurnOrder { get; set; } = new List<List<Player>>();
         public event EventHandler<List<Player>> EndTurnEvent;
+        public event EventHandler<Player> PlayerInTeamIsDoneEvent;
         public event EventHandler<List<Player>> StartTurnEvent;
         public int ActiveGroupIndex { get; set; }
 
@@ -38,6 +39,8 @@ namespace Lupus
                 ActiveGroupIndex = (ActiveGroupIndex + 1) % TurnOrder.Count;
                 StartTurn();
             }
+            else
+                RaisePlayerInTeamIsDoneEvent(player);
             return true;
         }
 
@@ -47,15 +50,10 @@ namespace Lupus
             RaiseStartTurnEvent();
         }
 
-        protected virtual void RaiseStartTurnEvent()
-        {
-            StartTurnEvent?.Invoke(this, ActivePlayers);
-        }
+        protected virtual void RaiseStartTurnEvent() => StartTurnEvent?.Invoke(this, ActivePlayers);
 
-        protected virtual void RaiseEndTurnEvent(List<Player> players)
-        {
-            EndTurnEvent?.Invoke(this, players);
-        }
+        protected virtual void RaiseEndTurnEvent(List<Player> players) => EndTurnEvent?.Invoke(this, players);
+        protected virtual void RaisePlayerInTeamIsDoneEvent(Player player) => PlayerInTeamIsDoneEvent?.Invoke(this, player);
 
         public virtual void Reset()
         {
@@ -64,6 +62,9 @@ namespace Lupus
 
         public virtual void Dispose()
         {
+            StartTurnEvent = null;
+            EndTurnEvent = null;
+            PlayerInTeamIsDoneEvent = null;
         }
     }
 }

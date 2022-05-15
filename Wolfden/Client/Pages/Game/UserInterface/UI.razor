@@ -54,7 +54,6 @@
         </div>
 
         <UnitUI @ref="UnitUI"></UnitUI>
-        @*<div id="endTurn"><button class="btn btn-secondary" id="endTurnButton" @onclick="ClickEndTurn"><h3>End turn</h3></button></div>*@
     </div>
     
 
@@ -114,6 +113,8 @@
     {
         this.Loading.LoadingIsDone();
         this.StateHasChanged();
+        if (BlazorGame?.TurnResolver != null)
+            BlazorGame.TurnResolver.PlayerInTeamIsDoneEvent += PlayerInTeamIsDone;
     }
 
     public void HandleKeyPress(KeyboardEventArgs e)
@@ -181,5 +182,7 @@
         if (previous != this.EndTurnButtonClass)
             this.StateHasChanged();
     }
+
+    private void PlayerInTeamIsDone(object? sender, Player player) => this.StateHasChanged();
 
 }

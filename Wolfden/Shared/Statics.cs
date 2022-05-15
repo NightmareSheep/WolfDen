@@ -37,6 +37,11 @@ namespace Wolfden.Shared
                         Name = "Forgotten hideout",
                         NumberOfPlayers = 4
                     },
+                    new Map()
+                    {
+                        Name = "Dirt brawl",
+                        NumberOfPlayers = 4
+                    },
                 }; 
             } 
         }
