@@ -1,0 +1,27 @@
+﻿/// <reference path = "_references.scss">
+
+#intro {
+    width: 100vw;
+    height: 100vh;
+    background-color: $color_dark;
+    text-align:center;
+    padding:200px;
+    color:black;
+    
+
+    h1{
+        font-size: 4.5rem;
+        margin-bottom:70px;
+    }
+
+    input{
+        margin: auto;
+        width: 300px;
+    }
+
+    button{
+        width:300px;
+        color:black;
+        font-size:20px;
+    }
+}

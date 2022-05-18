@@ -4,6 +4,10 @@
     "inputFile": "wwwroot/css/app.scss"
   },
   {
+    "outputFile": "wwwroot/css/bootsrap.css",
+    "inputFile": "wwwroot/css/bootstrap.scss"
+  },
+  {
     "outputFile": "wwwroot/css/custom/dashboard/_title.css",
     "inputFile": "wwwroot/css/custom/dashboard/_title.scss"
   }

@@ -1,42 +1,6 @@
-﻿@import 'vendors/open-iconic/font/css/open-iconic-bootstrap.min.css';
-
+﻿
 // variables
 @import "custom/variables";
 
-// bootstrap
-@import "bootstrap/scss/bootstrap.scss";
+@import "../../Pages/index.razor.scss";
 
-// components
-@import "custom/global";
-@import "custom/scrollbar";
-@import "custom/form";
-@import "custom/dashboard";
-
-// razor component styles
-@import "../../Shared/Dashboard/import.scss";
-@import "../../Shared/MainLayout.razor.scss";
-@import "../../Shared/Overlay.razor.scss";
-
-@import "../../Pages/Dashboard/Welcome.razor.scss";
-@import "../../Pages/Dashboard/About.razor.scss";
-@import "../../Pages/Dashboard/Options/Audio.razor.scss";
-
-@import "../../Pages/Dashboard/Multiplayer/Host.razor.scss";
-@import "../../Pages/Dashboard/Multiplayer/Join.razor.scss";
-
-@import "../../Pages/Dashboard/Multiplayer/Lobby/Lobby.razor.scss";
-@import "../../Pages/Dashboard/Multiplayer/Lobby/Lobby components/SelectColor.razor.scss";
-
-
-@import "../../Pages/Game/Game.razor.scss";
-@import "../../Pages/Game/UserInterface/UI.scss";
-@import "../../Pages/Game/UserInterface/UI.razor.scss";
-@import "../../Pages/Game/UserInterface/UnitUI.razor.scss";
-@import "../../Pages/Game/UserInterface/PlayersUI.razor.scss";
-@import "../../Pages/Game/UserInterface/WinConditions/GatherChestsWinConditionUI.razor.scss";
-@import "../../Pages/Game/UserInterface/WinConditions/GatherChestsWinConditionDescription.razor.scss";
-@import "../../Pages/Game/UserInterface/Loading.razor.scss";
-@import "../../Pages/Game/UserInterface/Messages/Message.razor.scss";
-@import "../../Pages/Game/UserInterface/Messages/UndoMessage.razor.scss";
-@import "../../Pages/Game/UserInterface/Audio.razor.scss";
-@import "../../Pages/Game/UserInterface/Options.razor.scss";

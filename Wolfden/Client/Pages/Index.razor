@@ -1,6 +1,15 @@
 ﻿@page "/"
 @using Wolfden.Client.Models
 @using System.Drawing;
-@using Wolfden.Client.Pages.Dashboard; 
+@using Wolfden.Client.Pages.Dashboard;
 
-<MainMenu></MainMenu>
+@layout EmptyLayout
+
+<div id="intro">
+    <img src="/images/Warg.png" />
+    <h1>Warg</h1>
+
+    <h3>Choose a nickname:</h3>
+    <input class="form-control" type="text">
+    <button class="btn btn-secondary"><h4>Play</h4></button>
+</div>
