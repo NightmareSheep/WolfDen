@@ -10650,7 +10650,7 @@ textarea.form-control-lg {
 }
 html, body {
   color: white;
-  background-color: darkgray;
+  background-color: #343a40;
 }
 
 .valid.modified:not([type=checkbox]) {
@@ -10845,17 +10845,6 @@ html, body {
 }
 #mini-profile #mini-profile-picture {
   grid-area: picture;
-}
-#mini-profile .nickname {
-  grid-area: name;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-#mini-profile .edit-button {
-  margin-left: 20px;
-  margin-right: 20px;
-  cursor: pointer;
 }
 
 .button-audio {
@@ -11182,11 +11171,11 @@ html, body {
 
 #intro {
   width: 100vw;
-  height: 100vh;
+  min-height: 100vh;
   background-color: #343a40;
   text-align: center;
-  padding: 200px;
-  color: black;
+  padding-top: 15vh;
+  color: white;
 }
 #intro h1, #intro .h1 {
   font-size: 4.5rem;
@@ -11194,12 +11183,6 @@ html, body {
 }
 #intro input {
   margin: auto;
-  width: 300px;
-}
-#intro button {
-  width: 300px;
-  color: black;
-  font-size: 20px;
 }
 
 #game {

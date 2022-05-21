@@ -8,6 +8,14 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Content Remove="sassconfig.json" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <_ContentIncludedByDefault Remove="sassconfig.json" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Include="Pages\Authentication.razor" />
     <None Include="Pages\Counter.razor" />
     <None Include="Pages\FetchData.razor" />

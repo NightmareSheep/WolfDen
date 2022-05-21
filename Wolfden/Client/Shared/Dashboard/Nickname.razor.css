@@ -1,0 +1,12 @@
+﻿.nickname {
+  grid-area: name;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.edit-button {
+  margin-left: 20px;
+  margin-right: 20px;
+  cursor: pointer;
+}

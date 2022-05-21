@@ -13,7 +13,7 @@ namespace LupusBlazor.Audio
     {
         public IJSRuntime JSRuntime { get; }
         public bool SoundEnabled { get; set; } = true;
-        private bool MusicEnabled { get; set; }
+        private bool MusicEnabled { get; set; } = true;
         public int MasterVolume { get; private set; }
         public int MusicVolume { get; private set; }
         public int EffectsVolume { get; private set; }

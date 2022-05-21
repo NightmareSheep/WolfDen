@@ -10,5 +10,13 @@
   {
     "outputFile": "wwwroot/css/custom/dashboard/_title.css",
     "inputFile": "wwwroot/css/custom/dashboard/_title.scss"
+  },
+  {
+    "outputFile": "Pages/index.razor.css",
+    "inputFile": "Pages/index.razor.scss"
+  },
+  {
+    "outputFile": "Shared/Dashboard/Nickname.razor.css",
+    "inputFile": "Shared/Dashboard/Nickname.razor.scss"
   }
 ]

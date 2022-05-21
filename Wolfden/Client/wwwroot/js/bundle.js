@@ -286,13 +286,18 @@ var TextStyles = [
     { fontFamily: 'Helvetica', fontSize: 12, fill: 'yellow', align: 'left', stroke: 'black', strokeThickness: 6 }
 ];
 function toggleFullScreen() {
-    if (!document.fullscreenElement) {
-        document.documentElement.requestFullscreen();
-    }
-    else {
-        if (document.exitFullscreen) {
-            document.exitFullscreen();
+    try {
+        if (!document.fullscreenElement) {
+            document.documentElement.requestFullscreen();
         }
+        else {
+            if (document.exitFullscreen) {
+                document.exitFullscreen();
+            }
+        }
+    }
+    catch {
+        alert("Fullscreen failed");
     }
 }
 function PlayAnimation(callbackObject, id, queueDuration, duration, x, y, resetAnimation = false, ticker = null) {

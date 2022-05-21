@@ -20,9 +20,14 @@
     [Parameter]
     public bool AutoPlay { get; set; }
 
-    protected override async Task OnInitializedAsync()
+    protected override async Task OnParametersSetAsync()
     {
         this.SoundEnabled = await localStorage.GetItemAsync<bool>("soundEnabled");
+        await base.OnParametersSetAsync();
+    }
+
+    protected override async Task OnInitializedAsync()
+    {      
 
         if (this.SoundEnabled && this.AutoPlay)
             Statics.AudioPlayer.PlayMusic(Track);
