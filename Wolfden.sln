@@ -25,6 +25,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LupusLobbies", "lupus\Lupus
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LupusBlazor", "lupus\LupusBlazor\LupusBlazor.csproj", "{3390B717-CEC6-4E36-B8F7-05B608D25084}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Wolfden.Client.Test", "Wolfden\Test\Wolfden.Client.Test\Wolfden.Client.Test.csproj", "{C5837E19-3B01-4F32-BA56-F35E5A51B262}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -63,6 +65,10 @@ Global
 		{3390B717-CEC6-4E36-B8F7-05B608D25084}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3390B717-CEC6-4E36-B8F7-05B608D25084}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3390B717-CEC6-4E36-B8F7-05B608D25084}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C5837E19-3B01-4F32-BA56-F35E5A51B262}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C5837E19-3B01-4F32-BA56-F35E5A51B262}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C5837E19-3B01-4F32-BA56-F35E5A51B262}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C5837E19-3B01-4F32-BA56-F35E5A51B262}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
