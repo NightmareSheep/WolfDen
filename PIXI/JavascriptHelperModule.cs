@@ -33,14 +33,7 @@ namespace LupusBlazor.Pixi
 
         public T GetJavascriptProperty<T>(string[] propertyPath, IJSObjectReference obj = null) where T : class
         {
-            try
-            {
-                return JavaScriptHelperModule.Invoke<T>("GetProperty", propertyPath, obj);
-            }
-            catch
-            {
-                return null;
-            }
+            return  JavaScriptHelperModule.Invoke<T>("GetProperty", propertyPath, obj);            
         }
 
         public IJSInProcessObjectReference InstantiateJavascriptClass(string[] constructorPath, List<object> args)

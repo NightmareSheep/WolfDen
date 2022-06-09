@@ -38,12 +38,13 @@ export function GetProperty(propertyPath, object = window) {
     for (var i = 0; i < propertyPath.length; i++) {
         obj = obj[propertyPath[i]];
         if (obj == undefined) {
+            throw "Could not find property";
             return null;
         }
     }
 
     if (obj == undefined)
-        return null;
+        throw "Could not find property";
 
     return obj;
 }

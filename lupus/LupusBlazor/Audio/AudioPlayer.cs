@@ -12,12 +12,12 @@ namespace LupusBlazor.Audio
     public class AudioPlayer
     {
         public IJSRuntime JSRuntime { get; }
-        public bool SoundEnabled { get; set; } = true;
-        private bool MusicEnabled { get; set; } = true;
+        public bool Muted { get; set; }
         public int MasterVolume { get; private set; }
         public int MusicVolume { get; private set; }
         public int EffectsVolume { get; private set; }
 
+        public event EventHandler<bool> ChangeMuteEvent;
         public event EventHandler<int> ChangeMasterVolumeEvent;
         public event EventHandler<int> ChangeMusicVolumeEvent;
         public event EventHandler<int> ChangeEffectsVolumeEvent;
@@ -28,17 +28,18 @@ namespace LupusBlazor.Audio
         Sound CurrentTrack { get; set; }
         public AudioJson AudioJson { get; }
 
-        public AudioPlayer(IJSRuntime jSRuntime, int masterVolume, int musicVolume, int effectsVolume)
+        public AudioPlayer(IJSRuntime jSRuntime, bool muted, int masterVolume, int musicVolume, int effectsVolume)
         {
             
 
             JSRuntime = jSRuntime;
+            Muted = muted;
             MasterVolume = masterVolume;
             MusicVolume = musicVolume;
             EffectsVolume = effectsVolume;
         }
 
-        public AudioPlayer(IJSRuntime jSRuntime, int masterVolume, int musicVolume, int effectsVolume, AudioJson audioJson) : this(jSRuntime, masterVolume, musicVolume, effectsVolume)
+        public AudioPlayer(IJSRuntime jSRuntime, bool muted, int masterVolume, int musicVolume, int effectsVolume, AudioJson audioJson) : this(jSRuntime, muted, masterVolume, musicVolume, effectsVolume)
         {
             AudioJson = audioJson;
         }
@@ -80,7 +81,7 @@ namespace LupusBlazor.Audio
             ChangeMusicVolumeEvent?.Invoke(this, value);
 
             this.MusicVolume = value;
-            if (CurrentTrack != null)
+            if (CurrentTrack != null && !Muted)
                  CurrentTrack.PlayMusic(this.MusicVolume);
         }
 
@@ -102,7 +103,7 @@ namespace LupusBlazor.Audio
             {
                 CurrentTrack = music;
 
-                if (this.MusicEnabled)
+                if (!Muted)
                      music.PlayMusic(this.MusicVolume);
             }
         }
@@ -113,22 +114,24 @@ namespace LupusBlazor.Audio
                  CurrentTrack.Stop();
         }
 
-        public void EnableMusic()
+        public void UnMute()
         {
-            this.MusicEnabled = true;
+            ChangeMuteEvent?.Invoke(this, false);
+            Muted = false;
             if (this.CurrentTrack != null)
                  CurrentTrack.PlayMusic(this.MusicVolume);
         }
 
-        public void DisableMusic()
+        public void Mute()
         {
-            this.MusicEnabled = false;
-             this.StopMusic();
+            ChangeMuteEvent?.Invoke(this, true);
+            Muted = true;
+            this.StopMusic();
         }
 
         public void PlaySound(Effects effect)
         {
-            if (!SoundEnabled)
+            if (Muted)
                 return;
 
             if (this.EffectsLibrary.TryGetValue(effect, out var sound))
@@ -139,6 +142,9 @@ namespace LupusBlazor.Audio
 
         public void PlaySoundEffect(string name)
         {
+            if (Muted)
+                return;
+
             if (!this.SoundEffects.Contains(name))
                 return;
 

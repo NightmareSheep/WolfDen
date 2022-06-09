@@ -89,7 +89,6 @@ namespace WolfDen.Client.Helpers
 
             HubConnection.On<string, string, string>("Start", async (mapId, serializedHistory, serializedPlayers) => {
 
-                Wolfden.Client.Other.Statics.AudioPlayer.SoundEnabled = false;
                 var colorHelper = new ColorHelper();
                 var settings = new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.Auto };
                 var players = JsonConvert.DeserializeObject<List<PlayerInfo>>(serializedPlayers, settings);
@@ -99,7 +98,6 @@ namespace WolfDen.Client.Helpers
                 var moveHistory = JsonConvert.DeserializeObject<List<IHistoryMove>>(serializedHistory, settings);
                 Game = new BlazorGame(new Guid(GameId), players, playerId, HubConnection, jSRuntime, UI, Wolfden.Client.Other.Statics.AudioPlayer, jsonMap, moveHistory);
                 Game.GameInitializer.Initialize();                
-                this.Game.AudioPlayer.SoundEnabled = true;
                 Game.UI.DoneLoading();
                 Wolfden.Client.Other.Statics.AudioPlayer.PlayMusic(LupusBlazor.Audio.Tracks.ExploringTheUnkown);
 

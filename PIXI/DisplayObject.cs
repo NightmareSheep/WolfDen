@@ -1,0 +1,160 @@
+﻿using Microsoft.JSInterop;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace LupusBlazor.Pixi
+{
+    public class DisplayObject
+    {
+        private float alpha;
+        public float Alpha
+        {
+            get { return alpha; }
+            set { this.JavascriptHelper.SetJavascriptProperty(new string[] { "alpha" }, value, this.JSInstance); alpha = value; }
+        }
+
+        private int x;
+        public int X { 
+            get {
+                return x; 
+            } 
+            set {
+                this.JavascriptHelper.SetJavascriptProperty(new string[] { "x" }, value, this._JSInstance);
+                x = value; 
+            } 
+        }
+
+        private int y;
+        public int Y
+        {
+            get
+            {
+                return y;
+            }
+            set
+            {
+                this.JavascriptHelper.SetJavascriptProperty(new string[] { "y" }, value, this._JSInstance);
+                y = value;
+            }
+        }
+
+        private float scaleX = 1;
+        public float ScaleX
+        {
+            get
+            {
+                return scaleX;
+            }
+            set
+            {
+                this.JavascriptHelper.SetJavascriptProperty(new string[] { "scale", "x" }, value, this._JSInstance);
+                scaleX = value;
+            }
+        }
+
+        private float scaleY;
+        public float ScaleY
+        {
+            get
+            {
+                return scaleY;
+            }
+            set
+            {
+                this.JavascriptHelper.SetJavascriptProperty(new string[] { "scale", "y" }, value, this._JSInstance);
+                scaleY = value;
+            }
+        }
+
+        private bool interactive;
+        public bool Interactive
+        {
+            get
+            {
+                return interactive;
+            }
+            set
+            {
+                this.JavascriptHelper.SetJavascriptProperty(new string[] { "interactive" }, value, this._JSInstance);
+                interactive = value;
+            }
+        }
+
+        private IJSInProcessObjectReference _JSInstance;
+        public IJSInProcessObjectReference JSInstance
+        {
+            get
+            {
+                return _JSInstance;
+            }
+            protected set
+            {
+                if (this._JSInstance != null)
+                    this._JSInstance.DisposeAsync();
+                _JSInstance = value;
+                if (value != null && this.ObjRef != null)
+                    OnClick(this.ObjRef, "RaiseClickEvent");
+            }
+        }
+        public IJSRuntime JSRuntime { get; }
+        protected JavascriptHelperModule JavascriptHelper { get; set; }
+        public PixiApplicationModule PixiApplicationModule { get; set; }
+        protected DotNetObjectReference<DisplayObject> ObjRef { get; set; }
+
+        public event EventHandler ClickEvent;
+
+        [JSInvokable]
+        public void RaiseClickEvent()
+        {
+            this.ClickEvent?.Invoke(this, EventArgs.Empty);
+        }
+
+        public void On<T>(string id, DotNetObjectReference<T> csObject, string functionName) where T : class
+        {
+             this.PixiApplicationModule.On(this, id, csObject, functionName);
+        }
+
+        public void OnClick<T>(DotNetObjectReference<T> csObject, string functionName) where T : class
+        {
+             this.PixiApplicationModule.SetOnClick(this, csObject, functionName);
+        }
+
+        public DisplayObject(IJSRuntime jSRuntime, IJSInProcessObjectReference instance = null, JavascriptHelperModule javascriptHelper = null)
+        {
+            JSRuntime = jSRuntime;
+            this.JavascriptHelper = javascriptHelper;
+            this.JSInstance = instance;
+            this.ObjRef = DotNetObjectReference.Create(this);
+            JavascriptHelper = JavascriptHelperModule.Instance;
+            PixiApplicationModule = PixiApplicationModule.Instance;
+            
+        }
+
+        public bool Visible { get; private set; }
+        public void SetVisibility(bool value)
+        {
+            Visible = value;
+             JavascriptHelper.SetJavascriptProperty(new string[] { "visible" }, value, this.JSInstance);
+        }
+
+        public virtual void Dispose()
+        {
+             this.JSInstance.InvokeVoid("destroy");
+             this._JSInstance.DisposeAsync();
+            this.ObjRef.Dispose();
+        }
+
+        public void AddFilter(IJSInProcessObjectReference filter)
+        {
+             PixiApplicationModule.AddFilter(this, filter);
+        }
+
+        public void RemoveFilter(IJSInProcessObjectReference filter)
+        { 
+             PixiApplicationModule.RemoveFilter(this, filter);
+        }
+    }
+}

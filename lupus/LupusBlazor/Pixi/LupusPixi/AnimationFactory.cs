@@ -268,7 +268,7 @@ namespace LupusBlazor.Pixi.LupusPixi
 
             foreach (var textureName in textureNames)
             {
-                var texture =  this.JavascriptHelper.GetJavascriptProperty<IJSInProcessObjectReference>(new String[] { "textures", textureName }, spritesheet);
+                var texture = this.JavascriptHelper.GetJavascriptProperty<IJSInProcessObjectReference>(new String[] { "textures", textureName }, spritesheet);
                 if (texture == null)
                     return null;
                 textures.Add(texture);

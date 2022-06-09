@@ -20,7 +20,7 @@
     public async Task Enter()
     {
         await localStorage.SetItemAsync("soundEnabled", true);
-        Statics.AudioPlayer.EnableMusic();
+        Statics.AudioPlayer.UnMute();
         Statics.AudioPlayer.PlayMusic(Tracks.TitleTheme);
         NavigationManager.NavigateTo("/");
     }

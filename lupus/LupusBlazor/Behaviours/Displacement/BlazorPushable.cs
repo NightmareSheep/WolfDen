@@ -14,6 +14,7 @@ using Microsoft.JSInterop;
 using LupusBlazor.Extensions;
 using Lupus.Other.Vector;
 using LupusBlazor.Other;
+using LupusBlazor.Pixi.LupusPixi;
 
 namespace LupusBlazor.Behaviours.Displacement
 {
@@ -45,7 +46,7 @@ namespace LupusBlazor.Behaviours.Displacement
         protected override void PushAgainstUnit(Tile from, Direction direction, Tile destination)
         {
             var bumpedUnit = destination.Unit as BlazorUnit;
-            BlazorUnit?.PixiUnit?.QueueAnimation(Animations.ShortDamaged, direction.OppositeDirection());
+            BlazorUnit?.PixiUnit?.QueueInteraction(Animations.ShortDamaged, direction.OppositeDirection(), new List<PixiUnit>() { bumpedUnit?.PixiUnit });
             bumpedUnit?.PixiUnit?.QueueAnimation(Animations.ShortDamaged, direction.OppositeDirection());
 
              

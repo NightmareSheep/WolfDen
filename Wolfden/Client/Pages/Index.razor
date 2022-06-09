@@ -25,7 +25,7 @@
 @code{
     private async Task Click()
     {
-        Statics.AudioPlayer.EnableMusic();
+        Statics.AudioPlayer.UnMute();
         await localStorage.SetItemAsync("soundEnabled", true);
         Statics.AudioPlayer.PlayMusic(LupusBlazor.Audio.Tracks.TitleTheme);
         JSRuntime.InvokeVoidAsync("toggleFullScreen");

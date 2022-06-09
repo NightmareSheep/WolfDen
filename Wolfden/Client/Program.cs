@@ -67,6 +67,7 @@ if (string.IsNullOrEmpty(name) || string.IsNullOrEmpty(id))
 var checkVolume = await localStorage.ContainKeyAsync("masterVolume");
 if (!checkVolume)
 {
+    await localStorage.SetItemAsync("muted", false);
     await localStorage.SetItemAsync("masterVolume", 100);
     await localStorage.SetItemAsync("musicVolume", 10);
     await localStorage.SetItemAsync("effectsVolume", 100);
@@ -74,13 +75,14 @@ if (!checkVolume)
 
 var audioJson = await http.GetFromJsonAsync<AudioJson>("mygameaudio.json");
 
-
+var muted = await localStorage.GetItemAsync<bool>("muted");
 var masterVolume = await localStorage.GetItemAsync<int>("masterVolume");
 var musicVolume = await localStorage.GetItemAsync<int>("musicVolume");
 var effectsVolume = await localStorage.GetItemAsync<int>("effectsVolume");
 
 await localStorage.SetItemAsync("soundEnabled", false);
-Statics.AudioPlayer = new(jsRuntime, masterVolume, musicVolume, effectsVolume, audioJson);
+Statics.AudioPlayer = new(jsRuntime, muted, masterVolume, musicVolume, effectsVolume, audioJson);
+Statics.AudioPlayer.ChangeMuteEvent += (object sender, bool muted) => { localStorage.SetItemAsync("muted", muted); };
 Statics.AudioPlayer.ChangeMasterVolumeEvent += (object sender, int volume) => { localStorage.SetItemAsync("masterVolume", volume); };
 Statics.AudioPlayer.ChangeMusicVolumeEvent += (object sender, int volume) => { localStorage.SetItemAsync("musicVolume", volume); };
 Statics.AudioPlayer.ChangeEffectsVolumeEvent += (object sender, int volume) => { localStorage.SetItemAsync("effectsVolume", volume); };
