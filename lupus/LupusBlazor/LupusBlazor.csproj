@@ -18,4 +18,8 @@
     <ProjectReference Include="..\Lupus\Lupus.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Animation\" />
+  </ItemGroup>
+
 </Project>

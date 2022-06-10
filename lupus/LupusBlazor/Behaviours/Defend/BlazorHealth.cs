@@ -1,6 +1,5 @@
 ﻿using Lupus.Behaviours.Defend;
 using Lupus.Units;
-using LupusBlazor.Animation;
 using LupusBlazor.Extensions;
 using LupusBlazor.Pixi;
 using LupusBlazor.Units;
@@ -11,6 +10,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using PIXI;
+using LupusBlazor.Pixi.LupusPixi;
 
 namespace LupusBlazor.Behaviours.Defend
 {

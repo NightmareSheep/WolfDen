@@ -10,12 +10,12 @@ using System.Threading.Tasks;
 using LupusBlazor.Units;
 using LupusBlazor.Interaction;
 using Microsoft.AspNetCore.SignalR.Client;
-using LupusBlazor.Animation;
 using System.Numerics;
 using Lupus.Other.Vector;
 using Lupus.Other;
 using LupusBlazor.Extensions;
 using Lupus.Behaviours;
+using LupusBlazor.Pixi.LupusPixi;
 
 namespace LupusBlazor.Behaviours.Movement
 {

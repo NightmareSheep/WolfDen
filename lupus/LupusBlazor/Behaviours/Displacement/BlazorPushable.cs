@@ -9,7 +9,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using LupusBlazor.Animation;
 using Microsoft.JSInterop;
 using LupusBlazor.Extensions;
 using Lupus.Other.Vector;
