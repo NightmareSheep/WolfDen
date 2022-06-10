@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Text;
 using System.Threading.Tasks;
+using PIXI;
 
 namespace LupusBlazor.Behaviours.Movement
 {

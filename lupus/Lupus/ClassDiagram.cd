@@ -1,0 +1,167 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="Lupus.Game" Collapsed="true">
+    <Position X="4.75" Y="1.75" Width="1.5" />
+    <Compartments>
+      <Compartment Name="Properties" Collapsed="true" />
+      <Compartment Name="Methods" Collapsed="true" />
+    </Compartments>
+    <AssociationLine Name="Players" Type="Lupus.Player" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="5.938" Y="2.312" />
+        <Point X="5.938" Y="3.031" />
+        <Point X="7.5" Y="3.031" />
+      </Path>
+    </AssociationLine>
+    <AssociationLine Name="History" Type="Lupus.History" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="5.062" Y="2.312" />
+        <Point X="5.062" Y="5.031" />
+        <Point X="7.5" Y="5.031" />
+      </Path>
+    </AssociationLine>
+    <AssociationLine Name="TurnResolver" Type="Lupus.TurnResolver" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="5.5" Y="2.312" />
+        <Point X="5.5" Y="4.031" />
+        <Point X="7.5" Y="4.031" />
+      </Path>
+    </AssociationLine>
+    <TypeIdentifier>
+      <HashCode>AAACgCAEABAAAAAAAAAAAAAAAAAkAAAAIAkCAAAQAAA=</HashCode>
+      <FileName>Game.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="Map" />
+      <Property Name="History" />
+      <Property Name="TurnResolver" />
+    </ShowAsAssociation>
+    <ShowAsCollectionAssociation>
+      <Property Name="Players" />
+    </ShowAsCollectionAssociation>
+  </Class>
+  <Class Name="Lupus.Units.Hero" Collapsed="true">
+    <Position X="13" Y="2.75" Width="1.5" />
+    <Compartments>
+      <Compartment Name="Methods" Collapsed="true" />
+    </Compartments>
+    <AssociationLine Name="DamageAndPush" Type="Lupus.Behaviours.Attack.DamageAndPush" ManuallyRouted="true" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="13.375" Y="3.441" />
+        <Point X="13.375" Y="6.781" />
+        <Point X="15.75" Y="6.781" />
+      </Path>
+    </AssociationLine>
+    <AssociationLine Name="Pushable" Type="Lupus.Behaviours.Displacement.Pushable" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="13.75" Y="3.441" />
+        <Point X="13.75" Y="5.531" />
+        <Point X="15.75" Y="5.531" />
+      </Path>
+    </AssociationLine>
+    <AssociationLine Name="Move" Type="Lupus.Behaviours.Movement.Move" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="14.125" Y="3.441" />
+        <Point X="14.125" Y="4.281" />
+        <Point X="15.75" Y="4.281" />
+      </Path>
+    </AssociationLine>
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAIAAAAAAAAAAAAAAAAJAAAAAAIAAAAAAIAA=</HashCode>
+      <FileName>Units\Hero.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="DamageAndPush" />
+      <Property Name="Pushable" />
+      <Property Name="Move" />
+      <Property Name="SkillPoints" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="Lupus.Behaviours.Movement.Move" Collapsed="true">
+    <Position X="15.75" Y="4" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACACAAABAAAAABIAMAMAAJAApAAAAAAAAAEAAAAAA=</HashCode>
+      <FileName>Behaviours\Movement\Move.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Lupus.Behaviours.Displacement.Pushable" Collapsed="true">
+    <Position X="15.75" Y="5.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ABAIAAAAABAAAAAAIAAAAAAAAARAAAAEAEAAAAAAAEA=</HashCode>
+      <FileName>Behaviours\Displacement\Pushable.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Lupus.Behaviours.Attack.DamageAndPush" Collapsed="true">
+    <Position X="15.75" Y="6.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAAgAAAAAAEIAAQIAAJAAAAIAAAAAAAAAAA=</HashCode>
+      <FileName>Behaviours\Attack\DamageAndPush.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Lupus.Behaviours.SkillPoints" Collapsed="true">
+    <Position X="15.75" Y="2.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAgAAAAAAIAAAEACAAAhACAAAAAAQAAAAAAA=</HashCode>
+      <FileName>Behaviours\SkillPoints.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Lupus.Units.Unit" Collapsed="true">
+    <Position X="13" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAADCACAQAAAgAQAAAAAAAAAAAhAAAAAAAAAAAAAAQA=</HashCode>
+      <FileName>Units\Unit.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Lupus.Map" Collapsed="true">
+    <Position X="7.5" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AQAAAAAABAAAAAAAAAAAAEQAAAAAAAIAAAAAAAAAAAA=</HashCode>
+      <FileName>Map.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsCollectionAssociation>
+      <Property Name="Tiles" />
+    </ShowAsCollectionAssociation>
+  </Class>
+  <Class Name="Lupus.TurnResolver" Collapsed="true">
+    <Position X="7.5" Y="3.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAggQACAABAAAAAABEAgAAAkgAAAgAAIAAAAAAAE=</HashCode>
+      <FileName>TurnResolver.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Lupus.Player" Collapsed="true">
+    <Position X="7.5" Y="2.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AABiAAAEAAAAAAAAAAAAEAQAAAAAAAAIEAAAgAAAAAA=</HashCode>
+      <FileName>Player.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Lupus.History" Collapsed="true">
+    <Position X="7.5" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AACAAAAAAAAAAAAAAAAAAAAAAAgAAEAAAEAAAAAAEAA=</HashCode>
+      <FileName>History\History.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Lupus.Tiles.Tile" Collapsed="true">
+    <Position X="10.25" Y="1.75" Width="1.5" />
+    <Compartments>
+      <Compartment Name="Methods" Collapsed="true" />
+    </Compartments>
+    <TypeIdentifier>
+      <HashCode>AAAAAAAQABIgAAAAIAAAgAAAAAAEAAAQAQEAAAAA4AA=</HashCode>
+      <FileName>Tiles\Tile.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="Unit" />
+    </ShowAsAssociation>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

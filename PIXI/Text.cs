@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace LupusBlazor.Pixi
+namespace PIXI
 {
     public class Text : Sprite
     {

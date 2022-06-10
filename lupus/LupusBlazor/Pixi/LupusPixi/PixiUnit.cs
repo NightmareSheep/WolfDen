@@ -9,6 +9,7 @@ using Lupus.Other;
 using LupusBlazor.Units;
 using LupusBlazor.Audio;
 using LupusBlazor.Pixi.LupusPixi.Jobs;
+using PIXI;
 
 namespace LupusBlazor.Pixi.LupusPixi
 {

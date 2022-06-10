@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.JSInterop;
 
-namespace LupusBlazor.Pixi
+namespace PIXI
 {
     public class Container : DisplayObject
     {

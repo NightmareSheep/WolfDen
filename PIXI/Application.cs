@@ -5,9 +5,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using LupusBlazor.Pixi;
+using PIXI;
 
-namespace LupusBlazor.Pixi
+namespace PIXI
 {
     public class Application
     {

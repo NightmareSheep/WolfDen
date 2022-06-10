@@ -15,6 +15,7 @@ using System.Threading.Tasks;
 using System.Linq;
 using LupusBlazor.Animation;
 using LupusBlazor.Pixi.LupusPixi;
+using PIXI;
 
 namespace LupusBlazor.Units
 {
@@ -119,12 +120,6 @@ namespace LupusBlazor.Units
                  PixiUnit.Dispose();
             ObjRef?.Dispose();
             
-        }
-
-        public void UpdatePosition()
-        {
-             PixiHelper.SetSpritePosition(JSRuntime, Id + " Idle", Tile.XCoord(), Tile.YCoord());
-             BlazorHealth.Draw();
         }
     }
 }

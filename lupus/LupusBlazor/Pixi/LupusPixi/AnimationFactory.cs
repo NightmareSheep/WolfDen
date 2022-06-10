@@ -7,6 +7,7 @@ using Lupus.Other;
 using LupusBlazor.Animation;
 using LupusBlazor.Audio;
 using Microsoft.JSInterop;
+using PIXI;
 
 namespace LupusBlazor.Pixi.LupusPixi
 {

@@ -13,6 +13,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\Modules\Dijkstra\Dijkstra.csproj" />
+    <ProjectReference Include="..\..\PIXI\PIXI.csproj" />
     <ProjectReference Include="..\LupusLobbies\LupusLobbies.csproj" />
     <ProjectReference Include="..\Lupus\Lupus.csproj" />
   </ItemGroup>

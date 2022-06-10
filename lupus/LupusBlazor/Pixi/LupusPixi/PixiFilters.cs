@@ -7,6 +7,7 @@ using Microsoft.JSInterop;
 using LupusBlazor.Pixi;
 using System.Drawing;
 using LupusBlazor.Other;
+using PIXI;
 
 namespace LupusBlazor.Pixi.LupusPixi
 {
