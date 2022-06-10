@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace LupusBlazor.Animation
+namespace LupusBlazor.Pixi.LupusPixi
 {
     public enum Animations
     {

@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using LupusBlazor.Extensions;
+using LupusBlazor.Pixi.LupusPixi;
 
 namespace LupusBlazor.WinConditions.GatherChests
 {
@@ -48,7 +49,7 @@ namespace LupusBlazor.WinConditions.GatherChests
                     {
                         var blazorUnit = chest as BlazorUnit;
                         if (blazorUnit.PixiUnit != null)
-                             blazorUnit.PixiUnit.QueueAnimation(Animation.Animations.Open);
+                             blazorUnit.PixiUnit.QueueAnimation(Animations.Open);
                     }
                 }
             }

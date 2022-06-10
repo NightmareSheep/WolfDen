@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using Lupus;
 using Lupus.Behaviours;
 using Lupus.Units;
-using LupusBlazor.Pixi;
+using PIXI;
 using LupusBlazor.Pixi.LupusPixi;
 using LupusBlazor.Units;
 

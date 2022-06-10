@@ -13,7 +13,6 @@ using Lupus.Other.Vector;
 using Lupus.Other;
 using LupusBlazor.Units;
 using Microsoft.AspNetCore.SignalR.Client;
-using LupusBlazor.Animation;
 using LupusBlazor.Extensions;
 using Lupus.Behaviours;
 using LupusBlazor.Pixi.LupusPixi;

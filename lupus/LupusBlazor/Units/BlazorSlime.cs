@@ -9,6 +9,7 @@ using LupusBlazor.Behaviours.Attack;
 using LupusBlazor.Behaviours.Defend;
 using LupusBlazor.Behaviours.Displacement;
 using LupusBlazor.Behaviours.Movement;
+using LupusBlazor.Pixi.LupusPixi;
 using Microsoft.JSInterop;
 using System;
 using System.Collections.Generic;
@@ -58,7 +59,7 @@ namespace LupusBlazor.Units.Orcs
             Skills.Add(DamageAndPull);
             Destroyables = new List<Lupus.Other.IDestroy>() { BlazorMove, DamageAndPull, BlazorPushable, SkillPoints };
             Name = "Slime";
-            Actor = Animation.Actors.Slime;
+            Actor = Actors.Slime;
         }
 
         public override void Destroy()

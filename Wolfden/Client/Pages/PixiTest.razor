@@ -3,8 +3,8 @@
 @using Wolfden.Client.Other;
 @using LupusBlazor.Pixi;
 @using LupusBlazor.Pixi.LupusPixi
-@using LupusBlazor.Animation;
 @using Lupus.Other;
+@using PIXI;
 @inject IJSRuntime JSRuntime;
 @implements IAsyncDisposable;
 
@@ -15,11 +15,9 @@
     private ViewPort? Viewport { get; set; }
     private PixiUnit? Unit { get; set; }
     private PixiUnit? Unit2 { get; set; }
-    private ActionQueue? ActionQueue { get; set; }
 
     protected async override Task OnAfterRenderAsync(bool firstRender)
     {
-        this.ActionQueue = new ActionQueue();
         await base.OnAfterRenderAsync(firstRender);
         this.Application = new Application(JSRuntime, "test-game");
         this.Application.ResourcesLoadedEvent += LoadSprite;
@@ -44,10 +42,10 @@
         this.Viewport.AddChild(this.Unit.Container);
         this.Viewport.AddChild(this.Unit2.Container);
 
-        this.Unit.PlayAnimation(LupusBlazor.Animation.Animations.Idle);
-        this.Unit2.PlayAnimation(LupusBlazor.Animation.Animations.Idle);
+        this.Unit.PlayAnimation(Animations.Idle);
+        this.Unit2.PlayAnimation(Animations.Idle);
 
-        var text = new LupusBlazor.Pixi.Text(this.JSRuntime, "0");
+        var text = new Text(this.JSRuntime, "0");
 
 
         text.ScaleX = 0.3f;

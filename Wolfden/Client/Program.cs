@@ -9,6 +9,7 @@ using LupusBlazor.Pixi;
 using LupusBlazor.Pixi.LupusPixi;
 using LupusBlazor.Audio.Json;
 using System.Net.Http.Json;
+using PIXI;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");

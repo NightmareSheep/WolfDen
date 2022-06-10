@@ -9,6 +9,7 @@ using LupusBlazor.Behaviours.Attack;
 using LupusBlazor.Behaviours.Defend;
 using LupusBlazor.Behaviours.Displacement;
 using LupusBlazor.Behaviours.Movement;
+using LupusBlazor.Pixi.LupusPixi;
 using Microsoft.JSInterop;
 using System;
 using System.Collections.Generic;
@@ -54,7 +55,7 @@ namespace LupusBlazor.Units
             Skills.Add(DamageAndPush);
             Destroyables = new List<Lupus.Other.IDestroy>() { BlazorMove, DamageAndPush, BlazorPushable, SkillPoints };
             Name = "Goblin";
-            Actor = Animation.Actors.Goblin;
+            Actor = Actors.Goblin;
         }
 
         public override void Destroy()

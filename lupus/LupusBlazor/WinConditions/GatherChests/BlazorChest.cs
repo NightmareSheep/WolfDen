@@ -2,6 +2,7 @@
 using Lupus.Tiles;
 using LupusBlazor.Behaviours.Defend;
 using LupusBlazor.Behaviours.Displacement;
+using LupusBlazor.Pixi.LupusPixi;
 using LupusBlazor.Units;
 using Microsoft.JSInterop;
 using System;
@@ -35,7 +36,7 @@ namespace LupusBlazor.WinConditions.GatherChests
             BlazorPushable = new BlazorPushable(jSRuntime, game, game.Map, this);
             this.Health = this.BlazorHealth = new BlazorInvulnurable(Game, jSRuntime, this);
             Destroyables = new List<Lupus.Other.IDestroy>() { BlazorPushable };
-            this.Actor = Animation.Actors.Chest;
+            this.Actor = Actors.Chest;
         }
     }
 }

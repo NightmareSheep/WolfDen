@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Lupus;
 using LupusBlazor.Pixi;
 using Microsoft.JSInterop;
+using PIXI;
 
 namespace LupusBlazor
 {
@@ -20,7 +21,7 @@ namespace LupusBlazor
 
         public void Draw(IJSRuntime jSRuntime)
         {
-            var mapSprite =  ((IJSInProcessRuntime)jSRuntime).Invoke<IJSInProcessObjectReference>("PIXI.Sprite.from", "/game/maps/" + Name + "/" + Name + ".png");
+            var mapSprite = ((IJSInProcessRuntime)jSRuntime).Invoke<IJSInProcessObjectReference>("PIXI.Sprite.from", "/game/maps/" + Name + "/" + Name + ".png");
             var sprite = new Sprite(jSRuntime, null, mapSprite);
             this.Game.LupusPixiApplication.ViewPort.AddChild(sprite);
             mapSprite.DisposeAsync();

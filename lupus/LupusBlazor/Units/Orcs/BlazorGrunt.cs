@@ -9,6 +9,7 @@ using LupusBlazor.Behaviours.Attack;
 using LupusBlazor.Behaviours.Defend;
 using LupusBlazor.Behaviours.Displacement;
 using LupusBlazor.Behaviours.Movement;
+using LupusBlazor.Pixi.LupusPixi;
 using Microsoft.JSInterop;
 using System;
 using System.Collections.Generic;
@@ -54,7 +55,7 @@ namespace LupusBlazor.Units.Orcs
             Skills.Add(DamageAndPush);
             Destroyables = new List<Lupus.Other.IDestroy>() { BlazorMove, DamageAndPush, BlazorPushable, SkillPoints };
             Name = "Grunt";
-            Actor = Animation.Actors.Grunt;
+            Actor = Actors.Grunt;
         }
 
         public override void Destroy()
