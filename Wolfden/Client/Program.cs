@@ -10,6 +10,7 @@ using LupusBlazor.Pixi.LupusPixi;
 using LupusBlazor.Audio.Json;
 using System.Net.Http.Json;
 using PIXI;
+using BlazorJavascriptHelper;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
@@ -38,17 +39,17 @@ var localStorage = host.Services.GetRequiredService<ILocalStorageService>();
 var http = host.Services.GetRequiredService<HttpClient>();
 
 // Initialization
-await JavascriptHelperModule.Initialize(jsRuntime);
+await JavascriptHelper.Initialize(jsRuntime);
 await PixiApplicationModule.Initialize(jsRuntime);
 await ViewportModule.Initialize(jsRuntime);
 
-var javascriptHelper = JavascriptHelperModule.Instance;
+var javascriptHelper = JavascriptHelper.Instance;
 javascriptHelper.SetJavascriptProperty(new string[] { "PIXI", "settings", "SCALE_MODE" }, 2);
 Console.WriteLine("Loading resources");
-await jsRuntime.InvokeVoidAsync("PIXI.Loader.shared.add", "sprites", "/Images/sprites.json");
-
-var pixiModule = PixiApplicationModule.Instance;
-await pixiModule.LoadResources();
+var loader = PIXI.Loading.Loader.Shared;
+loader?.Add("sprites", "/Images/sprites.json");
+loader?.Add("dungeon", "/Images/tiles_dungeon.png");
+await loader.Load();
 PixiFilters.Initialize(jsRuntime);
 
 var name = await localStorage.GetItemAsync<string>("name");

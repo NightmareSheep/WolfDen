@@ -7,7 +7,6 @@ using System.Threading.Tasks;
 using System.Linq;
 using Microsoft.JSInterop;
 using LupusBlazor.UI;
-using LupusBlazor.Animation;
 using LupusBlazor.Audio;
 using LupusBlazor.Pixi;
 using LupusBlazor.Pixi.LupusPixi;

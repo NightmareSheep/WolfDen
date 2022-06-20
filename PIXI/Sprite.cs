@@ -1,4 +1,5 @@
-﻿using Microsoft.JSInterop;
+﻿using BlazorJavascriptHelper;
+using Microsoft.JSInterop;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -38,7 +39,7 @@ namespace PIXI
             set { this.JavascriptHelper.SetJavascriptProperty(new string[] { "height" }, value, this.JSInstance); height = value; }
         }
 
-        public Sprite(IJSRuntime jSRuntime, IJSInProcessObjectReference texture, IJSInProcessObjectReference instance = null, JavascriptHelperModule javascriptHelper = null, bool instantiateJSInstance = true) : base(jSRuntime, instance, javascriptHelper, false)
+        public Sprite(IJSInProcessObjectReference texture, IJSInProcessObjectReference instance = null, bool instantiateJSInstance = true) : base(instance, false)
         {
             this.Texture = texture;
             if (JSInstance == null && instance == null)

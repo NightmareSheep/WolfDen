@@ -11,6 +11,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using PIXI;
+using BlazorJavascriptHelper;
 
 namespace LupusBlazor.WinConditions.GatherChests
 {
@@ -31,9 +32,9 @@ namespace LupusBlazor.WinConditions.GatherChests
 
         public void Draw()
         {
-            var jsHelper = JavascriptHelperModule.Instance;
+            var jsHelper = JavascriptHelper.Instance;
             var texture =  jsHelper.GetJavascriptProperty<IJSInProcessObjectReference?>(new string[] { "PIXI", "Loader", "shared", "resources", "sprites", "spritesheet", "textures", "zone " + ZoneId + ".png" });
-            sprite = new Sprite(this.IJSRuntime, texture);
+            sprite = new Sprite(texture);
             sprite.X = this.Tile.XCoord();
             sprite.Y = this.Tile.YCoord();
             sprite.Tint = this.Owner.Color;

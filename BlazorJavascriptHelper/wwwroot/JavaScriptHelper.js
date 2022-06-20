@@ -8,6 +8,16 @@
     obj[propertyPath[propertyPath.length - 1]] = value;
 }
 
+export async function AwaitFunction(jSInstance, functionName) {
+    var promise = new Promise(resolve => {
+        jSInstance[functionName](() => {
+            resolve();
+        });
+    });
+
+    await promise;
+}
+
 //export function SetFunctionProperty(csObject, method, propertyPath, object = window) {
 //    var value = () => {
 //        var args = Array.prototype.slice.call(arguments);

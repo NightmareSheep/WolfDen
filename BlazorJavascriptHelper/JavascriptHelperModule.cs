@@ -5,21 +5,23 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace JavascriptHelperModule
+namespace BlazorJavascriptHelper
 {
-    public class BlazorJavascriptHelperModule : IDisposable
+    public class JavascriptHelper : IDisposable
     {
         private const string _exceptionMessage = "Javascript helper module is null. Did you initialize the module? If not then call - await module.initialize.";
-        private IJSInProcessObjectReference? JavaScriptHelperModule { get; set; }
+        private IJSInProcessObjectReference? _module;
+        public static JavascriptHelper Instance { get; private set; }
 
         /// <summary>
         /// Initializes the modules. This method contains IO and is slow. Initialize once and reuse the module if possible.
         /// </summary>
         /// <param name="jSRuntime"></param>
         /// <returns></returns>
-        public async Task Initialize(IJSRuntime jSRuntime)
+        public static async Task Initialize(IJSRuntime jSRuntime)
         {
-            JavaScriptHelperModule = (IJSInProcessObjectReference) (await jSRuntime.InvokeAsync<IJSObjectReference>("import", "./_content/BlazorJavascriptHelper/JavaScriptHelper.js"));
+            Instance = new JavascriptHelper();
+            Instance._module = await jSRuntime.InvokeAsync<IJSInProcessObjectReference>("import", "./_content/BlazorJavascriptHelper/JavaScriptHelper.js");
         }
 
         /// <summary>
@@ -29,12 +31,13 @@ namespace JavascriptHelperModule
         /// <param name="value">New value of the property.</param>
         /// <param name="obj">Object that contains the property. Global window object is used if left undefined.</param>
         /// <exception cref="Exception"></exception>
-        public void SetJavascriptProperty(string[] propertyPath, object value, IJSObjectReference? obj = null)
+        public void SetJavascriptProperty(string[] propertyPath, object value, IJSInProcessObjectReference? obj = null)
         {
-            if (JavaScriptHelperModule == null)
+            if (_module == null)
                 throw new Exception(_exceptionMessage);
 
-             JavaScriptHelperModule?.InvokeVoid("SetProperty", propertyPath, value, obj);            
+            _module?.InvokeVoid("SetProperty", propertyPath, value, obj);
+            
         }
 
         /// <summary>
@@ -46,12 +49,18 @@ namespace JavascriptHelperModule
         /// <param name="propertyPath">Path to the javascript property. Example: new string[] { "Car", "OnStartDriving" }. </param>
         /// <param name="obj">Object that contains the property. Global window object is used if left undefined.</param>
         /// <exception cref="Exception"></exception>
-        public void SetJavascriptFunctionProperty<T>(DotNetObjectReference<T> dotNetObj, string functionName, string[] propertyPath, IJSObjectReference obj) where T : class
+        public void SetJavascriptFunctionProperty<T>(DotNetObjectReference<T> dotNetObj, string functionName, string[] propertyPath, IJSInProcessObjectReference obj) where T : class
         {
-            if (JavaScriptHelperModule == null)
+            if (_module == null)
                 throw new Exception(_exceptionMessage);
 
-            JavaScriptHelperModule?.InvokeVoid("SetFunctionProperty", dotNetObj, functionName, propertyPath, obj);
+            _module?.InvokeVoid("SetFunctionProperty", dotNetObj, functionName, propertyPath, obj);
+        }
+
+
+        public T GetJavascriptProperty<T>(string property, IJSInProcessObjectReference? obj = null)
+        {
+            return GetJavascriptProperty<T>(new string[] { property }, obj);
         }
 
         /// <summary>
@@ -62,19 +71,19 @@ namespace JavascriptHelperModule
         /// <param name="obj">Object that contains the property. Global window object is used if left undefined.</param>
         /// <returns></returns>
         /// <exception cref="Exception"></exception>
-        public T? GetJavascriptProperty<T>(string[] propertyPath, IJSObjectReference? obj = null) where T : class
+        public T GetJavascriptProperty<T>(string[] propertyPath, IJSInProcessObjectReference? obj = null)
         {
-            if (JavaScriptHelperModule == null)
+            if (_module == null)
                 throw new Exception(_exceptionMessage);
 
             try
             {
-                return JavaScriptHelperModule?.Invoke<T>("GetProperty", propertyPath, obj);
+                return _module.Invoke<T>("GetProperty", propertyPath, obj);
             }
             catch
             {
-                return null;
-            }
+                return default(T);
+            }            
         }
 
         /// <summary>
@@ -86,15 +95,20 @@ namespace JavascriptHelperModule
         /// <exception cref="Exception"></exception>
         public IJSInProcessObjectReference? InstantiateJavascriptClass(string[] constructorPath, List<object> args)
         {
-            if (JavaScriptHelperModule == null)
+            if (_module == null)
                 throw new Exception(_exceptionMessage);
 
-            return JavaScriptHelperModule?.Invoke<IJSInProcessObjectReference>("InstantiateClass", constructorPath, args);
+            return _module?.Invoke<IJSInProcessObjectReference>("InstantiateClass", constructorPath, args);
+        }
+
+        public async Task AwaitFunction(IJSObjectReference instance, string functionName)
+        {
+            await _module.InvokeVoidAsync("AwaitFunction", instance, functionName);
         }
 
         public void Dispose()
         {
-            JavaScriptHelperModule?.Dispose();
+            _module?.DisposeAsync();
         }
     }
 }

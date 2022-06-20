@@ -12,6 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\BlazorJavascriptHelper\BlazorJavascriptHelper.csproj" />
     <ProjectReference Include="..\..\Modules\Dijkstra\Dijkstra.csproj" />
     <ProjectReference Include="..\..\PIXI\PIXI.csproj" />
     <ProjectReference Include="..\LupusLobbies\LupusLobbies.csproj" />

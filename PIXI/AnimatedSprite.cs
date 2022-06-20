@@ -1,4 +1,5 @@
-﻿using Microsoft.JSInterop;
+﻿using BlazorJavascriptHelper;
+using Microsoft.JSInterop;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,7 +16,7 @@ namespace PIXI
         public event EventHandler OnCompleteEvent;
         
 
-        public AnimatedSprite(IJSRuntime jSRuntime, List<IJSInProcessObjectReference> textures, List<int> times, IJSInProcessObjectReference instance = null, JavascriptHelperModule javascriptHelper = null, bool instantiateJSInstance = true) : base(jSRuntime, null, instance, javascriptHelper, false)
+        public AnimatedSprite(List<IJSInProcessObjectReference> textures, List<int> times, IJSInProcessObjectReference instance = null, bool instantiateJSInstance = true) : base(null, instance, false)
         {
             this.Textures = textures;
             this.Times = times;

@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using PIXI;
+using BlazorJavascriptHelper;
 
 namespace PIXI
 {
@@ -13,7 +14,7 @@ namespace PIXI
     {
         public Dictionary<string, IJSObjectReference> SpriteSheets { get; set; } = new Dictionary<string, IJSObjectReference>();
         private DotNetObjectReference<Application> ObjRef { get; set; }
-        public JavascriptHelperModule JavascriptHelper { get; set; }
+        public JavascriptHelper JavascriptHelper { get; set; }
         public IJSInProcessObjectReference PixiApp { get; private set; }
         public Container Stage { get; private set; }
 
@@ -34,14 +35,14 @@ namespace PIXI
         {
             this.ObjRef = DotNetObjectReference.Create(this);
 
-            this.JavascriptHelper = JavascriptHelperModule.Instance;
+            this.JavascriptHelper = JavascriptHelper.Instance;
             this.ElementId = elementId;
 
             var pixiModule = PixiApplicationModule.Instance;
             this.PixiApp = pixiModule.InitializePixiApp(this.ObjRef, elementId);
 
             var JSStage = JavascriptHelper.GetJavascriptProperty<IJSInProcessObjectReference>(new string[] { "stage" }, this.PixiApp);
-            this.Stage = new Container(jSRuntime, JSStage, JavascriptHelper, false);
+            this.Stage = new Container(JSStage, false);
         }
 
         [JSInvokable]

@@ -8,6 +8,7 @@ using LupusBlazor.Pixi;
 using System.Drawing;
 using LupusBlazor.Other;
 using PIXI;
+using BlazorJavascriptHelper;
 
 namespace LupusBlazor.Pixi.LupusPixi
 {
@@ -15,11 +16,11 @@ namespace LupusBlazor.Pixi.LupusPixi
     {
         public static Dictionary<PixiFilter, IJSInProcessObjectReference> Filters = new();
         public static Dictionary<KnownColor, IJSInProcessObjectReference> TeamFilters = new();
-        public static JavascriptHelperModule JavascriptHelper { get; set; }
+        public static JavascriptHelper JavascriptHelper { get; set; }
 
         public static void Initialize(IJSRuntime jSRuntime)
         {
-            JavascriptHelper =  JavascriptHelperModule.Instance;
+            JavascriptHelper =  JavascriptHelper.Instance;
 
             var desaturateFilter =  JavascriptHelper.InstantiateJavascriptClass(new string[] { "PIXI", "filters", "ColorMatrixFilter" }, new List<object>() { });
              desaturateFilter.InvokeVoid("desaturate");

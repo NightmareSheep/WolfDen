@@ -16,8 +16,8 @@ namespace LupusBlazor.Pixi.LupusPixi
         public LupusPixiApplication(IJSRuntime iJSRuntime, int worldWidth, int worldHeight)
         {
             this.Application = new Application(iJSRuntime, "game");
-            this.ViewPort = new ViewPort(iJSRuntime, this.Application, worldWidth, worldHeight);
-            this.Application.Stage.AddChild(this.ViewPort);
+            this.ViewPort = new ViewPort(Application, worldWidth, worldHeight);
+            this.Application.Stage.AddChild(ViewPort);
         }
     }
 

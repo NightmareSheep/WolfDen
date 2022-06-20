@@ -16,6 +16,9 @@ namespace Lupus.Behaviours.Defend
 
         public virtual void Damage(int damage)
         {
+            if (CurrentHealth <= 0)
+                return;
+
             CurrentHealth -= damage;
             if (CurrentHealth <= 0)
             {

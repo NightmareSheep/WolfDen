@@ -1,4 +1,5 @@
-﻿using Microsoft.JSInterop;
+﻿using BlazorJavascriptHelper;
+using Microsoft.JSInterop;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -99,8 +100,7 @@ namespace PIXI
                     OnClick(this.ObjRef, "RaiseClickEvent");
             }
         }
-        public IJSRuntime JSRuntime { get; }
-        protected JavascriptHelperModule JavascriptHelper { get; set; }
+        protected JavascriptHelper JavascriptHelper { get { return JavascriptHelper.Instance; } }
         public PixiApplicationModule PixiApplicationModule { get; set; }
         protected DotNetObjectReference<DisplayObject> ObjRef { get; set; }
 
@@ -122,13 +122,10 @@ namespace PIXI
              this.PixiApplicationModule.SetOnClick(this, csObject, functionName);
         }
 
-        public DisplayObject(IJSRuntime jSRuntime, IJSInProcessObjectReference instance = null, JavascriptHelperModule javascriptHelper = null)
+        public DisplayObject(IJSInProcessObjectReference instance = null)
         {
-            JSRuntime = jSRuntime;
-            this.JavascriptHelper = javascriptHelper;
             this.JSInstance = instance;
             this.ObjRef = DotNetObjectReference.Create(this);
-            JavascriptHelper = JavascriptHelperModule.Instance;
             PixiApplicationModule = PixiApplicationModule.Instance;
             
         }

@@ -1,11 +1,14 @@
 ﻿@page "/PixiTest"
 @layout EmptyLayout
+@using Lupus.Other.MapLoading
+@using Newtonsoft.Json
 @using Wolfden.Client.Other;
 @using LupusBlazor.Pixi;
 @using LupusBlazor.Pixi.LupusPixi
 @using Lupus.Other;
 @using PIXI;
 @inject IJSRuntime JSRuntime;
+@inject HttpClient Http
 @implements IAsyncDisposable;
 
 <div id="test-game"></div>
@@ -19,59 +22,23 @@
     protected async override Task OnAfterRenderAsync(bool firstRender)
     {
         await base.OnAfterRenderAsync(firstRender);
+
+        if (!firstRender)
+        {
+            return;
+        }
+
         this.Application = new Application(JSRuntime, "test-game");
-        this.Application.ResourcesLoadedEvent += LoadSprite;
-        this.Application.ScaleMode = ScaleMode.Nearest;
-
-        //await this.Application.AddSpriteSheet("sprites", "/Images/sprites.json");
-        //await this.Application.Load();
-
-
-    }
-
-    public void LoadSprite(object sender, EventArgs e)
-    {
-        this.Viewport = new ViewPort(JSRuntime, this.Application, 3000, 3000);
-        this.Unit = new PixiUnit(JSRuntime, this.Application, Statics.AudioPlayer, Actors.Goblin);
-
-        this.Unit2 = new PixiUnit(JSRuntime, this.Application, Statics.AudioPlayer, Actors.Goblin);
-
-        this.Unit2.Container.Y = 16;
-
+        this.Viewport = new ViewPort(this.Application, 3000, 3000);
         this.Application.Stage.AddChild(this.Viewport);
-        this.Viewport.AddChild(this.Unit.Container);
-        this.Viewport.AddChild(this.Unit2.Container);
 
-        this.Unit.PlayAnimation(Animations.Idle);
-        this.Unit2.PlayAnimation(Animations.Idle);
+        TileMapLoader loader = new TileMapLoader(JSRuntime);
 
-        var text = new Text(this.JSRuntime, "0");
+        var mapString = await Http.GetStringAsync("/api/map/duel");
+        var jsonMap = JsonConvert.DeserializeObject<JsonMap>(mapString);
 
+        loader.LoadTileMap(jsonMap, this.Viewport);
 
-        text.ScaleX = 0.3f;
-        text.ScaleY = 0.3f;
-        text.X = -8;
-        text.Y = -8;
-        text.Color = System.Drawing.KnownColor.Red;
-        var filter = PixiFilters.GetTeamFilter(System.Drawing.KnownColor.Red);
-
-        this.Unit2.Container.AddFilter(PixiFilters.Filters[PixiFilter.GlowFilter]);
-
-        this.Unit2.Container.AddChild(text);
-
-        var attack = () => {
-            this.Unit.QueueAnimation(Animations.Attack, Direction.North); 
-            this.Unit.QueueAnimation(Animations.Attack, Direction.South);
-            this.Unit2.QueueAnimation(Animations.Move, Direction.South);
-            this.Unit2.QueueAnimation(Animations.Move, Direction.South);
-            this.Unit2.QueueAnimation(Animations.Move, Direction.East);
-            this.Unit2.QueueAnimation(Animations.Move, Direction.East);
-            this.Unit2.QueueAnimation(Animations.Move, Direction.North);
-            this.Unit2.QueueAnimation(Animations.Move, Direction.West);
-            this.Unit2.QueueAnimation(Animations.Move, Direction.West);
-        };
-
-        attack();
     }
 
 

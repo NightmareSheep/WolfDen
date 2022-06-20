@@ -1,4 +1,5 @@
-﻿using Microsoft.JSInterop;
+﻿using BlazorJavascriptHelper;
+using Microsoft.JSInterop;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -46,7 +47,7 @@ namespace PIXI
             }
         }
 
-        public Text(IJSRuntime jSRuntime, string text, JavascriptHelperModule javascriptHelper = null) : base(jSRuntime, null, null, javascriptHelper)
+        public Text(IJSRuntime jSRuntime, string text) : base(null, null)
         {
             SpriteText = text;
             JSInstance = JavascriptHelper.InstantiateJavascriptClass(new string[] { "PIXI", "Text" }, new() { SpriteText });

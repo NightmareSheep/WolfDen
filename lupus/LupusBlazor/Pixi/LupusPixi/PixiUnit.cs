@@ -40,9 +40,9 @@ namespace LupusBlazor.Pixi.LupusPixi
 
         public void Initialize()
         {
-            this.Container = new Container(this.JSRuntime);
-            this.AnimationContainer = new Container(this.JSRuntime);
-            this.TextContainer = new Container(this.JSRuntime);
+            this.Container = new Container();
+            this.AnimationContainer = new Container();
+            this.TextContainer = new Container();
             this.Container.AddChild(AnimationContainer);
             this.Container.AddChild(TextContainer);
 
@@ -165,7 +165,7 @@ namespace LupusBlazor.Pixi.LupusPixi
                 baseAnimation.Sprite.ClickEvent -= RaiseClickEvent;
 
             foreach (var animation in this.UnitAnimations.Values)
-                 animation.Dispose();
+                 animation?.Dispose();
 
              this.Container.Dispose();
             JobQueue.QueueEmptyEvent -= PlayBaseAnimation;

@@ -4,6 +4,7 @@ using System.Dynamic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using BlazorJavascriptHelper;
 using Microsoft.JSInterop;
 
 namespace PIXI
@@ -14,12 +15,11 @@ namespace PIXI
         public int WorldWidth { get; }
         public int WorldHeight { get; }
 
-        public ViewPort(IJSRuntime jSRuntime, Application application, int worldWidth, int worldHeight, JavascriptHelperModule javascriptHelper = null) : base(jSRuntime, null, javascriptHelper, false)
+        public ViewPort(Application application, int worldWidth, int worldHeight) : base(null, false)
         {
             Application = application;
             WorldWidth = worldWidth;
             WorldHeight = worldHeight;
-            this.JavascriptHelper = javascriptHelper;
             var viewportModule = ViewportModule.Instance;
             Console.WriteLine("Instantiate viewport");
             this.JSInstance = viewportModule.InstantiateViewport(this.Application.PixiApp, this.Application.ElementId, WorldWidth, WorldHeight);

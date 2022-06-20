@@ -7,6 +7,7 @@ using Lupus.Other;
 using LupusBlazor.Audio;
 using Microsoft.JSInterop;
 using PIXI;
+using BlazorJavascriptHelper;
 
 namespace LupusBlazor.Pixi.LupusPixi
 {
@@ -21,7 +22,7 @@ namespace LupusBlazor.Pixi.LupusPixi
         public IJSRuntime JSRuntime { get; set; }
         public Application Application { get; }
         public AudioPlayer Audioplayer { get; }
-        private JavascriptHelperModule JavascriptHelper { get; set; }
+        private JavascriptHelper JavascriptHelper { get; set; }
         private Random random = new Random();
         private Dictionary<AnimationConfiguration, Stack<Animation>> RecycledAnimations = new();
 
@@ -30,7 +31,7 @@ namespace LupusBlazor.Pixi.LupusPixi
             JSRuntime = jSRuntime;
             Application = application;
             Audioplayer = audioplayer;
-            JavascriptHelper = JavascriptHelperModule.Instance;
+            JavascriptHelper = JavascriptHelper.Instance;
         }
 
         public Animation GetAnimation(Actors actor, Animations animation, Direction direction)
@@ -256,8 +257,8 @@ namespace LupusBlazor.Pixi.LupusPixi
             var name = animationConfiguration.Actor.ToString().ToLower();
             var directionString = direction != Direction.None ? "_" + this.DirectionToString(direction) : "";
 
-            this.JavascriptHelper =  JavascriptHelperModule.Instance;
-            var spritesheet =  this.JavascriptHelper.GetJavascriptProperty<IJSObjectReference>(new string[] { "PIXI", "Loader", "shared", "resources", "sprites", "spritesheet" });
+            this.JavascriptHelper =  JavascriptHelper.Instance;
+            var spritesheet =  this.JavascriptHelper.GetJavascriptProperty<IJSInProcessObjectReference>(new string[] { "PIXI", "Loader", "shared", "resources", "sprites", "spritesheet" });
 
             var textureNames = new List<string>();
 
@@ -277,7 +278,7 @@ namespace LupusBlazor.Pixi.LupusPixi
             if (textures.Contains(null))
                 return null;
 
-            var sprite = new AnimatedSprite(this.JSRuntime, textures, times);
+            var sprite = new AnimatedSprite(textures, times);
             sprite.SetVisibility(false);
             sprite.SetLoop(false);
             sprite.SetAnchor(0.5f);

@@ -10,6 +10,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using PIXI;
+using BlazorJavascriptHelper;
 
 namespace LupusBlazor.Interaction
 {
@@ -94,14 +95,14 @@ namespace LupusBlazor.Interaction
                 return;
 
 
-            var jsHelper =  JavascriptHelperModule.Instance;
+            var jsHelper =  JavascriptHelper.Instance;
             var texture =  jsHelper.GetJavascriptProperty<IJSInProcessObjectReference>(new string[] { "PIXI", "Texture", "WHITE" });
 
             TileIndicators.IndicatorSprites = new List<Sprite>();
             for (int i = 0; i < 100; i++)
             {
                 
-                var sprite = new Sprite(JSRuntime, texture);
+                var sprite = new Sprite(texture);
                 sprite.Interactive = true;
                 sprite.Width = 16;
                 sprite.Height = 16;

@@ -23,5 +23,9 @@ namespace Lupus.Other.MapLoading
                 return teams.ToArray(); 
             } 
         }
+
+        public int TileHeight { get; set; }
+        public int TileWidth { get; set; }
+        public TileSet[] TileSets { get; set; }
     }
 }

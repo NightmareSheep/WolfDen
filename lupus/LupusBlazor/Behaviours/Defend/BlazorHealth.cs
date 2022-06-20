@@ -47,9 +47,12 @@ namespace LupusBlazor.Behaviours.Defend
 
         public override void Damage(int damage)
         {
-             base.Damage(damage);
+            if (CurrentHealth <= 0)
+                return;
+
+            base.Damage(damage);
             DelayedDisplayId = Guid.NewGuid();
-            if (text != null)
+            if (text != null && CurrentHealth > 0)
                 this.text.SpriteText = CurrentHealth.ToString();
             
         }
