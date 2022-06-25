@@ -51,6 +51,7 @@ loader?.Add("sprites", "/Images/sprites.json");
 loader?.Add("dungeon", "/Images/tiles_dungeon.png");
 await loader.Load();
 PixiFilters.Initialize(jsRuntime);
+LupusBlazor.Pixi.LupusPixi.TileSet.TileSets.Initialize();
 
 var name = await localStorage.GetItemAsync<string>("name");
 var id = await localStorage.GetItemAsync<string>("id");

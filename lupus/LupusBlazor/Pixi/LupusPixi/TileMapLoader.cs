@@ -1,4 +1,5 @@
 ﻿using Lupus.Other.MapLoading;
+using LupusBlazor.Pixi.LupusPixi.TileSet;
 using Microsoft.JSInterop;
 using PIXI;
 using PIXI.Loading;
@@ -25,7 +26,7 @@ namespace LupusBlazor.Pixi.LupusPixi
                 LoadLayer(layer, container, map);
         }
 
-        public void LoadLayer(Layer layer, Container container, JsonMap map)
+        private void LoadLayer(Layer layer, Container container, JsonMap map)
         {
             var compositeTileMap = new CompositeTilemap();
             container.AddChild(compositeTileMap);
@@ -38,22 +39,24 @@ namespace LupusBlazor.Pixi.LupusPixi
                 var gid = layer.Data[i];
                 if (gid == 0 || gid >= 481)
                     continue;
-                gid--;
 
-                var x = (int)(gid % 20);
-                var y = (int)gid / 20;
+                var tileSet = GetTileSet(map, gid, out var firstGid);
 
-                var baseTexture = new Texture(Loader.Shared.Resources["dungeon"].Texture);
-                var texture = new Texture(baseTexture, new Rectangle(x * map.TileWidth, y * map.TileHeight, map.TileWidth, map.TileHeight));
+                var id = (uint)firstGid - gid;
+                var texture = tileSet.GetTexture(id);
 
                 var posX = i % map.Width * map.TileWidth;
                 var posY = i / map.Height * map.TileHeight;
 
                 compositeTileMap.Tile(texture, posX, posY);
-
-                baseTexture.Dispose();
-                texture.Dispose();
             }
+        }
+
+        private TileSet.TileSet GetTileSet(JsonMap map, uint id, out int firstGid)
+        {
+            var tileSet = TileSets.Sets["dungeon"];
+            firstGid = 1;
+            return tileSet;
         }
     }
 }

@@ -11,10 +11,12 @@ namespace PIXI.Loading
     public class LoaderResource : IDisposable
     {
         public string Name { get; set; }
-        public IJSInProcessObjectReference Texture { 
+
+        Texture _texture;
+        public Texture Texture { 
             get 
             {
-                return _jsInstance.Prop<IJSInProcessObjectReference>("texture");
+                return (_texture ??= new Texture(_jsInstance.Prop<IJSInProcessObjectReference>("texture")));
             } 
         }
         private IJSInProcessObjectReference _jsInstance;
