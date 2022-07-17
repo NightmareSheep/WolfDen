@@ -77,6 +77,10 @@ namespace Wolfden.Server.Hubs.Lupus
             var parameterTypes = parameterTypeNames.Select(n => Type.GetType(n)).ToArray();
 
             ConcurrencyObjects.ConcurentOperation(gameId, (Game game) => {
+
+                if (!PlayerIsAllowedToMove(game, user))
+                    return;
+                
                 var gameObject = game.GetGameObject<object>(user, objectId);
                 if (gameObject == null)
                     return;
@@ -90,6 +94,15 @@ namespace Wolfden.Server.Hubs.Lupus
                 method.Invoke(gameObject, deserializedParamers);
                 Clients.Group(GamePrefix + game.Id.ToString()).DoMove(playerId, objectId, typeName, methodName, parameters, parameterTypeNames);
             });
+        }
+
+        private bool PlayerIsAllowedToMove(Game game, string user)
+        {
+            var player = game.Players.FirstOrDefault(p => p.Id == user);
+            if (player == null || !game.TurnResolver.ActivePlayers.Contains(player))
+                return false;
+
+            return true;
         }
     }
 }

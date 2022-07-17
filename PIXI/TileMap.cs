@@ -17,7 +17,7 @@ namespace PIXI
 
         public void Tile(Texture texture, int x, int y)
         {
-            JSInstance.InvokeVoid("tile", texture.JSInstance, x, y);
+            JSInstance.InvokeVoid("tile", texture.JSInstance, x, y, new { rotate = texture.Rotate });
         }
     }
 }

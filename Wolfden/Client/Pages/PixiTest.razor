@@ -34,7 +34,7 @@
 
         TileMapLoader loader = new TileMapLoader(JSRuntime);
 
-        var mapString = await Http.GetStringAsync("/api/map/duel");
+        var mapString = await Http.GetStringAsync("/api/map/duel 2");
         var jsonMap = JsonConvert.DeserializeObject<JsonMap>(mapString);
 
         loader.LoadTileMap(jsonMap, this.Viewport);

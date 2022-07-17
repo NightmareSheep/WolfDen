@@ -37,13 +37,16 @@ namespace LupusBlazor.Pixi.LupusPixi
             for (var i = 0; i <layer.Data.Count(); i++)
             {
                 var gid = layer.Data[i];
-                if (gid == 0 || gid >= 481)
+                if (gid == 0)
                     continue;
 
                 var tileSet = GetTileSet(map, gid, out var firstGid);
 
-                var id = (uint)firstGid - gid;
+                var id = gid - firstGid;
                 var texture = tileSet.GetTexture(id);
+
+                if (texture == null)
+                    continue;
 
                 var posX = i % map.Width * map.TileWidth;
                 var posY = i / map.Height * map.TileHeight;
@@ -52,7 +55,7 @@ namespace LupusBlazor.Pixi.LupusPixi
             }
         }
 
-        private TileSet.TileSet GetTileSet(JsonMap map, uint id, out int firstGid)
+        private TileSet.TileSet GetTileSet(JsonMap map, uint id, out uint firstGid)
         {
             var tileSet = TileSets.Sets["dungeon"];
             firstGid = 1;
